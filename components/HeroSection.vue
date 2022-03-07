@@ -4,7 +4,8 @@
 
     <!-- <img :src="imgs.iconBrew" alt=""> -->
     <IconBrewLogo
-      variant="vertical-xl"
+      direction="vertical"
+      :size="'large'"
     />
 
     <h2 class="text-2xl font-normal"> Flexible open source icons </h2>
@@ -38,7 +39,8 @@
     data(){
       return{
         imgs:{
-          iconBrew: require('@/assets/images/icon-brew.png'),
+          iconBrewMedium: require('@/assets/images/IconBrew-logo/IconBrew-medium.png'),
+          iconBrewLarge: require('@/assets/images/IconBrew-logo/IconBrew-large.png'),
         }
       }
     }

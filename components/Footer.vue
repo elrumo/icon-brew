@@ -10,7 +10,6 @@
 </template>
 
 <script>
-  import IconBrewLogo from './IconBrewLogo.vue'
   import IconBrewIcon from './IconBrewIcon.vue'
 
   var MarkdownIt = require('markdown-it'), md = new MarkdownIt();
@@ -19,7 +18,6 @@
     name: 'Footer',
 
     components:{
-      IconBrewLogo,
       IconBrewIcon
     },
 

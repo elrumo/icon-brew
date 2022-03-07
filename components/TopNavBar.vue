@@ -3,8 +3,9 @@
   <div class="top-nav-bar">
 
     <IconBrewLogo
-      variant="horizontal-sm"
+      direction="horizontal"
       class="justify-start"
+      size="small"
     />
 
     <div>

@@ -144,7 +144,8 @@ img{
   margin: 0px
 }
 
-.icon-brew-logo-wrapper-horizontal-sm{
+// .icon-brew-logo-wrapper-horizontal-sm{
+  .icon-brew-logo-wrapper-horizontal{
   @extend .icon-brew-logo-wrapper;
 
   align-content: center;
@@ -153,7 +154,8 @@ img{
   gap: 8px;
 }
 
-.icon-brew-logo-wrapper-vertical-xl{
+.icon-brew-logo-wrapper-vertical{
+// .icon-brew-logo-wrapper-vertical-xl{
   @extend .icon-brew-logo-wrapper;
 
   display: flex;
@@ -322,6 +324,7 @@ img{
 
   img{
     width: 89px;
+    height: 93px;
   }
 }
 

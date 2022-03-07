@@ -13,6 +13,11 @@ export default {
     ],
     script: [
       // { src: 'https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js', defer: true }
+      {
+        src: 'https://plausible.io/js/plausible.js',
+        defer: true,
+        'data-domain': 'iconbrew.com',
+      }
     ]
   },
 
