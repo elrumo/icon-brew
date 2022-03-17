@@ -9,15 +9,16 @@
 
             <!-- Size toggle -->
             <div class="contents" >
-              <span class="side-bar-title">
+              <label for="inputSwitchSize" class="side-bar-title">
                 Size
-              </span>
+              </label>
 
               <div class="switch-with-title-horizontal pl-2">
                 <p class="text-sm">
                   {{is24px ? '24px' : '18px'}}
                 </p>
                 <InputSwitch
+                  id="inputSwitchSize"
                   @change="setIconSize"
                   v-model="is24px"
                 />

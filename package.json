@@ -29,6 +29,5 @@
     "webpack": "^4.46.0"
   },
   "devDependencies": {
-    "vue-svg-loader": "^0.17.0-beta.2"
   }
 }

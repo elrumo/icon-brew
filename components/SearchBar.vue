@@ -10,6 +10,7 @@
 
     <span class="p-input-icon-left input-search">
         <i class="pi pi-search" />
+        <label for="searchBar"></label>
         <InputText
           v-on:focus.native="onFocus"
           class="p-inputtext-sm"
@@ -86,6 +87,7 @@
           hitsPerPage: 200
         });
         this.searchResults = searchResult;
+        console.log(searchResult.hits);
         this.setIcons(searchResult.hits);
       },
 

@@ -4,7 +4,7 @@
     <img
       :src="getIcon"
       :class="'icon-image-' + size"
-      alt=""
+      :alt="icon+' icon'"
     >
   </div>
 </template>
@@ -40,6 +40,8 @@
     computed:{
       getIcon(){
         // console.log( this.icon + '.svg');
+        const isFilled = this.filled ? 'filled' : 'outline';
+        console.log("isFilled: " + isFilled);
         return require('@/assets/icons/' + this.size + 'px/' + this.icon + '.svg');
       }
     }
