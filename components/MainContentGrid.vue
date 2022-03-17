@@ -3,51 +3,51 @@
   <div class="main-layout-wrapper">
 
       <!-- Sidebar -->
-      <div>
-        <div class="category-side-bar-wrapper mb-3">
+      <div class="">
+        <div class="sticky-side-bar">
+          <div class="category-side-bar-wrapper mb-3">
 
-          <!-- Size toggle -->
-          <div class="contents" >
-            <span class="side-bar-title">
-              Size
-            </span>
+            <!-- Size toggle -->
+            <div class="contents" >
+              <span class="side-bar-title">
+                Size
+              </span>
 
-            <div class="switch-with-title-horizontal pl-2">
-              <p class="text-sm">
-                {{is24px ? '24px' : '18px'}}
-              </p>
-              <InputSwitch
-                @change="setIconSize"
-                v-model="is24px"
-              />
+              <div class="switch-with-title-horizontal pl-2">
+                <p class="text-sm">
+                  {{is24px ? '24px' : '18px'}}
+                </p>
+                <InputSwitch
+                  @change="setIconSize"
+                  v-model="is24px"
+                />
+              </div>
             </div>
+
           </div>
 
-        </div>
+          <div class="category-side-bar-wrapper">
 
-        <div class="category-side-bar-wrapper">
+            <CategoryButton
+              v-for="category in getIconCategories"
+              :key="category.categoryName"
+              :category="category"
+              :active="category.categoryName == selectedCategory"
+              :func="setCategory"
+            />
 
-          <CategoryButton
-            v-for="category in getIconCategories"
-            :key="category.categoryName"
-            :category="category"
-            :active="category.categoryName == selectedCategory"
-            :func="setCategory"
-          />
-
+          </div>
         </div>
       </div>
 
       <div class="content-card-secondary main-content-wrapper">
         <div class="content-area">
-
           <IconCard
             v-for="icon in getIcons"
             :key="icon.iconName"
             :icon="{name: icon.iconName, img: icon[iconSize]}"
           />
         </div>
-
       </div>
 
   </div>
@@ -96,7 +96,7 @@
     },
 
     async fetch() {
-      await this.fetchIcons()
+      // await this.fetchIcons()
       await this.fetchIconCategories()
     },
 

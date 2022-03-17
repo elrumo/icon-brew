@@ -14,8 +14,10 @@
           v-on:focus.native="onFocus"
           class="p-inputtext-sm"
           type="text"
+          id="searchBar"
           v-model="searchValue"
           placeholder="Search"
+          @keyup="searchAlgolia"
         />
     </span>
 
@@ -24,6 +26,11 @@
 
 <script>
   import { mapMutations, mapActions, mapGetters } from 'vuex'
+  import algoliasearch from 'algoliasearch';
+
+
+  const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_SEARCH_KEY);
+  const index = client.initIndex(process.env.ALGOLIA_INDEX);
 
   export default {
     name: 'IconCard',
@@ -41,6 +48,7 @@
         is24px: true,
         isIntersectingElement: false,
         observer: null,
+        searchResults: {}
       }
     },
 
@@ -61,11 +69,25 @@
 
     },
 
+    async fetch(){
+      await this.searchAlgolia()
+    },
+
     methods:{
       ...mapActions({
         setSearchValue: 'store/setSearchValue',
         scrollTo: 'store/scrollTo',
+        setIcons: 'store/setIcons',
       }),
+
+     async searchAlgolia(){
+        const searchResult = await index.search(this.searchValue, {
+          page: 0,
+          hitsPerPage: 200
+        });
+        this.searchResults = searchResult;
+        this.setIcons(searchResult.hits);
+      },
 
       handleIntersection(payload){
         const y = payload[0].boundingClientRect.y
@@ -77,28 +99,16 @@
         }
       },
 
-      setIconSize(){
-        let size = this.is24px ? 'iconImage24px' : 'iconImage18px'
-        this.setDataToState({state: 'iconSize', data: size})
-      },
-
-
-      el(entries) {
-         entries.forEach(({ target, isIntersecting}) => {
-          console.log(target, isIntersecting);
-        });
-      },
-
-      isShadow(target){
-        // let el = document.getElementById(target)
-        // console.log(el.getBoundingClientRect().top);
-        return true
-      },
-
       onFocus(e){
         this.scrollTo(540)
         this.$emit('focus')
       },
-    }
+    },
+
+    computed:{
+      ...mapGetters({
+        getUsername: 'store/getUsername',
+      }),
+    },
   }
 </script>

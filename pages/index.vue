@@ -3,7 +3,10 @@
 
     <TopNavBar/>
 
-    <HeroSection class="page-wrapper"/>
+    <HeroSection
+      class="page-wrapper"
+      :homeData="getHomeData"
+    />
 
     <SearchBar/>
 
@@ -15,12 +18,12 @@
 </template>
 
 <script>
+  import { mapMutations, mapActions, mapGetters } from 'vuex'
+
   import HeroSection from '../components/HeroSection.vue'
   import MainContentGrid from '../components/MainContentGrid.vue'
   import TopNavBar from '../components/TopNavBar.vue'
   import Footer from '../components/Footer.vue'
-
-  import allIcons from '../assets/icons/24px/all-icons.svg'
 
   export default {
     name: 'IndexPage',
@@ -34,8 +37,26 @@
 
     data: function () {
       return {
-        allIcons: allIcons,
       }
-    }
+    },
+
+    async fetch() {
+      await this.fetchHomeData()
+    },
+
+    methods: {
+      ...mapActions({
+        fetchHomeData: 'store/fetchHomeData',
+      }),
+    },
+
+    computed: {
+      ...mapGetters({
+        getHomeData: 'store/getHomeData',
+      }),
+
+    },
+
+
   }
 </script>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    .h1-class{
+      color: blue;
+      font-family: sans-serif;
+    }
+
+    .red{
+      color: red !important;
+    }
+
+    .blue{
+      color: blue !important;
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <input id="inputBox" type="text" label="name">
+
+  <h1 id="username" class="h1-class">
+    Usernames
+  </h1>
+
+  <div id="listOfNames">
+
+  </div>
+
+  <button class="blue" id="myBtn">Click me</button>
+
+</body>
+
+<script>
+  let title = document.getElementById('username')
+  let inputBox = document.getElementById('inputBox')
+
+  async function myFunc(){
+    let url = 'https://api.github.com/repos/javascript-tutorial/en.javascript.info/commits';
+    let response = await fetch(url);
+    let commits = await response.json();
+
+    let listOfNames = document.getElementById('listOfNames')
+
+    for(let commit of commits){
+      let h2 = document.createElement('h2');
+      h2.innerHTML = commit.commit.author.name;
+      listOfNames.appendChild(h2);
+    }
+
+
+    // document.getElementById('username').classList = commits.length;
+  }
+
+  function changeColour(){
+    title.classList.toggle('red')
+  }
+
+  myFunc();
+
+  const btn = document.getElementById("myBtn");
+  btn.addEventListener("click", changeColour);
+
+  function getInput(){
+    title.innerHTML = inputBox.value;
+  }
+
+  inputBox.addEventListener('keydown', getInput);
+
+</script>
+</html>

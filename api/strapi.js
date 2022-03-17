@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 async function getIconsFromStrapi() {
-
     let icons = await axios.get('https://api.macosicons.com/api/icon-brews?populate=*')
     let iconsArr = []
 
@@ -30,6 +29,12 @@ async function getCategoriesFromStrapi() {
     return categoriesArr;
 }
 
+async function getHomeData() {
+    let homeData = await axios.get('https://api.macosicons.com/api/icon-brew-home?populate=*')
+
+    return homeData.data.data.attributes;
+}
+
 async function getTagsFromStrapi() {
 
     let icons = await axios.get('https://api.macosicons.com/api/icon-brews?populate=*')
@@ -50,5 +55,6 @@ async function getTagsFromStrapi() {
 export {
     getIconsFromStrapi,
     getCategoriesFromStrapi,
-    getTagsFromStrapi
+    getTagsFromStrapi,
+    getHomeData
 }

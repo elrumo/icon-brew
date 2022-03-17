@@ -2,19 +2,21 @@ import axios from 'axios'
 
 import {
   getIconsFromStrapi,
-  getCategoriesFromStrapi
+  getCategoriesFromStrapi,
+  getHomeData
 } from '@/api/strapi';
-
 
 export const state = () => ({
   icons: [],
   iconCategories: [],
   iconSize: 'iconImage24px',
+  homeData: '',
+  searchValue: '',
 })
 
 export const mutations = {
 
-  setDataToArr(store, payload){
+  setDataToState(store, payload){
     store[payload.arr] = payload.data;
   },
 
@@ -22,29 +24,42 @@ export const mutations = {
 
 export const actions = {
 
+  setIcons(store, icons){
+    store.commit('setDataToState', {arr: 'icons', data: icons});
+  },
+
   async fetchIcons(store){
     let icons = await getIconsFromStrapi();
 
     try {
-      store.commit('setDataToArr', {arr: 'icons', data: icons})
+      store.commit('setDataToState', {arr: 'icons', data: icons})
     } catch (error) {
       console.log("Error fetching learning resources: ", error);
     }
+  },
 
+  async fetchHomeData(store){
+    let data = await getHomeData();
+
+    try {
+      store.commit('setDataToState', {arr: 'homeData', data: data});
+    } catch (error) {
+      console.log("Error fetching learning resources: ", error);
+    }
   },
 
   async fetchIconCategories(store){
     let iconCategories = await getCategoriesFromStrapi();
 
     try {
-      store.commit('setDataToArr', {arr: 'iconCategories', data: iconCategories})
+      store.commit('setDataToState', {arr: 'iconCategories', data: iconCategories})
     } catch (error) {
       console.log("Error fetching icon categories: ", error);
     }
   },
 
   setDataToState(store, payload){
-    store.commit('setDataToArr', {arr: payload.state, data: payload.data})
+    store.commit('setDataToState', {arr: payload.state, data: payload.data})
   },
 
   scrollTo(store, target) {
@@ -95,6 +110,10 @@ export const getters = {
 
   iconSize(state) {
     return state.iconSize;
+  },
+
+  getHomeData(state) {
+    return state.homeData
   }
 
 }

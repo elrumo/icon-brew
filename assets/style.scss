@@ -10,6 +10,11 @@ p{
   margin: 0px;
 }
 
+a{
+  text-decoration: none;
+  color: inherit;
+}
+
 $buttonPadding: 5rem 10rem !important;
 
 $primary-color: #1F262F;
@@ -350,6 +355,11 @@ img{
   margin: 0px 8px;
 }
 
+.sticky-side-bar{
+  position: sticky;
+  top: 180px;
+}
+
 .category-side-bar-wrapper{
   @extend .content-card-secondary;
 
@@ -357,8 +367,6 @@ img{
   flex-direction: column;
   gap: 4px;
 
-  position: sticky;
-  top: 180px;
   height: fit-content;
   width: 100%;
   max-height: calc(98vh - 100px);

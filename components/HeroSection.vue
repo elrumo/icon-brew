@@ -2,17 +2,26 @@
 <template>
   <div class="hero-wrapper">
 
-    <!-- <img :src="imgs.iconBrew" alt=""> -->
     <IconBrewLogo
       direction="vertical"
       :size="'large'"
     />
 
-    <h2 class="text-2xl font-normal"> Flexible open source icons </h2>
+    <h2 class="text-2xl font-normal">
+      {{homeData.subtitle}}
+    </h2>
 
     <div class="hero-btns-wrapper">
 
-      <Button label="Download all" icon="pi pi-download"/>
+      <a
+        :href="homeData.buttonUrl"
+        target="_blank"
+      >
+        <Button
+          :label="homeData.button"
+          icon="pi pi-download"
+        />
+      </a>
 
       <!-- <Button class="p-button-outlined">
         Contribute
@@ -23,6 +32,7 @@
 </template>
 
 <script>
+  import { mapMutations, mapActions, mapGetters } from 'vuex'
   import IconBrewLogo from '../components/IconBrewLogo.vue'
 
   export default {
@@ -33,7 +43,13 @@
     },
 
     props:{
-      icon: {}
+      homeData: {}
+    },
+
+    methods:{
+    },
+
+    computed:{
     },
 
     data(){
