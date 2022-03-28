@@ -5,15 +5,21 @@
     <IconBrewLogo
       direction="vertical"
       :size="'large'"
+      :title="homeData.title"
+      :to="to"
     />
 
-    <h2 class="text-2xl font-normal">
+    <h2
+      v-if="homeData.subtitle"
+      class="text-2xl font-normal"
+    >
       {{homeData.subtitle}}
     </h2>
 
     <div class="hero-btns-wrapper">
 
       <a
+        v-if="homeData.buttonUrl"
         :href="homeData.buttonUrl"
         target="_blank"
       >
@@ -43,7 +49,8 @@
     },
 
     props:{
-      homeData: {}
+      homeData: {},
+      to: ""
     },
 
     methods:{

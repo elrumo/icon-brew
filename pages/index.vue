@@ -1,24 +1,22 @@
 <template>
   <div class="">
 
-    <TopNavBar/>
-
     <HeroSection
       class="page-wrapper"
       :homeData="getHomeData"
+      to="false"
     />
 
     <SearchBar/>
 
     <MainContentGrid class="page-wrapper"/>
 
-    <Footer/>
-
   </div>
 </template>
 
 <script>
   import { mapMutations, mapActions, mapGetters } from 'vuex'
+  import axios from 'axios'
 
   import HeroSection from '../components/HeroSection.vue'
   import MainContentGrid from '../components/MainContentGrid.vue'
@@ -26,7 +24,7 @@
   import Footer from '../components/Footer.vue'
 
   export default {
-    name: 'IndexPage',
+    name: 'HomePage',
 
     components:{
       MainContentGrid,
@@ -40,13 +38,18 @@
       }
     },
 
+    async mounted() {
+    },
+
     async fetch() {
-      await this.fetchHomeData()
+        // await this.fetchHomeData()
+        // await this.fetchSinglePage({id: 'icon-brew-about', state: 'aboutPageData'})
     },
 
     methods: {
       ...mapActions({
         fetchHomeData: 'store/fetchHomeData',
+        fetchSinglePage: 'store/fetchSinglePage',
       }),
     },
 

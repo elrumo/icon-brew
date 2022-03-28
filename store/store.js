@@ -3,29 +3,42 @@ import axios from 'axios'
 import {
   getIconsFromStrapi,
   getCategoriesFromStrapi,
-  getHomeData
+  getHomeData,
+  getSinglePage
 } from '@/api/strapi';
 
+import dummyData from '@/api/dummyData.json';
+
 export const state = () => ({
-  icons: [],
+  icons: dummyData,
+  // icons: [],
   iconCategories: [],
   iconSize: 'iconImage24px',
   homeData: '',
   searchValue: '',
+  singlePageData: '',
+  aboutPageData: '',
+  selectedIcon: {},
+  iconWeight: 2,
+  iconColour: '#FFFFFF',
 })
 
 export const mutations = {
 
   setDataToState(store, payload){
-    store[payload.arr] = payload.data;
+    store[payload.state] = payload.data;
   },
 
 }
 
 export const actions = {
 
+  setDataToStore(store, data){
+    store.commit('setDataToState', {state: data.state, data: data.data});
+  },
+
   setIcons(store, icons){
-    store.commit('setDataToState', {arr: 'icons', data: icons});
+    store.commit('setDataToState', {state: 'icons', data: icons});
   },
 
   async fetchIcons(store){
@@ -42,7 +55,17 @@ export const actions = {
     let data = await getHomeData();
 
     try {
-      store.commit('setDataToState', {arr: 'homeData', data: data});
+      store.commit('setDataToState', {state: 'homeData', data: data});
+    } catch (error) {
+      console.log("Error fetching learning resources: ", error);
+    }
+  },
+
+  async fetchSinglePage(store, payload){
+    let data = await getSinglePage(payload.id);
+    console.log(payload.state);
+    try {
+      store.commit('setDataToState', {state: payload.state, data: data});
     } catch (error) {
       console.log("Error fetching learning resources: ", error);
     }
@@ -52,14 +75,14 @@ export const actions = {
     let iconCategories = await getCategoriesFromStrapi();
 
     try {
-      store.commit('setDataToState', {arr: 'iconCategories', data: iconCategories})
+      store.commit('setDataToState', {state: 'iconCategories', data: iconCategories})
     } catch (error) {
       console.log("Error fetching icon categories: ", error);
     }
   },
 
   setDataToState(store, payload){
-    store.commit('setDataToState', {arr: payload.state, data: payload.data})
+    store.commit('setDataToState', {state: payload.state, data: payload.data})
   },
 
   scrollTo(store, target) {
@@ -79,6 +102,8 @@ export const actions = {
     let url = payload.url
     let name = payload.name + store.state.iconSize +'.svg';;
 
+    console.log(payload.target.path);
+
     fetch(url)
       .then(resp => resp.blob())
       .then(blob => {
@@ -91,10 +116,15 @@ export const actions = {
           document.body.appendChild(a);
           a.click();
           window.URL.revokeObjectURL(url);
+
+          axios.get('https://api.macosicons.com/api/icon-brews/add-download-count/'+payload.id)
       })
       .catch(() => alert('An error sorry'));
-  }
+  },
 
+  getState(store, payload) {
+    return store.state[payload.state]
+  }
 
 }
 
@@ -114,6 +144,18 @@ export const getters = {
 
   getHomeData(state) {
     return state.homeData
-  }
+  },
+
+  getSelectedIcon(state) {
+    return state.selectedIcon
+  },
+
+  getIconWeight(state) {
+    return state.iconWeight
+  },
+
+  getIconColour(state) {
+    return state.iconColour
+  },
 
 }

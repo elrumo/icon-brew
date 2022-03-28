@@ -20,7 +20,38 @@
           placeholder="Search"
           @keyup="searchAlgolia"
         />
+        <i
+          @click="searchValue = '', searchAlgolia()"
+          v-if="searchValue.length != 0"
+          class="ib-close-24 clear-search-btn"
+        />
     </span>
+
+    <div class="options-wrapper">
+      <Dropdown
+        v-model="size"
+        :options="sizes"
+        optionLabel="name"
+        placeholder="Select a size"
+        @change="setIconSize()"
+      />
+
+      <InputText
+        class="p-inputtext-sm weight-input-wrapper"
+        type="number"
+        id="iconWeight"
+        v-model="iconWeight"
+        @change="setIconWeight($event)"
+      />
+
+      <input
+        @change="setIconColour()"
+        v-model="iconColour"
+        type="color"
+      >
+
+
+    </div>
 
   </div>
 </template>
@@ -34,7 +65,7 @@
   const index = client.initIndex(process.env.ALGOLIA_INDEX);
 
   export default {
-    name: 'IconCard',
+    name: 'SearchBar',
 
     components:{
     },
@@ -49,7 +80,15 @@
         is24px: true,
         isIntersectingElement: false,
         observer: null,
-        searchResults: {}
+        iconWeight: 2,
+        // iconWeight: [0, 50, 100],
+        searchResults: {},
+        iconColour: "#FFFFFF",
+        size:  { "name": "24px", "code": "iconImage24px" },
+        sizes:[
+          {name: "18px", code: "iconImage18px"},
+          {name: "24px", code: "iconImage24px"}
+        ],
       }
     },
 
@@ -59,6 +98,8 @@
     mounted(){
 
       if(process.client){
+        this.keyboardEvent()
+
         const searchBar = this.$refs.searchBarWrapper
         let options = {
           rootMargin: "-200px",
@@ -71,7 +112,11 @@
     },
 
     async fetch(){
-      await this.searchAlgolia()
+      try {
+        // await this.searchAlgolia()
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     methods:{
@@ -79,15 +124,53 @@
         setSearchValue: 'store/setSearchValue',
         scrollTo: 'store/scrollTo',
         setIcons: 'store/setIcons',
+        setDataToState: 'store/setDataToState',
       }),
 
-     async searchAlgolia(){
+
+      setIconColour(e){
+        const colour = this.iconColour
+        this.setDataToState({state: 'iconColour', data: colour});
+      },
+
+      setIconWeight(e){
+        const weight = e.target.value
+        this.setDataToState({state: 'iconWeight', data: weight});
+      },
+
+      setIconSize(){
+        let size = this.size.code;
+        this.setDataToState({state: 'iconSize', data: size})
+      },
+
+      keyboardEvent(){
+        document.addEventListener('keydown', (event) => {
+
+          let isNotCmd = event.getModifierState('Meta')
+                          || event.key == 'Alt'
+                          || event.key == 'Control'
+                          || event.key == 'CapsLock'
+                          || event.key == 'Backspace'
+                          || event.key == 'Shift'
+                          || event.key == 'Enter'
+                          || event.key == 'Tab'
+                          || event.key == ' '
+                          || document.activeElement.tagName == 'INPUT'
+                          || this.$route.name != 'index'
+
+          if(!isNotCmd){
+            document.getElementById('searchBar').focus()
+          }
+
+        });
+      },
+
+      async searchAlgolia(){
         const searchResult = await index.search(this.searchValue, {
           page: 0,
           hitsPerPage: 200
         });
         this.searchResults = searchResult;
-        console.log(searchResult.hits);
         this.setIcons(searchResult.hits);
       },
 
@@ -102,7 +185,7 @@
       },
 
       onFocus(e){
-        this.scrollTo(540)
+        this.scrollTo(460)
         this.$emit('focus')
       },
     },

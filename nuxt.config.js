@@ -1,3 +1,6 @@
+import path from 'path'
+import fs from 'fs'
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -41,12 +44,15 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    [
+      '@nuxtjs/markdownit'
+    ],
     // Doc: https://www.primefaces.org/primevue/showcase-v2/#/setup
     [
       'primevue/nuxt', {
         theme: 'mytheme',
         ripple: false,
-        components: ['InputText','Button','DataTable','Dialog','Menu', 'Listbox', 'InputSwitch'],
+        components: ['InputText','Button','DataTable','Dialog','Menu', 'Listbox', 'InputSwitch', 'SelectButton', 'RadioButton', 'Dropdown', 'Slider'],
         directives: ['Tooltip','Badge']
       }
     ],
@@ -60,6 +66,12 @@ export default {
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     baseURL: '/',
+  },
+
+  pageTransition: {
+    name: 'page',
+    mode: 'out-in',
+    appear: true
   },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
@@ -87,6 +99,14 @@ export default {
     //     ],
     //   });
     // },
+  },
 
-  }
+  // server: {
+  //   https: {
+  //     key: fs.readFileSync(path.resolve(__dirname, 'server.key')),
+  //     cert: fs.readFileSync(path.resolve(__dirname, 'server.crt'))
+  //   }
+  // }
+
+
 }

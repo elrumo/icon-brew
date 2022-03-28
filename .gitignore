@@ -90,3 +90,5 @@ sw.*
 *.swp
 
 .vercel
+*.key
+*.crt

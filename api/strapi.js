@@ -35,6 +35,11 @@ async function getHomeData() {
     return homeData.data.data.attributes;
 }
 
+async function getSinglePage(id) {
+    let singelPageData = await axios.get('https://api.macosicons.com/api/'+id+'?populate=*')
+    return singelPageData.data.data.attributes;
+}
+
 async function getTagsFromStrapi() {
 
     let icons = await axios.get('https://api.macosicons.com/api/icon-brews?populate=*')
@@ -56,5 +61,6 @@ export {
     getIconsFromStrapi,
     getCategoriesFromStrapi,
     getTagsFromStrapi,
-    getHomeData
+    getHomeData,
+    getSinglePage
 }

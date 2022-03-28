@@ -6,6 +6,7 @@
       direction="horizontal"
       class="justify-start"
       size="small"
+      to="/"
     />
 
     <div>
@@ -21,16 +22,16 @@
     <div
       class="justify-end nav-bar-page-links"
     >
-        <NuxtLink
+        <!-- <NuxtLink
           class="nuxt-link"
           to="/"
         >
           Resources
-        </NuxtLink>
+        </NuxtLink> -->
 
         <NuxtLink
           class="nuxt-link"
-          to="/"
+          to="/about"
         >
           About
         </NuxtLink>
