@@ -4,8 +4,10 @@
     <HeroSection
       class="page-wrapper"
       :homeData="getHomeData"
-      to="false"
+      :isLink="false"
     />
+
+    <!-- <UploadIcons/> -->
 
     <SearchBar/>
 
@@ -22,6 +24,7 @@
   import MainContentGrid from '../components/MainContentGrid.vue'
   import TopNavBar from '../components/TopNavBar.vue'
   import Footer from '../components/Footer.vue'
+  import UploadIcons from '../components/UploadIcons.vue'
 
   export default {
     name: 'HomePage',
@@ -31,6 +34,7 @@
       HeroSection,
       TopNavBar,
       Footer,
+      UploadIcons
     },
 
     data: function () {
@@ -42,8 +46,8 @@
     },
 
     async fetch() {
-        // await this.fetchHomeData()
-        // await this.fetchSinglePage({id: 'icon-brew-about', state: 'aboutPageData'})
+        await this.fetchHomeData()
+        await this.fetchSinglePage({id: 'icon-brew-about', state: 'aboutPageData'})
     },
 
     methods: {

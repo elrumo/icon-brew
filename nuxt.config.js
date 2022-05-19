@@ -32,6 +32,10 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    // [{
+    //   src: '@iconfu/svg-inject',
+    //   ssr: false
+    // }],
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -52,7 +56,7 @@ export default {
       'primevue/nuxt', {
         theme: 'mytheme',
         ripple: false,
-        components: ['InputText','Button','DataTable','Dialog','Menu', 'Listbox', 'InputSwitch', 'SelectButton', 'RadioButton', 'Dropdown', 'Slider'],
+        components: ['InputText','Button','DataTable','Dialog','Menu', 'Listbox', 'InputSwitch', 'SelectButton', 'RadioButton', 'Dropdown', 'Slider', 'FileUpload'],
         directives: ['Tooltip','Badge']
       }
     ],

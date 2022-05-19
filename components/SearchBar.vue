@@ -36,7 +36,7 @@
         @change="setIconSize()"
       />
 
-      <InputText
+      <!-- <InputText
         class="p-inputtext-sm weight-input-wrapper"
         type="number"
         id="iconWeight"
@@ -48,7 +48,7 @@
         @change="setIconColour()"
         v-model="iconColour"
         type="color"
-      >
+      > -->
 
 
     </div>
@@ -113,7 +113,7 @@
 
     async fetch(){
       try {
-        // await this.searchAlgolia()
+        await this.searchAlgolia()
       } catch (error) {
         console.log(error);
       }
@@ -172,6 +172,7 @@
         });
         this.searchResults = searchResult;
         this.setIcons(searchResult.hits);
+
       },
 
       handleIntersection(payload){

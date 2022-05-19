@@ -2,11 +2,21 @@
 <template>
   <div
     class="icon-card-wrapper"
-    @click="selectIcon()"
+    @click="downloadImage({url: {iconImage18px: icon.iconImage18px, iconImage24px: icon.iconImage24px}, name: icon.name, id: icon.objectID, target: $event})"
   >
-    <!-- @click="downloadImage({url: icon.img, name: icon.name, id: icon.objectID, target: $event})" -->
+    <!-- @click="selectIcon()" -->
     <div>
-      <div
+      <img
+        :src="icon.iconImage24px"
+        :class="{
+          'icon-image-24': iconSize === 'iconImage24px',
+          'icon-image-18': iconSize === 'iconImage18px',
+        }"
+        :id="icon.name"
+        :alt="icon.name"
+     />
+
+      <!-- <div
         v-html="iconSize === 'iconImage24px'? iconImage24px : iconImage18px"
         :class="{
           'icon-image-24': iconSize === 'iconImage24px',
@@ -15,7 +25,7 @@
         :id="icon.name"
         :alt="icon.name"
       >
-      </div>
+      </div> -->
 
     </div>
 
@@ -67,16 +77,17 @@
     },
 
     async fetch() {
-      const iconImage24px = await axios.get("http://localhost:3000/_nuxt/assets/icons/24px/outline/academic-book-24px.svg");
-      const iconImage18px = await axios.get("http://localhost:3000/_nuxt/assets/icons/18px/outline/academic-book-18px.svg");
+      // const iconImage24px = await axios.get("http://localhost:3000/_nuxt/assets/icons/24px/outline/academic-book-24px.svg");
+      // const iconImage18px = await axios.get("http://localhost:3000/_nuxt/assets/icons/18px/outline/academic-book-18px.svg");
       // const iconImage24px = await axios.get(this.icon.iconImage24px);
       // const iconImage18px = await axios.get(this.icon.iconImage18px);
-      this.iconImage18px = iconImage18px.data;
-      this.iconImage24px = iconImage24px.data;
+
+      // this.iconImage18px = iconImage18px.data;
+      // this.iconImage24px = iconImage24px.data;
     },
 
     mounted(){
-      this.changeIconColour("#FFFFFF")
+      // this.changeIconColour("#FFFFFF")
     },
 
     methods:{
@@ -86,6 +97,16 @@
       }),
 
       changeIconColour(colour){
+        const icon = document.getElementById(this.icon.name).children[0]
+        for(let el in icon.children){
+          el = icon.children[el]
+          if(typeof el == "object"){
+            console.log(el.style.fill = colour);
+          }
+        }
+      },
+
+      changeIconWeight(colour){
         const icon = document.getElementById(this.icon.name).children[0]
         for(let el in icon.children){
           el = icon.children[el]

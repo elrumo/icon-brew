@@ -1,10 +1,11 @@
 <!-- Please remove this file from your project -->
 <template>
   <div
-    @click="goTo(to)"
+    @click="isLink ? goTo(to) : null"
     :class="{
       'icon-brew-logo-wrapper-vertical': direction == 'vertical',
-      'icon-brew-logo-wrapper-horizontal': direction == 'horizontal'
+      'icon-brew-logo-wrapper-horizontal': direction == 'horizontal',
+      'cursor-pointer': isLink
     }"
   >
     <img
@@ -52,6 +53,11 @@
       title:{
         type: String,
         default: 'IconBrew',
+      },
+
+      isLink: {
+        type: Boolean,
+        default: true
       }
     },
 

@@ -10,8 +10,8 @@ import {
 import dummyData from '@/api/dummyData.json';
 
 export const state = () => ({
-  icons: dummyData,
-  // icons: [],
+  // icons: dummyData,
+  icons: [],
   iconCategories: [],
   iconSize: 'iconImage24px',
   homeData: '',
@@ -99,10 +99,12 @@ export const actions = {
   },
 
   downloadImage(store, payload){
-    let url = payload.url
+    const iconSize = store.state.iconSize
+    let url = iconSize == 'iconImage18px' ? payload.url.iconImage18px : payload.url.iconImage24px
     let name = payload.name + store.state.iconSize +'.svg';;
 
-    console.log(payload.target.path);
+    console.log(url);
+    // console.log(payload.target.path);
 
     fetch(url)
       .then(resp => resp.blob())

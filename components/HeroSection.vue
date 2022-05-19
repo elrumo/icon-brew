@@ -7,6 +7,7 @@
       :size="'large'"
       :title="homeData.title"
       :to="to"
+      :isLink="isLink"
     />
 
     <h2
@@ -50,7 +51,11 @@
 
     props:{
       homeData: {},
-      to: ""
+      to: "",
+      isLink: {
+        type: Boolean,
+        default: true
+      }
     },
 
     methods:{

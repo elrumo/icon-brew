@@ -193,7 +193,11 @@ img{
 
 .main-layout-wrapper{
   display: grid;
-  grid-template-columns: 212px auto;
+
+  // UNCOMMENT
+  // grid-template-columns: 212px auto;
+  grid-template-columns: auto;
+
   gap: 18px;
   padding-top: 22px;
   transition: 0.3s;
@@ -244,7 +248,11 @@ img{
 
 .content-area{
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+
+  // UNCOMMENT
+  // grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(8, 1fr);
+
   gap: 12px;
   width: 100%;
   padding: 18px;
@@ -548,13 +556,17 @@ img{
 
 @media screen and (max-width: 1350px){
   .content-area{
-    grid-template-columns: repeat(5, 1fr);
+    // UNCOMMENT
+    // grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(7, 1fr);
   }
 }
 
 @media screen and (max-width: 1150px){
   .content-area{
-    grid-template-columns: repeat(4, 1fr);
+    // UNCOMMENT
+    // grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(6, 1fr);
   }
 }
 

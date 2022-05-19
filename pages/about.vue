@@ -7,7 +7,7 @@
       to="false"
     />
 
-    <div class="icon-at"></div>
+    <!-- <div class="icon-at"></div> -->
 
     <ArticleContent
       :contentData="aboutData"
@@ -18,7 +18,6 @@
 
 <script>
   import { mapActions, mapGetters } from 'vuex'
-  import axios from 'axios'
 
   import HeroSection from '../components/HeroSection.vue'
   import TopNavBar from '../components/TopNavBar.vue'

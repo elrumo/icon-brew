@@ -8,9 +8,8 @@
   >
 
       <!-- Sidebar -->
-      <div class="">
+      <!-- <div class="">
         <div class="sticky-side-bar">
-
           <div class="category-side-bar-wrapper">
             <CategoryButton
               v-for="category in getIconCategories"
@@ -20,9 +19,8 @@
               :func="setCategory"
             />
           </div>
-
         </div>
-      </div>
+      </div> -->
 
       <!-- Main content -->
       <div class="content-card-secondary main-content-wrapper">
@@ -48,33 +46,14 @@
       </div>
 
       <!-- Icon details -->
-      <div class="">
+      <!-- <div class="">
         <div class="sticky-side-bar">
-          <div
-            class="category-side-bar-wrapper"
-            v-if="Object.keys(getSelectedIcon).length > 0"
-          >
-
-            <div class="top-card-action-wrapper-right">
-              <label>Icon Info</label>
-              <Button
-                type="button"
-                class="p-button-text fit-width p-button-sm"
-              >
-                  <div class="ib-chevron-double-right-18"></div>
-              </Button>
-            </div>
-
-            <h3>
-              {{getSelectedIcon.name}}
-            </h3>
-            <p class="break-word">
-              <img :src="getSelectedIcon.img" alt="">
-            </p>
+          <div class="category-side-bar-wrapper" >
+            <IconOptions/>
           </div>
-
+            <IconDetails/>
         </div>
-      </div>
+      </div> -->
 
   </div>
 </template>
@@ -118,7 +97,14 @@
           },
         ],
         SelectButton: "",
-        aboutData: {}
+        aboutData: {},
+
+        iconColour: "#FFFFFF",
+        size:  { "name": "24px", "code": "iconImage24px" },
+        sizes:[
+          {name: "18px", code: "iconImage18px"},
+          {name: "24px", code: "iconImage24px"}
+        ],
       }
     },
 
@@ -127,6 +113,7 @@
 
     async fetch() {
       await this.fetchIconCategories()
+      // await this.fetchIcons()
     },
 
     methods:{

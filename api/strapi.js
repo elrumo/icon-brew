@@ -12,7 +12,6 @@ async function getIconsFromStrapi() {
 
       iconsArr.push(icons.data.data[icon].attributes)
     }
-
     return iconsArr
 }
 

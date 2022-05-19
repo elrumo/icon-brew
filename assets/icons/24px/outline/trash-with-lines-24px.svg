@@ -2,6 +2,6 @@
 <path d="M5 9.5L6.08702 17.5362C6.31029 19.1868 6.42192 20.012 6.98722 20.506C7.55252 21 8.38532 21 10.0509 21H13.9491C15.6147 21 16.4475 21 17.0128 20.506C17.5781 20.012 17.6897 19.1868 17.913 17.5362L19 9.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M9 6V6C9 5.06812 9 4.60218 9.15224 4.23463C9.35523 3.74458 9.74458 3.35523 10.2346 3.15224C10.6022 3 11.0681 3 12 3V3C12.9319 3 13.3978 3 13.7654 3.15224C14.2554 3.35523 14.6448 3.74458 14.8478 4.23463C15 4.60218 15 5.06812 15 6V6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M19 6L5 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M9.43346 9.00219C9.98452 8.96545 10.461 9.3824 10.4978 9.93346L10.9978 17.4335C11.0345 17.9845 10.6176 18.461 10.0665 18.4978C9.51543 18.5345 9.03893 18.1176 9.00219 17.5665L8.50219 10.0665C8.46545 9.51543 8.8824 9.03893 9.43346 9.00219Z" fill="white"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M14.5665 9.00219C15.1176 9.03893 15.5345 9.51543 15.4978 10.0665L14.9978 17.5665C14.961 18.1176 14.4845 18.5345 13.9335 18.4978C13.3824 18.461 12.9655 17.9845 13.0022 17.4335L13.5022 9.93346C13.5389 9.3824 14.0154 8.96545 14.5665 9.00219Z" fill="white"/>
+<path d="M9.5 10L10 17.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.5 10L14 17.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
