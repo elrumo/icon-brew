@@ -44,6 +44,8 @@ export const actions = {
   async fetchIcons(store){
     let icons = await getIconsFromStrapi();
 
+    console.log(icons);
+
     try {
       store.commit('setDataToState', {arr: 'icons', data: icons})
     } catch (error) {

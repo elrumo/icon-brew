@@ -251,7 +251,7 @@ img{
 
   // UNCOMMENT
   // grid-template-columns: repeat(6, 1fr);
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(9, 1fr);
 
   gap: 12px;
   width: 100%;
@@ -262,18 +262,28 @@ img{
 .icon-card-wrapper{
   @extend .content-card-primary;
 
-  text-align: center;
+  padding: 0px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 28px 21px 21px;
-  gap: 32px;
+  // gap: 32px;
+  // padding: 28px 21px 21px;
 
   p{
     font-size: 12px;
     font-weight: 400;
     margin: 0px;
+    opacity: 0.7;
+    text-transform: capitalize;
   }
+}
+
+.icon-card-container{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px;
+  gap: 8px;
+  margin: auto;
 }
 
 .break-word{
@@ -298,7 +308,7 @@ img{
 .no-icons-msg{
   width: 100%;
   text-align: center;
-  padding-right: 242px;
+  // padding-right: 242px;
 }
 
 .clear-search-btn{

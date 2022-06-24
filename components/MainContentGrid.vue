@@ -23,7 +23,7 @@
       </div> -->
 
       <!-- Main content -->
-      <div class="content-card-secondary main-content-wrapper">
+      <div id="mainContentGrid" class="content-card-secondary main-content-wrapper">
         <div class="content-area">
           <IconCard
             v-for="icon in getIcons"
@@ -112,7 +112,7 @@
     },
 
     async fetch() {
-      await this.fetchIconCategories()
+      // await this.fetchIconCategories()
       // await this.fetchIcons()
     },
 

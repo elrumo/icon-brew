@@ -107,7 +107,7 @@
       async searchAlgolia(){
         const searchResult = await index.search(this.searchValue, {
           page: 0,
-          hitsPerPage: 200
+          hitsPerPage: 20
         });
         this.searchResults = searchResult;
         this.setIcons(searchResult.hits);

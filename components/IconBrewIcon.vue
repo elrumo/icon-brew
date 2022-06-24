@@ -40,8 +40,7 @@
     computed:{
       getIcon(){
         // console.log( this.icon + '.svg');
-        const isFilled = this.filled ? 'filled' : 'outline';
-        console.log("isFilled: " + isFilled);
+        // const isFilled = this.filled ? 'filled' : 'outline';
         return require('@/assets/icons/' + this.size + 'px/' + this.icon + '.svg');
       }
     }

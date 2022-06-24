@@ -101,12 +101,23 @@
         this.keyboardEvent()
 
         const searchBar = this.$refs.searchBarWrapper
-        let options = {
-          rootMargin: "-200px",
-        };
+        let options = { rootMargin: "-200px" };
         let observer = new IntersectionObserver(this.handleIntersection, options);
-
         observer.observe(searchBar);
+
+        const mainContentGrid = document.getElementById("mainContentGrid")
+
+        // Function to get the x and y position of an element
+
+        window.addEventListener('scroll', function(event){
+        // mainContentGrid.addEventListener('scroll', function(event){
+            let element = event.target;
+            if (element.scrollHeight - element.scrollTop === element.clientHeight)
+            {
+              console.log("element.scrollHeight: ", mainContentGrid.getBoundingClientRect());
+              console.log('scrolled');
+            }
+        });
       }
 
     },
@@ -165,10 +176,11 @@
         });
       },
 
+      // TODO: Add pagination on scroll
       async searchAlgolia(){
         const searchResult = await index.search(this.searchValue, {
           page: 0,
-          hitsPerPage: 200
+          hitsPerPage: 300
         });
         this.searchResults = searchResult;
         this.setIcons(searchResult.hits);
@@ -177,7 +189,7 @@
 
       handleIntersection(payload){
         const y = payload[0].boundingClientRect.y
-
+        // console.log(payload);
         if(y < 120){
           this.isIntersectingElement = true
         } else{

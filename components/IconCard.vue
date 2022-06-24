@@ -4,35 +4,37 @@
     class="icon-card-wrapper"
     @click="downloadImage({url: {iconImage18px: icon.iconImage18px, iconImage24px: icon.iconImage24px}, name: icon.name, id: icon.objectID, target: $event})"
   >
-    <!-- @click="selectIcon()" -->
-    <div>
-      <img
-        :src="icon.iconImage24px"
-        :class="{
-          'icon-image-24': iconSize === 'iconImage24px',
-          'icon-image-18': iconSize === 'iconImage18px',
-        }"
-        :id="icon.name"
-        :alt="icon.name"
-     />
+    <div class="icon-card-container">
+      <!-- @click="selectIcon()" -->
+      <div>
+        <img
+          :src="icon.iconImage24px"
+          :class="{
+            'icon-image-24': iconSize === 'iconImage24px',
+            'icon-image-18': iconSize === 'iconImage18px',
+          }"
+          :id="icon.name"
+          :alt="icon.name"
+      />
 
-      <!-- <div
-        v-html="iconSize === 'iconImage24px'? iconImage24px : iconImage18px"
-        :class="{
-          'icon-image-24': iconSize === 'iconImage24px',
-          'icon-image-18': iconSize === 'iconImage18px',
-        }"
-        :id="icon.name"
-        :alt="icon.name"
-      >
-      </div> -->
+        <!-- <div
+          v-html="iconSize === 'iconImage24px'? iconImage24px : iconImage18px"
+          :class="{
+            'icon-image-24': iconSize === 'iconImage24px',
+            'icon-image-18': iconSize === 'iconImage18px',
+          }"
+          :id="icon.name"
+          :alt="icon.name"
+        >
+        </div> -->
 
-    </div>
+      </div>
 
-    <div>
-      <p>
-        {{icon.name}}
-      </p>
+      <div>
+        <p>
+          {{icon.name.replaceAll('-', ' ')}}
+        </p>
+      </div>
     </div>
   </div>
 </template>
