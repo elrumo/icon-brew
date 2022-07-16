@@ -10,7 +10,7 @@
 
     <span class="p-input-icon-left input-search">
         <i class="pi pi-search" />
-        <label for="searchBar"></label>
+        <label for="searchBar" class="hidden">Search icons</label>
         <InputText
           v-on:focus.native="onFocus"
           class="p-inputtext-sm"
@@ -18,10 +18,10 @@
           id="searchBar"
           v-model="searchValue"
           placeholder="Search"
-          @keyup="searchAlgolia"
+          @keyup="getFromAlgolia"
         />
         <i
-          @click="searchValue = '', searchAlgolia()"
+          @click="searchValue = '', getFromAlgolia()"
           v-if="searchValue.length != 0"
           class="ib-close-24 clear-search-btn"
         />
@@ -89,19 +89,23 @@
           {name: "18px", code: "iconImage18px"},
           {name: "24px", code: "iconImage24px"}
         ],
+        fetchingData: false,
+        algoliaPage: 0
       }
     },
 
     watch: {
     },
 
-    mounted(){
+    async mounted(){
+      this.scroll()
+      // this.clearIcons();
 
       if(process.client){
         this.keyboardEvent()
 
         const searchBar = this.$refs.searchBarWrapper
-        let options = { rootMargin: "-200px" };
+        let options = { rootMargin: "-400px" };
         let observer = new IntersectionObserver(this.handleIntersection, options);
         observer.observe(searchBar);
 
@@ -124,7 +128,7 @@
 
     async fetch(){
       try {
-        await this.searchAlgolia()
+        await this.fetchAlgolia()
       } catch (error) {
         console.log(error);
       }
@@ -135,8 +139,24 @@
         setSearchValue: 'store/setSearchValue',
         scrollTo: 'store/scrollTo',
         setIcons: 'store/setIcons',
+        addIcons: 'store/addIcons',
+        clearIcons: 'store/clearIcons',
         setDataToState: 'store/setDataToState',
       }),
+
+      scroll() {
+        let margin = 500
+        window.onscroll = () => {
+          let searchEmpty = this.searchValue == ''
+          let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) + window.innerHeight > document.documentElement.offsetHeight - margin
+
+          if (bottomOfWindow && !this.fetchingData && searchEmpty) {
+            this.fetchingData = true
+            this.algoliaPage++
+            this.fetchAlgolia()
+          }
+        }
+      },
 
 
       setIconColour(e){
@@ -176,15 +196,36 @@
         });
       },
 
-      // TODO: Add pagination on scroll
+      async getFromAlgolia(){
+
+        if (this.searchValue == '') {
+          this.clearIcons()
+          this.fetchAlgolia()
+          return
+        } else{
+          this.searchAlgolia()
+        }
+
+      },
+
+      async fetchAlgolia(){
+        const searchResult = await index.search('', {
+          page: this.algoliaPage,
+          hitsPerPage: 50
+        });
+
+        this.searchResults = searchResult;
+        this.addIcons(searchResult.hits);
+        this.fetchingData = false;
+      },
+
       async searchAlgolia(){
         const searchResult = await index.search(this.searchValue, {
           page: 0,
-          hitsPerPage: 300
+          hitsPerPage: 500
         });
         this.searchResults = searchResult;
         this.setIcons(searchResult.hits);
-
       },
 
       handleIntersection(payload){

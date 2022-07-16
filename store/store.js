@@ -29,6 +29,12 @@ export const mutations = {
     store[payload.state] = payload.data;
   },
 
+  addDataToState(store, payload){
+    payload.data.forEach(item => {
+      store[payload.state].push(item);
+    });
+  },
+
 }
 
 export const actions = {
@@ -39,6 +45,14 @@ export const actions = {
 
   setIcons(store, icons){
     store.commit('setDataToState', {state: 'icons', data: icons});
+  },
+
+  clearIcons(store, icons){
+    store.commit('setDataToState', {state: 'icons', data: []});
+  },
+
+  addIcons(store, icons){
+    store.commit('addDataToState', {state: 'icons', data: icons});
   },
 
   async fetchIcons(store){

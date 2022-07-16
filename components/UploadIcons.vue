@@ -88,8 +88,7 @@
             fileData,
             {
               headers: {
-                Authorization:
-                  'Bearer d06e81887a2c831a23f0e28924a0c178a852e57ff0927956a6bbb328fe852e75fab1665fe79e6cd1c681b56e5e154e990979c482eb86932fbab3ce011e930ebcd5d6d5783423308470b0b7ae691415eba7c3a0791605f43f4f6fe71383b1c5261f47570b53bd6bbb8529d58b6dabea596e36fb7fd83ca9cb69bdec602bacc7be',
+                Authorization: process.env.STRAPI_BEARER
               },
             }
           )

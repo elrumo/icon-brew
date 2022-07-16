@@ -4,12 +4,68 @@ import fs from 'fs'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'IconBrew',
+    title: 'IconBrew - open source icon pack :)',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '300+ free (as in beer) open source icons' },
-      { name: 'format-detection', content: 'telephone=no' }
+      {
+        hid:'description',
+        name: 'description',
+        content: 'Hundreds of free (as in beer) open source icons. New ones being added weekly.'
+      },
+      { name: 'format-detection', content: 'telephone=no' },
+
+      // TWITTER META TAGS
+      {
+        property: 'twitter:card',
+        content: 'summary_large_image'
+      },
+      {
+        property: 'twitter:url',
+        content: 'https://iconbrew.com/'
+      },
+      {
+        property: 'twitter:creator',
+        content: '@icon_brew'
+      },
+      {
+        property: 'twitter:site',
+        content: '@elrumo'
+      },
+      {
+        property: 'twitter:title',
+        content: 'IconBrew - open source icon pack!'
+      },
+      {
+        property: 'twitter:description',
+        content: 'Hundreds of free (as in beer) open source icons. New ones being added weekly.'
+      },
+      {
+        property: 'twitter:image',
+        content: 'https://api.macosicons.com/uploads/Icon_Brew_Meta_Preview_4f2c0591cf.jpg'
+      },
+
+      // FACEBOOK META TAGS
+      {
+        property: 'og:type',
+        content: 'website'
+      },
+      {
+        property: 'og:url',
+        content: 'https://iconbrew.com/'
+      },
+      {
+        property: 'og:title',
+        content: 'IconBrew - open source icon pack!'
+      },
+      {
+        property: 'og:description',
+        content: 'Hundreds of free (as in beer) open source icons. New ones being added weekly.'
+      },
+      {
+        property: 'og:image',
+        content: 'https://api.macosicons.com/uploads/Icon_Brew_Meta_Preview_4f2c0591cf.jpg'
+      },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }

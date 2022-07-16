@@ -32,7 +32,7 @@
 
       <div>
         <p>
-          {{icon.name.replaceAll('-', ' ')}}
+          {{replaceAllChar(icon.name, '-', ' ')}}
         </p>
       </div>
     </div>
@@ -97,6 +97,14 @@
         downloadImage: 'store/downloadImage',
         setDataToStore: 'store/setDataToStore',
       }),
+
+      replaceAllChar(str, toReplace, replacement){
+        try {
+          return str.replaceAll(toReplace, replacement)
+        } catch (error) {
+          return str
+        }
+      },
 
       changeIconColour(colour){
         const icon = document.getElementById(this.icon.name).children[0]

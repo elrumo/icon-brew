@@ -10,6 +10,7 @@
   >
     <img
       :src="iconBrew[size]"
+      :width="size == 'large' ? '89px':'28px'"
       class="hero-logo"
       alt="IconBrew logo"
     >

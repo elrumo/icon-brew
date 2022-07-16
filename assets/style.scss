@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Serif:wght@400;600;700&display=swap');
+
 @import 'primeflex/primeflex.scss';
 @import 'style/utilities.scss';
 @import 'iconBrewIcons.scss';
@@ -20,11 +21,18 @@ a{
 $buttonPadding: 5rem 10rem !important;
 
 $primary-color: #1F262F;
+// $primary-color: #E0D9D0;
+
 $main-blue: #76ADF1;
-// $primary-color: #20262E;
+
+// $secondary-color: #D4CDC2;
 $secondary-color: #2B323D;
-$tertiary-color: rgba(63, 75, 91, 0.6);
-$tertiary-color-hover: rgba(63, 75, 91, 1);
+
+// $tertiary-color: #C0B4A4;
+$tertiary-color: #3f4b5b99;
+
+$tertiary-color-hover: #3f4b5b;
+// $tertiary-color-hover: rgba(63, 75, 91, 1);
 
 $main-border-radius: 8px;
 $secondary-border-radius: 6px;
@@ -74,7 +82,8 @@ img{
 }
 
 .page-wrapper{
-  max-width: 1600px;
+  max-width: 1320px;
+  // max-width: 1600px;
   width: 95%;
   margin: auto;
 }
@@ -595,6 +604,16 @@ img{
 
   .content-area{
     grid-template-columns: repeat(2, 1fr);
+    padding: 12px;
+  }
+
+  .page-wrapper{
+    width: 87%;
+  }
+
+  .search-bar-wrapper{
+    width: 87%;
+    margin: auto;
   }
 
   .category-side-bar-wrapper{
