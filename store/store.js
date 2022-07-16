@@ -7,10 +7,7 @@ import {
   getSinglePage
 } from '@/api/strapi';
 
-import dummyData from '@/api/dummyData.json';
-
 export const state = () => ({
-  // icons: dummyData,
   icons: [],
   iconCategories: [],
   iconSize: 'iconImage24px',

@@ -30,6 +30,17 @@
         />
       </a>
 
+      <a
+        v-if="homeData.secondaryButtonUrl"
+        :href="homeData.secondaryButtonUrl"
+        target="_blank"
+      >
+        <Button
+          :label="homeData.secondaryButton"
+          class="p-button-outlined"
+        />
+      </a>
+
       <!-- <Button class="p-button-outlined">
         Contribute
       </Button> -->

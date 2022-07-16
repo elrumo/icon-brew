@@ -7,7 +7,7 @@
       :isLink="false"
     />
 
-    <UploadIcons/>
+    <!-- <UploadIcons/> -->
 
     <SearchBar/>
 
