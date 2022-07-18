@@ -9,7 +9,9 @@
 
     <!-- <UploadIcons/> -->
 
-    <SearchBar/>
+    <LazyHydrate when-visible>
+      <SearchBar/>
+    </LazyHydrate>
 
     <MainContentGrid class="page-wrapper"/>
 
@@ -18,7 +20,8 @@
 
 <script>
   import { mapMutations, mapActions, mapGetters } from 'vuex'
-  import axios from 'axios'
+
+  import LazyHydrate from 'vue-lazy-hydration';
 
   import HeroSection from '../components/HeroSection.vue'
   import MainContentGrid from '../components/MainContentGrid.vue'
@@ -30,11 +33,13 @@
     name: 'HomePage',
 
     components:{
+      LazyHydrate,
       MainContentGrid,
       HeroSection,
       TopNavBar,
       Footer,
-      UploadIcons
+      UploadIcons,
+      SearchBar: () => import('../components/SearchBar.vue'),
     },
 
     data: function () {

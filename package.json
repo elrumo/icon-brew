@@ -27,6 +27,7 @@
     "sass-loader": "^10.2.1",
     "scss": "^0.2.4",
     "vue": "^2.6.14",
+    "vue-lazy-hydration": "^2.0.0-beta.4",
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
     "webpack": "^4.46.0"

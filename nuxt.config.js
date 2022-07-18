@@ -4,7 +4,7 @@ import fs from 'fs'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'IconBrew - open source icon pack :)',
+    title: 'IconBrew - open source icon pack/set!',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -68,7 +68,27 @@ export default {
       },
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+
+      {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+        async: true
+      },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossorigin: true,
+        async: true
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Serif:wght@400;600;700&display=swap",
+        async: true,
+        lazyload: true
+
+      },
+
     ],
     script: [
       // { src: 'https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js', defer: true }

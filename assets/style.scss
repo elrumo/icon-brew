@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Serif:wght@400;600;700&display=swap');
+
 
 @import 'primeflex/primeflex.scss';
 @import 'style/utilities.scss';
@@ -97,6 +97,13 @@ img{
 .nav-bar{
   @extend .page-wrapper-large;
   padding: 28px 22px;
+}
+
+.nav-bar-links-wrapper{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
 
 .top-nav-bar{

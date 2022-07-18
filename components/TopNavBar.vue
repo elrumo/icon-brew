@@ -9,11 +9,18 @@
       to="/"
     />
 
-    <div>
+    <div class="nav-bar-links-wrapper">
       <a href="https://twitter.com/elrumo" target="blank">
         <IconBrewIcon
           size="24"
           icon="twitter"
+          :filled="false"
+        />
+      </a>
+      <a href="https://github.com/elrumo/icon-brew" target="blank">
+        <IconBrewIcon
+          size="24"
+          icon="github"
           :filled="false"
         />
       </a>
@@ -28,6 +35,14 @@
         >
           Resources
         </NuxtLink> -->
+
+        <a
+          class="nuxt-link"
+          href="https://github.com/elrumo/icon-brew/discussions"
+          target="_blank"
+        >
+          Discussion
+        </a>
 
         <NuxtLink
           class="nuxt-link"
