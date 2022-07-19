@@ -275,7 +275,7 @@ svg{
   grid-template-columns: auto;
 
   gap: 18px;
-  padding-top: 22px;
+  padding-top: 42px;
   transition: 0.3s;
 }
 
@@ -495,6 +495,7 @@ svg{
   background: $primary-color;
   padding-top: 28px;
   padding-bottom: 18px;
+  box-shadow: 0px 14px 20px -10px hsla(0, 0%, 0%, 0.15);
 
   .p-dropdown{
     min-width: 100px;
@@ -734,6 +735,7 @@ svg{
   }
 
   .main-layout-wrapper{
+    padding-top: 32px;
     grid-template-columns: 1fr;
   }
 
@@ -766,6 +768,7 @@ svg{
     width: 87%;
     margin: auto;
     flex-direction: column;
+    gap: 0px;
   }
 
   .options-wrapper{
