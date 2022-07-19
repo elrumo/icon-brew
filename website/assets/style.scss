@@ -768,6 +768,14 @@ svg{
     flex-direction: column;
   }
 
+  .options-wrapper{
+    width: 100%;
+  }
+
+  .p-dropdown .p-dropdown-trigger{
+    padding: 0px 1.3rem 0px 0.7rem !important;
+  }
+
   .category-side-bar-wrapper{
     flex-direction: row;
     overflow-x: scroll;

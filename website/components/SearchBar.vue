@@ -24,6 +24,7 @@
       <a
         href="https://www.algolia.com/"
         target="_blank"
+        v-if="searchValue.length != 0"
         :class="{
           'searchByAlgolia': true,
           'movedBySearch': searchValue.length != 0
