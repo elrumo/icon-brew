@@ -138,6 +138,7 @@ export const actions = {
                 axios.get('https://api.macosicons.com/api/icon-brews/add-download-count/'+payload.id)
             })
             .catch(() => alert('An error sorry'));
+        break
 
       case 'copySVG':
         let iconSvg = document.getElementById(payload.name)
