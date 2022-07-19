@@ -142,6 +142,7 @@ export const actions = {
 
       case 'copySVG':
         let iconSvg = document.getElementById(payload.name)
+
         navigator.clipboard.writeText(iconSvg.outerHTML);
 
         let iconName = payload.name.replaceAll('-', ' ')
