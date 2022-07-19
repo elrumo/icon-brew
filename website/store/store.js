@@ -11,6 +11,7 @@ export const state = () => ({
   icons: [],
   iconCategories: [],
   iconSize: 'iconImage24px',
+  downloadAs: 'downloadSVG',
   homeData: '',
   searchValue: '',
   singlePageData: '',
@@ -39,6 +40,7 @@ export const actions = {
   setDataToStore(store, data){
     store.commit('setDataToState', {state: data.state, data: data.data});
   },
+
 
   setIcons(store, icons){
     store.commit('setDataToState', {state: 'icons', data: icons});
@@ -117,24 +119,54 @@ export const actions = {
     let name = payload.name + store.state.iconSize +'.svg';;
 
     console.log(url);
-    // console.log(payload.target.path);
 
-    fetch(url)
-      .then(resp => resp.blob())
-      .then(blob => {
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.style.display = 'none';
-          a.href = url;
-          // the filename you want
-          a.download = name;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
+    switch (store.state.downloadAs) {
+      case 'downloadSVG':
+        fetch(url)
+          .then(resp => resp.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                // the filename you want
+                a.download = name;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
 
-          axios.get('https://api.macosicons.com/api/icon-brews/add-download-count/'+payload.id)
-      })
-      .catch(() => alert('An error sorry'));
+                axios.get('https://api.macosicons.com/api/icon-brews/add-download-count/'+payload.id)
+            })
+            .catch(() => alert('An error sorry'));
+
+      case 'copySVG':
+        let iconSvg = document.getElementById(payload.name)
+        navigator.clipboard.writeText(iconSvg.outerHTML);
+
+        let iconName = payload.name.replaceAll('-', ' ')
+        iconName = iconName.replace(/^\w/, (c) => c.toUpperCase());
+
+        this._vm.$toast.add({
+          severity:'success',
+          summary: iconName,
+          detail: 'copied as SVG',
+          group: 'iconDownload',
+          life: 3000
+        });
+
+        break;
+
+      case 'downloadPNG':
+        // svgExport.downloadPng("<svg id=\"mysvg\"></svg>", "chart title name", {
+        //   width: 200,
+        //   height: 200,
+        // });
+        break
+
+      default:
+        break;
+    }
+
   },
 
   getState(store, payload) {

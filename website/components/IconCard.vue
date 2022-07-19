@@ -7,15 +7,29 @@
     <div class="icon-card-container">
       <!-- @click="selectIcon()" -->
       <div>
-        <img
-          :src="icon.iconImage24px"
+          <!-- {{iconSize === 'iconImage24px'? 'iconImage24px' : 'iconImage18px'}} -->
+        <svg
+          :key="iconKey"
+          :data-src="iconSize === 'iconImage24px'? icon.iconImage24px : icon.iconImage18px"
           :class="{
-            'icon-image-24': iconSize === 'iconImage24px',
-            'icon-image-18': iconSize === 'iconImage18px',
-          }"
+              'icon-image': true,
+              'icon-image-24': iconSize === 'iconImage24px',
+              'icon-image-18': iconSize === 'iconImage18px',
+            }"
           :id="icon.name"
-          :alt="icon.name"
-      />
+          fill="none"
+        ></svg>
+          <!-- style="color: #3f2727" -->
+
+          <!-- <img
+            :src="icon.iconImage24px"
+            :class="{
+              'icon-image-24': iconSize === 'iconImage24px',
+              'icon-image-18': iconSize === 'iconImage18px',
+            }"
+            :id="icon.name"
+            :alt="icon.name"
+          /> -->
 
         <!-- <div
           v-html="iconSize === 'iconImage24px'? iconImage24px : iconImage18px"
@@ -43,8 +57,6 @@
   import { mapMutations, mapActions, mapGetters } from 'vuex';
   import axios from 'axios';
 
-  import bookIcon from '@/assets/icons/24px/outline/academic-book-24px.svg'
-
   export default {
     name: 'IconCard',
 
@@ -71,25 +83,17 @@
     },
 
     watch:{
-      getIconColour:{
-        handler(colour) { // Reset toUpdate each time 'icon' changes.
-          this.changeIconColour(colour)
-        },
-      }
+      // getIconColour:{
+      //   handler(colour) { // Reset toUpdate each time 'icon' changes.
+      //     this.changeIconColour(colour)
+      //   },
+      // }
     },
 
     async fetch() {
-      // const iconImage24px = await axios.get("http://localhost:3000/_nuxt/assets/icons/24px/outline/academic-book-24px.svg");
-      // const iconImage18px = await axios.get("http://localhost:3000/_nuxt/assets/icons/18px/outline/academic-book-18px.svg");
-      // const iconImage24px = await axios.get(this.icon.iconImage24px);
-      // const iconImage18px = await axios.get(this.icon.iconImage18px);
-
-      // this.iconImage18px = iconImage18px.data;
-      // this.iconImage24px = iconImage24px.data;
     },
 
     mounted(){
-      // this.changeIconColour("#FFFFFF")
     },
 
     methods:{
@@ -107,13 +111,13 @@
       },
 
       changeIconColour(colour){
-        const icon = document.getElementById(this.icon.name).children[0]
-        for(let el in icon.children){
-          el = icon.children[el]
-          if(typeof el == "object"){
-            console.log(el.style.fill = colour);
-          }
-        }
+        // const icon = document.getElementById(this.icon.name).children[0]
+        // for(let el in icon.children){
+        //   el = icon.children[el]
+        //   if(typeof el == "object"){
+        //     console.log(el.style.color = colour);
+        //   }
+        // }
       },
 
       changeIconWeight(colour){
@@ -149,6 +153,13 @@
         getIconWeight: 'store/getIconWeight',
         getIconColour: 'store/getIconColour',
       }),
+
+      iconKey(){
+        let icon = this.icon;
+        let iconSize = this.iconSize;
+        let key = icon.name+iconSize;
+        return key
+      }
 
     }
 

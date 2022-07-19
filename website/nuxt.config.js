@@ -96,6 +96,18 @@ export default {
         src: 'https://plausible.io/js/plausible.js',
         defer: true,
         'data-domain': 'iconbrew.com',
+      },
+
+      {
+        src: 'https://unpkg.com/external-svg-loader@1.0.0/svg-loader.min.js',
+        type: 'text/javascript',
+        async: true
+      },
+
+      {
+        src: 'https://cdnjs.cloudflare.com/ajax/libs/canvg/3.0.7/umd.min.js',
+        type: 'text/javascript',
+        async: true
       }
     ]
   },
@@ -132,8 +144,27 @@ export default {
       'primevue/nuxt', {
         theme: 'mytheme',
         ripple: false,
-        components: ['InputText','Button','DataTable','Dialog','Menu', 'Listbox', 'InputSwitch', 'SelectButton', 'RadioButton', 'Dropdown', 'Slider', 'FileUpload'],
-        directives: ['Tooltip','Badge']
+        components: [
+          'InputText',
+          'Button',
+          'DataTable',
+          'Dialog',
+          'Menu',
+          'Listbox',
+          'InputSwitch',
+          'SelectButton',
+          'RadioButton',
+          'Dropdown',
+          'Slider',
+          'FileUpload',
+          'Divider',
+          'ColorPicker',
+        ],
+        directives: [
+          'Tooltip',
+          'Badge',
+          'Toast'
+        ]
       }
     ],
     // https://go.nuxtjs.dev/axios

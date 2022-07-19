@@ -1,4 +1,3 @@
-<!-- Please remove this file from your project -->
 <template>
   <div
     ref="searchBarWrapper"
@@ -8,27 +7,63 @@
     }"
   >
 
-    <span class="p-input-icon-left input-search">
-        <i class="pi pi-search" />
-        <label for="searchBar" class="hidden">Search icons</label>
-        <InputText
-          v-on:focus.native="onFocus"
-          class="p-inputtext-sm"
-          type="text"
-          id="searchBar"
-          v-model="searchValue"
-          placeholder="Search"
-          @keyup="getFromAlgolia"
-        />
-        <i
-          @click="searchValue = '', getFromAlgolia()"
+    <!-- Search bar -->
+    <span class="p-input-icon-left p-float-label input-search">
+      <label for="searchBar" class="hidden">Search icons</label>
+      <i class="pi pi-search"/>
+      <InputText
+        v-on:focus.native="onFocus"
+        class="p-inputtext-sm"
+        type="text"
+        id="searchBar"
+        v-model="searchValue"
+        @keyup="getFromAlgolia"
+        placeholder="Search"
+      />
+
+      <a
+        href="https://www.algolia.com/"
+        target="_blank"
+        :class="{
+          'searchByAlgolia': true,
+          'movedBySearch': searchValue.length != 0
+        }"
+      >
+          <img
+          :src="imgs.searchByAlgolia"
+          alt="Search by Algolia"
+        >
+      </a>
+      <span
+        @click="searchValue = '', getFromAlgolia()"
+      >
+        <IconBrewIcon
+          size="24"
+          icon="close"
+          :filled="false"
           v-if="searchValue.length != 0"
-          class="ib-close-24 clear-search-btn"
+          class="clear-search-btn"
         />
+      </span>
     </span>
 
+    <Divider class="desktop-only" layout="vertical" />
+    <Divider class="mobile-only"/>
+
+    <!-- Options wrapper -->
     <div class="options-wrapper">
+
+
+      <!-- Color picker -->
+      <ColorPicker
+        defaultColor="ffffff"
+        id="colorPicker"
+        v-model="iconColour"
+      />
+
+      <!-- Size -->
       <Dropdown
+        class="max-height-input"
         v-model="size"
         :options="sizes"
         optionLabel="name"
@@ -36,21 +71,25 @@
         @change="setIconSize()"
       />
 
-      <!-- <InputText
-        class="p-inputtext-sm weight-input-wrapper"
-        type="number"
-        id="iconWeight"
-        v-model="iconWeight"
-        @change="setIconWeight($event)"
+      <!-- Download as -->
+      <Dropdown
+        class="max-height-input"
+        v-model="downloadAs"
+        :options="downloadOptions"
+        optionLabel="name"
+        placeholder="Select a size"
+        @change="setDownloadOption()"
       />
 
-      <input
-        @change="setIconColour()"
-        v-model="iconColour"
-        type="color"
-      > -->
-
-
+      <!--
+        <InputText
+          class="p-inputtext-sm weight-input-wrapper"
+          type="number"
+          id="iconWeight"
+          v-model="iconWeight"
+          @change="setIconWeight($event)"
+        />
+      -->
     </div>
 
   </div>
@@ -59,14 +98,17 @@
 <script>
   import { mapMutations, mapActions, mapGetters } from 'vuex'
   import algoliasearch from 'algoliasearch';
+  import IconBrewIcon from '../components/IconBrewIcon.vue'
 
-  const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_SEARCH_KEY);
+  // const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_SEARCH_KEY);
+  const client = algoliasearch('FK0ELT4B74', process.env.ALGOLIA_SEARCH_KEY);
   const index = client.initIndex(process.env.ALGOLIA_INDEX);
 
   export default {
     name: 'SearchBar',
 
     components:{
+      IconBrewIcon,
     },
 
     props:{
@@ -75,6 +117,10 @@
 
     data(){
       return{
+        imgs:{
+          searchByAlgolia: require('@/assets/images/other/search-by-algolia.svg')
+        },
+        color: '1976D2',
         searchValue: '',
         is24px: true,
         isIntersectingElement: false,
@@ -83,11 +129,20 @@
         // iconWeight: [0, 50, 100],
         searchResults: {},
         iconColour: "#FFFFFF",
+
+        downloadAs: {name: 'Download .SVG', code: "downloadSVG"},
+        downloadOptions:[
+          {name: 'Download .SVG', code: "downloadSVG"},
+          // {name: 'Download .PNG', code: "downloadPNG"},
+          {name: 'Copy SVG', code: "copySVG"},
+        ],
+
         size:  { "name": "24px", "code": "iconImage24px" },
         sizes:[
           {name: "18px", code: "iconImage18px"},
           {name: "24px", code: "iconImage24px"}
         ],
+
         fetchingData: false,
         algoliaPage: 0
       }
@@ -133,6 +188,14 @@
       }
     },
 
+     watch:{
+      iconColour:{
+        handler() { // Reset toUpdate each time 'icon' changes.
+          this.setIconColour()
+        },
+      }
+    },
+
     methods:{
       ...mapActions({
         setSearchValue: 'store/setSearchValue',
@@ -157,20 +220,26 @@
         }
       },
 
-
       setIconColour(e){
         const colour = this.iconColour
+        const contentArea = document.querySelector(".content-area");
+        contentArea.style.color = '#'+colour;
         this.setDataToState({state: 'iconColour', data: colour});
       },
 
       setIconWeight(e){
-        const weight = e.target.value
+        const weight = e.target.value;
         this.setDataToState({state: 'iconWeight', data: weight});
       },
 
       setIconSize(){
         let size = this.size.code;
-        this.setDataToState({state: 'iconSize', data: size})
+        this.setDataToState({state: 'iconSize', data: size});
+      },
+
+      setDownloadOption(){
+        let downloadAs = this.downloadAs.code;
+        this.setDataToState({state: 'downloadAs', data: downloadAs});
       },
 
       keyboardEvent(){
@@ -210,7 +279,7 @@
       async fetchAlgolia(){
         const searchResult = await index.search('', {
           page: this.algoliaPage,
-          hitsPerPage: 50
+          hitsPerPage: 40
         });
 
         this.searchResults = searchResult;

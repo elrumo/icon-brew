@@ -1,11 +1,15 @@
 <!-- Please remove this file from your project -->
 <template>
   <div class="icon-brew-icon">
-    <img
+    <svg
+      :class="'icon-image-' + size"
+      :data-src="getIcon"
+    ></svg>
+    <!-- <img
       :src="getIcon"
       :class="'icon-image-' + size"
       :alt="icon+' icon'"
-    >
+    > -->
   </div>
 </template>
 

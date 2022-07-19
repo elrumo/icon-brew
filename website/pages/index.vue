@@ -8,6 +8,27 @@
     />
 
     <!-- <UploadIcons/> -->
+    <Toast
+      position="bottom-center"
+      group="iconDownload"
+      class="icon-download-toast"
+    >
+      <template #message="slotProps">
+          <div class="custom-toast">
+            <IconBrewIcon
+              size="24"
+              icon="check"
+              :filled="false"
+            />
+            <p>
+              <b>
+                '{{slotProps.message.summary}}'
+              </b>
+              {{slotProps.message.detail}}
+            </p>
+          </div>
+      </template>
+    </Toast>
 
     <LazyHydrate when-visible>
       <SearchBar/>
