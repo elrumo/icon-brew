@@ -1,9 +1,9 @@
 <!-- Please remove this file from your project -->
 <template>
   <div
-    class="icon-card-wrapper cursor-default"
+    class="upload-wrapper"
   >
-    <InputText type="text" v-model="dataToUpload" />
+    <!-- <InputText type="text" v-model="dataToUpload" /> -->
 
     <FileUpload
       name="demo[]"
@@ -11,16 +11,12 @@
       @uploader="uploadData($event)"
       :multiple="true"
     />
-
-    <!-- <Button @click="uploadData()" label="Submit"/> -->
-
   </div>
 </template>
 
 <script>
   import { mapMutations, mapActions, mapGetters } from 'vuex';
   import axios from 'axios';
-  import { async } from 'q';
 
   export default {
     name: 'UploadIcons',
@@ -44,7 +40,7 @@
     },
 
     async mounted(){
-      // await this.doesIconExist('iconName', 'academic-book', true);
+      // console.log(await this.doesIconExist('iconName', 'await', false));
     },
 
     methods:{
@@ -77,25 +73,28 @@
               let mediaId24px = icon.data.data[0].attributes.iconImage24px.data.id
               this.deleteStrapiMedia(mediaId24px)
             }
+
+            return {
+              exists: exists,
+              icon: icon.data.data[0]
+            };
+
+          }else{
+            return {exists: false}
           }
 
-          return {
-            exists: exists,
-            icon: icon.data.data[0]
-          };
       },
 
       async uploadData(e){
         const name = this.dataToUpload
 
         async function createEntry(payload){
-          console.log(payload);
+          console.log("createEntry: ", payload);
           const post = await axios.post('https://api.macosicons.com/api/icon-brews',
             payload,
             {
               headers: {
-                Authorization:
-                  '',
+                Authorization: process.env.STRAPI_BEARER
               },
             }
           )
@@ -188,9 +187,9 @@
               }
             );
 
-            if (iconExists) {
-              let iconId = iconExists.icon.id;
+            if (iconExists.exists) {
               console.log("iconExists: ", iconExists);
+              let iconId = iconExists.icon.id;
 
               await updateEntry(iconId, {
                 data:{

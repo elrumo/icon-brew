@@ -85,8 +85,9 @@ export default {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Serif:wght@400;600;700&display=swap",
         async: true,
-        lazyload: true
-
+        lazyload: true,
+        media:"print",
+        onload:"this.onload=null;this.removeAttribute('media');"
       },
 
     ],

@@ -8,6 +8,7 @@
     />
 
     <!-- <UploadIcons/> -->
+
     <Toast
       position="bottom-center"
       group="iconDownload"
@@ -34,7 +35,9 @@
       <SearchBar/>
     </LazyHydrate>
 
-    <MainContentGrid class="page-wrapper"/>
+    <LazyHydrate when-idle>
+      <MainContentGrid class="page-wrapper"/>
+    </LazyHydrate>
 
   </div>
 </template>
@@ -69,11 +72,11 @@
     },
 
     async mounted() {
+      await this.fetchHomeData()
     },
 
     async fetch() {
-        await this.fetchHomeData()
-        await this.fetchSinglePage({id: 'icon-brew-about', state: 'aboutPageData'})
+        // await this.fetchSinglePage({id: 'icon-brew-about', state: 'aboutPageData'})
     },
 
     methods: {

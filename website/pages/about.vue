@@ -45,6 +45,7 @@ import ArticleContent from '../components/ArticleContent.vue'
 
     async fetch() {
       let aboutData = await this.getState({state: 'aboutPageData'})
+
       if (aboutData.length == 0) {
         await this.fetchSinglePage({id: 'icon-brew-about', state: 'aboutPageData'})
         aboutData = await this.getState({state: 'aboutPageData'})
