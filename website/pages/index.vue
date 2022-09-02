@@ -1,11 +1,16 @@
 <template>
-  <div class="">
+  <div class="h-100">
 
     <HeroSection
       class="page-wrapper"
       :homeData="getHomeData"
       :isLink="false"
     />
+
+    <!-- <IconBrewIcon
+      size="24"
+      icon="chromatica"
+    /> -->
 
     <!-- <UploadIcons/> -->
 
@@ -43,7 +48,7 @@
 </template>
 
 <script>
-  import { mapMutations, mapActions, mapGetters } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
 
   import LazyHydrate from 'vue-lazy-hydration';
 
@@ -52,6 +57,8 @@
   import TopNavBar from '../components/TopNavBar.vue'
   import Footer from '../components/Footer.vue'
   import UploadIcons from '../components/UploadIcons.vue'
+  import IconBrewIcon from '../components/IconBrewIcon.vue'
+
 
   export default {
     name: 'HomePage',
@@ -63,6 +70,7 @@
       TopNavBar,
       Footer,
       UploadIcons,
+      IconBrewIcon,
       SearchBar: () => import('../components/SearchBar.vue'),
     },
 
@@ -90,7 +98,6 @@
       ...mapGetters({
         getHomeData: 'store/getHomeData',
       }),
-
     },
 
 

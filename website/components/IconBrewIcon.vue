@@ -5,12 +5,22 @@
       :class="'icon-image-' + size"
       :data-src="getIcon"
     ></svg>
-    <!-- <img
-      :src="getIcon"
-      :class="'icon-image-' + size"
-      :alt="icon+' icon'"
-    > -->
   </div>
+  <!-- <svg xmlns="http://www.w3.org/2000/svg"
+    :width="size"
+    :height="size"
+    viewBox="0 0 18 18"
+    :aria-labelledby="icon"
+    role="presentation"
+  >
+    <title
+      :id="icon"
+      lang="en"
+    >{{ icon }} icon</title>
+    <g :fill="iconColor">
+      <slot />
+    </g>
+  </svg> -->
 </template>
 
 <script>
@@ -30,6 +40,10 @@
         type: String,
         default: '24',
       },
+      iconColor: {
+        type: String,
+        default: 'currentColor',
+      },
       filled: {
         type: Boolean,
         default: false,
@@ -43,9 +57,20 @@
 
     computed:{
       getIcon(){
-        // console.log( this.icon + '.svg');
-        // const isFilled = this.filled ? 'filled' : 'outline';
-        return require('@/assets/icons/' + this.size + 'px/outline/' + this.icon + '-' + this.size + 'px.svg');
+        let size = this.size;
+
+        if (size != '24' || size != '18') {
+          size = '24';
+        }
+
+        try {
+          let icon = require('@/assets/icons/' + this.size + 'px/' + this.icon + '-' + this.size + 'px.svg');
+          console.log("this.icon: ", icon);
+          return icon
+        } catch (error) {
+          console.log(error);
+          return ''
+        }
       }
     }
   }

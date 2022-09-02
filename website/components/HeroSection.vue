@@ -19,31 +19,24 @@
 
     <div class="hero-btns-wrapper">
 
-      <a
-        v-if="homeData.buttonUrl"
-        :href="homeData.buttonUrl"
-        target="_blank"
-      >
-        <Button
-          :label="homeData.button"
-          icon="pi pi-download"
-        />
-      </a>
+      <ButtonLink
+        v-if="homeData.button"
+        :isLink="homeData.primaryButtonIsLink"
+        :url="homeData.buttonUrl"
+        :isOutline="homeData.primaryButtonIsOutline"
+        :icon="homeData.primaryButtonIcon"
+        :label="homeData.button "
+      />
 
-      <a
-        v-if="homeData.secondaryButtonUrl"
-        :href="homeData.secondaryButtonUrl"
-        target="_blank"
-      >
-        <Button
-          :label="homeData.secondaryButton"
-          class="p-button-outlined"
-        />
-      </a>
+      <ButtonLink
+        v-if="homeData.secondaryButton"
+        :isLink="homeData.secondaryButtonIsLink"
+        :url="homeData.secondaryButtonUrl"
+        :isOutline="homeData.secondaryButtonIsOutline"
+        :icon="homeData.secondaryButtonIcon"
+        :label="homeData.secondaryButton"
+      />
 
-      <!-- <Button class="p-button-outlined">
-        Contribute
-      </Button> -->
     </div>
 
   </div>

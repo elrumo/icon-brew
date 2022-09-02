@@ -2,97 +2,103 @@
   <div
     ref="searchBarWrapper"
     :class="{
-      'search-bar-wrapper': true,
+      'search-bar-container': true,
       'sticky-shadow': isIntersectingElement,
     }"
   >
+    <div
+    :class="{
+      'search-bar-wrapper': true,
+    }"
+    >
 
-    <!-- Search bar -->
-    <span class="p-input-icon-left p-float-label input-search">
-      <label for="searchBar" class="hidden">Search icons</label>
-      <i class="pi pi-search"/>
-      <InputText
-        v-on:focus.native="onFocus"
-        class="p-inputtext-sm"
-        type="text"
-        id="searchBar"
-        v-model="searchValue"
-        @keyup="getFromAlgolia"
-        placeholder="Search"
-      />
-
-      <a
-        href="https://www.algolia.com/"
-        target="_blank"
-        v-if="searchValue.length != 0"
-        :class="{
-          'searchByAlgolia': true,
-          'movedBySearch': searchValue.length != 0
-        }"
-      >
-          <img
-          :src="imgs.searchByAlgolia"
-          alt="Search by Algolia"
-        >
-      </a>
-      <span
-        @click="searchValue = '', getFromAlgolia()"
-      >
-        <IconBrewIcon
-          size="24"
-          icon="close"
-          :filled="false"
-          v-if="searchValue.length != 0"
-          class="clear-search-btn"
-        />
-      </span>
-    </span>
-
-    <Divider class="desktop-only" layout="vertical" />
-    <Divider class="mobile-only"/>
-
-    <!-- Options wrapper -->
-    <div class="options-wrapper">
-
-
-      <!-- Color picker -->
-      <ColorPicker
-        defaultColor="ffffff"
-        id="colorPicker"
-        v-model="iconColour"
-      />
-
-      <!-- Size -->
-      <Dropdown
-        class="max-height-input"
-        v-model="size"
-        :options="sizes"
-        optionLabel="name"
-        placeholder="Select a size"
-        @change="setIconSize()"
-      />
-
-      <!-- Download as -->
-      <Dropdown
-        class="max-height-input"
-        v-model="downloadAs"
-        :options="downloadOptions"
-        optionLabel="name"
-        placeholder="Select a size"
-        @change="setDownloadOption()"
-      />
-
-      <!--
+      <!-- Search bar -->
+      <span class="p-input-icon-left p-float-label input-search">
+        <label for="searchBar" class="hidden">Search icons</label>
+        <i class="pi pi-search"/>
         <InputText
-          class="p-inputtext-sm weight-input-wrapper"
-          type="number"
-          id="iconWeight"
-          v-model="iconWeight"
-          @change="setIconWeight($event)"
+          v-on:focus.native="onFocus"
+          class="p-inputtext-sm"
+          type="text"
+          id="searchBar"
+          v-model="searchValue"
+          @keyup="getFromAlgolia"
+          :placeholder="'Search ' + totalNoOfIcons + ' icons'"
         />
-      -->
-    </div>
 
+        <a
+          href="https://www.algolia.com/"
+          target="_blank"
+          v-if="searchValue.length != 0"
+          :class="{
+            'searchByAlgolia': true,
+            'movedBySearch': searchValue.length != 0
+          }"
+        >
+            <img
+            :src="imgs.searchByAlgolia"
+            alt="Search by Algolia"
+          >
+        </a>
+        <span
+          @click="searchValue = '', getFromAlgolia()"
+        >
+          <IconBrewIcon
+            size="24"
+            icon="close"
+            :filled="false"
+            v-if="searchValue.length != 0"
+            class="clear-search-btn"
+          />
+        </span>
+      </span>
+
+      <Divider class="desktop-only" layout="vertical" />
+      <Divider class="mobile-only"/>
+
+      <!-- Options wrapper -->
+      <div class="options-wrapper">
+
+
+        <!-- Color picker -->
+        <ColorPicker
+          defaultColor="ffffff"
+          id="colorPicker"
+          v-model="iconColour"
+        />
+
+        <!-- Size -->
+        <Dropdown
+          class="max-height-input"
+          v-model="size"
+          :options="sizes"
+          optionLabel="name"
+          placeholder="Select a size"
+          @change="setIconSize()"
+        />
+
+        <!-- Download as -->
+        <Dropdown
+          class="max-height-input"
+          v-model="downloadAs"
+          :options="downloadOptions"
+          optionLabel="name"
+          placeholder="Select a size"
+          @change="setDownloadOption()"
+        />
+
+        <!--
+          <InputText
+            class="p-inputtext-sm weight-input-wrapper"
+            type="number"
+            id="iconWeight"
+            v-model="iconWeight"
+            @change="setIconWeight($event)"
+          />
+        -->
+      </div>
+
+    </div>
   </div>
 </template>
 
@@ -145,7 +151,8 @@
         ],
 
         fetchingData: false,
-        algoliaPage: 0
+        algoliaPage: 0,
+        totalNoOfIcons: 0
       }
     },
 
@@ -158,25 +165,6 @@
 
       if(process.client){
         this.keyboardEvent()
-
-        const searchBar = this.$refs.searchBarWrapper
-        let options = { rootMargin: "-400px" };
-        let observer = new IntersectionObserver(this.handleIntersection, options);
-        observer.observe(searchBar);
-
-        const mainContentGrid = document.getElementById("mainContentGrid")
-
-        // Function to get the x and y position of an element
-
-        window.addEventListener('scroll', function(event){
-        // mainContentGrid.addEventListener('scroll', function(event){
-            let element = event.target;
-            if (element.scrollHeight - element.scrollTop === element.clientHeight)
-            {
-              console.log("element.scrollHeight: ", mainContentGrid.getBoundingClientRect());
-              console.log('scrolled');
-            }
-        });
       }
 
     },
@@ -208,10 +196,11 @@
       }),
 
       scroll() {
-        let margin = 500
-        window.onscroll = () => {
+        let margin = 600
+        window.onscroll = (e) => {
           let searchEmpty = this.searchValue == ''
-          let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) + window.innerHeight > document.documentElement.offsetHeight - margin
+          let bottomOfWindow = Math.ceil(document.body.offsetHeight - (window.pageYOffset + window.innerHeight)) < margin;
+          this.isIntersectingElement = this.$refs.searchBarWrapper.getBoundingClientRect().top <= 70;
 
           if (bottomOfWindow && !this.fetchingData && searchEmpty) {
             this.fetchingData = true
@@ -280,8 +269,19 @@
       async fetchAlgolia(){
         const searchResult = await index.search('', {
           page: this.algoliaPage,
-          hitsPerPage: 40
+          hitsPerPage: 40,
+          attributesToRetrieve: ['iconName', 'iconImage18px', 'iconImage24px', 'objectID', 'downloads'],
+          attributesToHighlight: null,
         });
+
+        const noOfRecords = await index.search('', {
+          hitsPerPage: 0,
+          attributesToRetrieve: null,
+          attributesToHighlight: null,
+          analytics: false
+        });
+
+        this.totalNoOfIcons = noOfRecords.nbHits;
 
         this.searchResults = searchResult;
         this.addIcons(searchResult.hits);
@@ -291,7 +291,9 @@
       async searchAlgolia(){
         const searchResult = await index.search(this.searchValue, {
           page: 0,
-          hitsPerPage: 500
+          hitsPerPage: 500,
+          attributesToRetrieve: ['iconName', 'iconImage18px', 'iconImage24px', 'objectID', 'downloads'],
+          attributesToHighlight: null,
         });
         this.searchResults = searchResult;
         this.setIcons(searchResult.hits);
@@ -299,7 +301,6 @@
 
       handleIntersection(payload){
         const y = payload[0].boundingClientRect.y
-        // console.log(payload);
         if(y < 120){
           this.isIntersectingElement = true
         } else{

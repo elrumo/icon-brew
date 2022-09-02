@@ -15,15 +15,14 @@
       >
         <IconBrewIcon
           size="18"
-          icon="all-icons"
-        />
-          <!-- :icon="category.categoryName" -->
+          :icon="category.icon"
+          />
         <p>
           {{ category.categoryName }}
         </p>
       </div>
       <p class="category-item-number">
-        120
+        {{category.icons.data.length}}
       </p>
     </button>
   </div>
@@ -52,7 +51,7 @@
         required: true,
         default: {
           name: 'All Icons',
-          code: 'all-icons'
+          code: 'dashboard'
         }
      }
     },

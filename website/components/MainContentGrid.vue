@@ -6,54 +6,53 @@
       'main-layout-wrapper-extended': Object.keys(getSelectedIcon).length > 0,
     }"
   >
-
-      <!-- Sidebar -->
-      <!-- <div class="">
-        <div class="sticky-side-bar">
-          <div class="category-side-bar-wrapper">
-            <CategoryButton
-              v-for="category in getIconCategories"
-              :key="category.categoryName"
-              :category="category"
-              :active="category.categoryName == selectedCategory"
-              :func="setCategory"
-            />
-          </div>
-        </div>
-      </div> -->
-
-      <!-- Main content -->
-      <div id="mainContentGrid" class="content-card-secondary main-content-wrapper">
-        <div class="content-area">
-          <IconCard
-            v-for="icon in getIcons"
-            :key="icon.iconName"
-            :icon="{
-                name: icon.iconName,
-                iconImage18px: icon.iconImage18px,
-                iconImage24px: icon.iconImage24px,
-                objectID: icon.objectID,
-                icon: icon
-              }"
+    <!-- Sidebar -->
+    <div class="">
+      <div class="sticky-side-bar">
+        <div class="category-side-bar-wrapper">
+          <CategoryButton
+            v-for="category in getIconCategories"
+            :key="category.categoryName"
+            :category="category"
+            :active="category.categoryName == selectedCategory"
+            :func="setCategory"
           />
         </div>
-        <p
-          class="no-icons-msg"
-          v-if="getIcons.length == 0"
-        >
-          No icons found
-        </p>
       </div>
+    </div>
 
-      <!-- Icon details -->
-      <!-- <div class="">
-        <div class="sticky-side-bar">
-          <div class="category-side-bar-wrapper" >
-            <IconOptions/>
-          </div>
-            <IconDetails/>
+    <!-- Main content -->
+    <div id="mainContentGrid" class="content-card-secondary main-content-wrapper">
+      <div class="content-area">
+        <IconCard
+          v-for="icon in getIcons"
+          :key="icon.iconName"
+          :icon="{
+              name: icon.iconName,
+              iconImage18px: icon.iconImage18px,
+              iconImage24px: icon.iconImage24px,
+              objectID: icon.objectID,
+              icon: icon
+            }"
+        />
+      </div>
+      <p
+        class="no-icons-msg"
+        v-if="getIcons.length == 0"
+      >
+        No icons found
+      </p>
+    </div>
+
+    <!-- Icon details -->
+    <!-- <div class="">
+      <div class="sticky-side-bar">
+        <div class="category-side-bar-wrapper" >
+          <IconOptions/>
         </div>
-      </div> -->
+          <IconDetails/>
+      </div>
+    </div> -->
 
   </div>
 </template>
@@ -112,7 +111,7 @@
     },
 
     async fetch() {
-      // await this.fetchIconCategories()
+      await this.fetchIconCategories()
       // await this.fetchIcons()
     },
 

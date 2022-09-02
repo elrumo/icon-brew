@@ -36,6 +36,32 @@
           Resources
         </NuxtLink> -->
 
+        <div v-for="item in getHomeData.navBarItems" :key="item.nameToDisplay">
+          <NuxtLink
+            v-if="!item.isExternalLink"
+            class="nuxt-link"
+            :to="item.goToPage"
+          >
+            {{ item.nameToDisplay }}
+          </NuxtLink>
+
+          <a
+            v-else
+            class="nuxt-link"
+            :href="item.goToPage"
+            target="_blank"
+          >
+          {{ item.nameToDisplay }}
+          </a>
+        </div>
+
+        <!-- <NuxtLink
+          class="nuxt-link"
+          to="/suggestions"
+        >
+          Suggestions
+        </NuxtLink>
+
         <a
           class="nuxt-link"
           href="https://github.com/elrumo/icon-brew/discussions"
@@ -49,13 +75,14 @@
           to="/about"
         >
           About
-        </NuxtLink>
+        </NuxtLink> -->
     </div>
 
   </div>
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
 
   import IconBrewLogo from '../components/IconBrewLogo.vue'
   import IconBrewIcon from '../components/IconBrewIcon.vue'
@@ -75,6 +102,12 @@
     data(){
       return{
       }
-    }
+    },
+
+    computed: {
+      ...mapGetters({
+        getHomeData: 'store/getHomeData',
+      }),
+    },
   }
 </script>
