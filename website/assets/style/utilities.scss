@@ -315,19 +315,27 @@
 }
 
 .w-auto{
-  width: auto;
+  width: auto !important;
 }
 
 .w-100{
-  width: 100%;
+  width: 100% !important;
+}
+
+.w-90{
+  width: 90% !important;
+}
+
+.w-80{
+  width: 80% !important;
 }
 
 .w-50{
-  width: 50%;
+  width: 50% !important;
 }
 
 .w-max-sm{
-  max-width: 512px;
+  max-width: 512px !important;
 }
 
 
@@ -336,13 +344,100 @@
 }
 
 .h-100{
-  height: 100%;
+  height: 100% !important;
 }
 
 .h-50{
-  height: 50%;
+  height: 50% !important;
 }
 
+
+// Text
+
+.font-size-0-8{
+  font-size: 0.8rem !important;
+}
+
+.font-size-0-9{
+  font-size: 0.9rem !important;
+}
+
+.font-size-1{
+  font-size: 1rem !important;
+}
+
+.font-size-1-2{
+  font-size: 1.2rem !important;
+}
+
+.font-size-1-4{
+  font-size: 1.4rem !important;
+}
+
+.font-size-1-6{
+  font-size: 1.6rem !important;
+}
+
+.font-size-1-8{
+  font-size: 1.8rem !important;
+}
+
+
+.text-center{
+  text-align: center;
+}
+
+.text-left{
+  text-align: left;
+}
+
+.text-right{
+  text-align: right;
+}
+
+.text-justify{
+  text-align: justify;
+}
+
+.text-nowrap{
+  white-space: nowrap;
+}
+
+.text-underline{
+  text-decoration: underline;
+}
+
+.text-underline-dashed{
+  text-decoration: underline dashed;
+}
+
+.text-underline-dotted{
+  text-decoration: underline dotted;
+}
+
+.text-underline-double{
+  text-decoration: underline double;
+}
+
+.text-underline-wavy{
+  text-decoration: underline wavy;
+}
+
+.text-underline-none{
+  text-decoration: none;
+}
+
+.text-underline-overline{
+  text-decoration: overline;
+}
+
+.text-underline-line-through{
+  text-decoration: line-through;
+}
+
+.text-underline-blink{
+  text-decoration: blink;
+}
 
 .font-weight-regular{
   font-weight: 400 !important;
@@ -352,9 +447,6 @@
   font-weight: 700 !important;
 }
 
-.text-center{
-  text-align: center;
-}
 
 
 h1, h2, h3, h4, h5, h6, p{
@@ -378,6 +470,41 @@ h5{
   }
 }
 
+.opacity-90{
+  opacity: 0.9;
+}
+
+.opacity-80{
+  opacity: 0.8;
+}
+
+.opacity-70{
+  opacity: 0.7;
+}
+
+.opacity-60{
+  opacity: 0.6;
+}
+
+.opacity-50{
+  opacity: 0.5;
+}
+
+.opacity-40{
+  opacity: 0.4;
+}
+
+.opacity-30{
+  opacity: 0.3;
+}
+
+.opacity-20{
+  opacity: 0.2;
+}
+
+.opacity-10{
+  opacity: 0.1;
+}
 
 .capitalise{
   text-transform: capitalize !important;
@@ -419,6 +546,7 @@ divider{
 }
 
 .divider-horizontal{
+  content: 'Hi';
   height: 1px;
   width: 100%;
   background: #F7F3ED;

@@ -9,14 +9,29 @@
     <!-- Sidebar -->
     <div class="">
       <div class="sticky-side-bar">
-        <div class="category-side-bar-wrapper">
+        <div class="category-side-bar-wrapper-container gap-md">
+
           <CategoryButton
-            v-for="category in getIconCategories"
+            v-for="category in categories"
             :key="category.categoryName"
-            :category="category"
             :active="category.categoryName == selectedCategory"
+            :category="category"
             :func="setCategory"
-          />
+            :icons="category.icons"
+            />
+
+          <div class="divider-horizontal w-80 m-all-a opacity-30">‎</div>
+
+          <div class="category-side-bar-wrapper">
+            <CategoryButton
+              v-for="category in getIconCategories"
+              :key="category.categoryName"
+              :category="category"
+              :active="category.categoryName == selectedCategory"
+              :func="setCategory"
+              :icons="category.icons.data.length"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -73,7 +88,7 @@
 
     data(){
       return{
-        selectedCategory: 'all-icons',
+        selectedCategory: 'All Icons',
         is24px: true,
         size: "iconImage24px",
         sizes:[
@@ -81,19 +96,17 @@
         ],
         categories: [
           {
-            name: 'All Icons',
-            isSelected: true,
-            code: 'dashboard',
+            categoryName: 'All Icons',
+            icon: 'dashboard',
+            icons: this.getNumberOfIcons
           },
-          {
-            name: 'Popular',
-            isSelected: false,
-            code: 'download',
-          },
-          { name: 'Download',
-            isSelected: false,
-            code: 'download',
-          },
+          // {
+          //   categoryName: 'Popular',
+          //   icon: 'download',
+          // },
+          // { categoryName: 'Download',
+          //   icon: 'download',
+          // },
         ],
         SelectButton: "",
         aboutData: {},
@@ -143,6 +156,7 @@
         iconSize: 'store/iconSize',
         getIconCategories: 'store/getIconCategories',
         getSelectedIcon: 'store/getSelectedIcon',
+        getNumberOfIcons: 'store/getNumberOfIcons',
       }),
     }
 

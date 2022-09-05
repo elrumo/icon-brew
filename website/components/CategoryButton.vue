@@ -11,7 +11,7 @@
         }"
     >
       <div
-        class="category-item-title"
+        class="category-item-title font-size-0-9"
       >
         <IconBrewIcon
           size="18"
@@ -21,8 +21,8 @@
           {{ category.categoryName }}
         </p>
       </div>
-      <p class="category-item-number">
-        {{category.icons.data.length}}
+      <p class="category-item-number font-size-0-8">
+        {{ icons }}
       </p>
     </button>
   </div>
@@ -42,10 +42,17 @@
         type: Function,
         required: false,
       },
+
       active: {
         type: Boolean,
         default: false,
       },
+
+      icons: {
+        type: Number,
+        default: 0,
+      },
+
       category:{
         type: Object,
         required: true,

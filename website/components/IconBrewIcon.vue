@@ -65,7 +65,6 @@
 
         try {
           let icon = require('@/assets/icons/' + this.size + 'px/' + this.icon + '-' + this.size + 'px.svg');
-          console.log("this.icon: ", icon);
           return icon
         } catch (error) {
           console.log(error);

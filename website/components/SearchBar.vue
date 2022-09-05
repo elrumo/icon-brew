@@ -16,14 +16,14 @@
       <span class="p-input-icon-left p-float-label input-search">
         <label for="searchBar" class="hidden">Search icons</label>
         <i class="pi pi-search"/>
+        <!-- v-on:focus.native="onFocus" -->
         <InputText
-          v-on:focus.native="onFocus"
           class="p-inputtext-sm"
           type="text"
           id="searchBar"
           v-model="searchValue"
           @keyup="getFromAlgolia"
-          :placeholder="'Search ' + totalNoOfIcons + ' icons'"
+          :placeholder="'Search ' + getNumberOfIcons + ' icons'"
         />
 
         <a
@@ -282,6 +282,7 @@
         });
 
         this.totalNoOfIcons = noOfRecords.nbHits;
+        this.setDataToState({state: 'totalNoOfIcons', data: this.totalNoOfIcons});
 
         this.searchResults = searchResult;
         this.addIcons(searchResult.hits);
@@ -309,14 +310,14 @@
       },
 
       onFocus(e){
-        this.scrollTo(460)
-        this.$emit('focus')
+        // this.scrollTo(460)
+        // this.$emit('focus')
       },
     },
 
     computed:{
       ...mapGetters({
-        getUsername: 'store/getUsername',
+        getNumberOfIcons: 'store/getNumberOfIcons',
       }),
     },
   }
