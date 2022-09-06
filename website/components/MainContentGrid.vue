@@ -10,7 +10,6 @@
     <div class="">
       <div class="sticky-side-bar">
         <div class="category-side-bar-wrapper-container gap-md">
-
           <CategoryButton
             v-for="category in categories"
             :key="category.categoryName"
@@ -135,18 +134,21 @@
         fetchIcons: 'store/fetchIcons',
         fetchIconCategories: 'store/fetchIconCategories',
         fetchSinglePage: 'store/fetchSinglePage',
-        getState: 'store/getState'
+        getState: 'store/getState',
+        searchAlgolia: 'store/searchAlgolia'
       }),
 
       setIconSize(){
-        // let size = this.is24px ? 'iconImage24px' : 'iconImage18px'
         let size = this.size;
         this.setDataToState({state: 'iconSize', data: size})
       },
 
-      setCategory(e){
-        this.scrollTo(520)
-        this.selectedCategory = e.target.id
+      async setCategory(e){
+        let category = e.target.id
+        this.setDataToState({state: 'selectedCategory', data: category})
+        this.searchAlgolia({query: this.getSearchValue, category: 'categories: '+category})
+        // this.scrollTo(520)
+        this.selectedCategory = category
       },
     },
 
@@ -157,6 +159,8 @@
         getIconCategories: 'store/getIconCategories',
         getSelectedIcon: 'store/getSelectedIcon',
         getNumberOfIcons: 'store/getNumberOfIcons',
+        getSelectedCategory: 'store/getSelectedCategory',
+        getSearchValue: 'store/getSearchValue',
       }),
     }
 

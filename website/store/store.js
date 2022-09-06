@@ -1,4 +1,8 @@
 import axios from 'axios'
+import algoliasearch from 'algoliasearch';
+
+const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_SEARCH_KEY);
+const index = client.initIndex(process.env.ALGOLIA_INDEX);
 
 import {
   getIconsFromStrapi,
@@ -20,10 +24,7 @@ export const state = () => ({
   suggestionsHero: {
     "title": "Missing an icon?", "subtitle": "Is there an icon you’d like to see on the site? Suggest it, or if somoene already has, upvote it!.", "createdAt": "2022-03-13T15:52:01.596Z", "updatedAt": "2022-07-16T20:12:28.849Z", "publishedAt": "2022-03-13T15:52:02.867Z", "button": "Suggest an icon", "buttonUrl": "https://www.figma.com/community/file/1121752926262800605", "primaryButtonIcon": "pi-download", "primaryButtonIsOutline": false, "secondaryButton": "", "secondaryButtonUrl": "", "secondaryButtonIcon": "", "secondaryButtonIsOutline": true, "image": { "data": { "id": 47, "attributes": { "name": "IconBrew-large.png", "alternativeText": "IconBrew-large.png", "caption": "IconBrew-large.png", "width": 1024, "height": 1024, "formats": { "large": { "ext": ".png", "url": "/uploads/large_Icon_Brew_large_e7890b6e4f.png", "hash": "large_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "large_IconBrew-large.png", "path": null, "size": 846.09, "width": 1000, "height": 1000 }, "small": { "ext": ".png", "url": "/uploads/small_Icon_Brew_large_e7890b6e4f.png", "hash": "small_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "small_IconBrew-large.png", "path": null, "size": 239.08, "width": 500, "height": 500 }, "medium": { "ext": ".png", "url": "/uploads/medium_Icon_Brew_large_e7890b6e4f.png", "hash": "medium_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "medium_IconBrew-large.png", "path": null, "size": 515.29, "width": 750, "height": 750 }, "thumbnail": { "ext": ".png", "url": "/uploads/thumbnail_Icon_Brew_large_e7890b6e4f.png", "hash": "thumbnail_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "thumbnail_IconBrew-large.png", "path": null, "size": 32.27, "width": 156, "height": 156 } }, "hash": "Icon_Brew_large_e7890b6e4f", "ext": ".png", "mime": "image/png", "size": 168.11, "url": "/uploads/Icon_Brew_large_e7890b6e4f.png", "previewUrl": null, "provider": "local", "provider_metadata": null, "createdAt": "2022-03-13T15:52:45.146Z", "updatedAt": "2022-03-13T15:52:45.146Z" } } }
   },
-  categorySelected: {
-    id: 1,
-    name: 'All',
-  },
+  selectedCategory: 'All',
   searchValue: '',
   singlePageData: '',
   aboutPageData: '',
@@ -105,6 +106,20 @@ export const actions = {
     }
   },
 
+  async searchAlgolia(store, payload){
+    console.log("payload.category: ", payload.category);
+    const searchResult = await index.search(payload.query, {
+      filters: payload.category,
+      page: 0,
+      hitsPerPage: 500,
+      attributesToRetrieve: ['iconName', 'iconImage18px', 'iconImage24px', 'objectID', 'downloads'],
+      attributesToHighlight: null,
+    });
+    console.log(searchResult);
+    // this.searchResults = searchResult;
+    // this.setIcons(searchResult.hits);
+  },
+
   async fetchIconCategories(store){
     let iconCategories = await getCategoriesFromStrapi();
     // console.log("iconCategories: ", iconCategories);
@@ -121,7 +136,7 @@ export const actions = {
 
   scrollTo(store, target) {
     if (typeof target == 'number') {
-      window.scrollTo(0, target-50)
+      window.scrollTo(0, target-80)
     } else if (typeof target == 'object') {
       let y = target.getBoundingClientRect().y
       window.scrollTo(0, y-50)
@@ -232,6 +247,14 @@ export const getters = {
 
   getNumberOfIcons(state) {
     return state.totalNoOfIcons;
+  },
+
+  getSelectedCategory(state) {
+    return state.selectedCategory;
+  },
+
+  getSearchValue(state) {
+    return state.searchValue;
   },
 
 }

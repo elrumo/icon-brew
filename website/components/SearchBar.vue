@@ -107,8 +107,7 @@
   import algoliasearch from 'algoliasearch';
   import IconBrewIcon from '../components/IconBrewIcon.vue'
 
-  // const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_SEARCH_KEY);
-  const client = algoliasearch('FK0ELT4B74', process.env.ALGOLIA_SEARCH_KEY);
+  const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_SEARCH_KEY);
   const index = client.initIndex(process.env.ALGOLIA_INDEX);
 
   export default {
@@ -255,6 +254,7 @@
       },
 
       async getFromAlgolia(){
+        this.setDataToState({state: 'searchValue', data: this.searchValue});
 
         if (this.searchValue == '') {
           this.clearIcons()
