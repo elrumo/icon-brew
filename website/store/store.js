@@ -16,6 +16,7 @@ export const state = () => ({
   icons: [],
   iconCategories: [],
   totalNoOfIcons: 0,
+  hitsPerPage: 0,
   iconSize: 'iconImage24px',
   downloadAs: 'downloadSVG',
   homeData: {
@@ -24,8 +25,14 @@ export const state = () => ({
   suggestionsHero: {
     "title": "Missing an icon?", "subtitle": "Is there an icon you’d like to see on the site? Suggest it, or if somoene already has, upvote it!.", "createdAt": "2022-03-13T15:52:01.596Z", "updatedAt": "2022-07-16T20:12:28.849Z", "publishedAt": "2022-03-13T15:52:02.867Z", "button": "Suggest an icon", "buttonUrl": "https://www.figma.com/community/file/1121752926262800605", "primaryButtonIcon": "pi-download", "primaryButtonIsOutline": false, "secondaryButton": "", "secondaryButtonUrl": "", "secondaryButtonIcon": "", "secondaryButtonIsOutline": true, "image": { "data": { "id": 47, "attributes": { "name": "IconBrew-large.png", "alternativeText": "IconBrew-large.png", "caption": "IconBrew-large.png", "width": 1024, "height": 1024, "formats": { "large": { "ext": ".png", "url": "/uploads/large_Icon_Brew_large_e7890b6e4f.png", "hash": "large_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "large_IconBrew-large.png", "path": null, "size": 846.09, "width": 1000, "height": 1000 }, "small": { "ext": ".png", "url": "/uploads/small_Icon_Brew_large_e7890b6e4f.png", "hash": "small_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "small_IconBrew-large.png", "path": null, "size": 239.08, "width": 500, "height": 500 }, "medium": { "ext": ".png", "url": "/uploads/medium_Icon_Brew_large_e7890b6e4f.png", "hash": "medium_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "medium_IconBrew-large.png", "path": null, "size": 515.29, "width": 750, "height": 750 }, "thumbnail": { "ext": ".png", "url": "/uploads/thumbnail_Icon_Brew_large_e7890b6e4f.png", "hash": "thumbnail_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "thumbnail_IconBrew-large.png", "path": null, "size": 32.27, "width": 156, "height": 156 } }, "hash": "Icon_Brew_large_e7890b6e4f", "ext": ".png", "mime": "image/png", "size": 168.11, "url": "/uploads/Icon_Brew_large_e7890b6e4f.png", "previewUrl": null, "provider": "local", "provider_metadata": null, "createdAt": "2022-03-13T15:52:45.146Z", "updatedAt": "2022-03-13T15:52:45.146Z" } } }
   },
-  selectedCategory: 'All',
+  selectedCategory: 'All Icons',
+
   searchValue: '',
+  hitsPerPage: 40,
+  algoliaPage: 0,
+  searchFilters: '',
+  isFetchingData: false,
+
   singlePageData: '',
   aboutPageData: '',
   selectedIcon: {},
@@ -40,6 +47,7 @@ export const mutations = {
   },
 
   addDataToState(store, payload){
+    console.log('payload: ', payload);
     payload.data.forEach(item => {
       store[payload.state].push(item);
     });
@@ -64,6 +72,11 @@ export const actions = {
 
   addIcons(store, icons){
     store.commit('addDataToState', {state: 'icons', data: icons});
+  },
+
+  addOneToPage(store){
+    let algoliaPage = store.state.algoliaPage;
+    store.commit('setDataToState', {state: 'algoliaPage', data: algoliaPage+1});
   },
 
   async fetchIcons(store){
@@ -106,23 +119,90 @@ export const actions = {
     }
   },
 
+  async setCategory(store, payload){
+    let category = payload.category;
+    let filters = 'categories.categoryName:' + category;
+    let selectedCategory = store.state.selectedCategory;
+
+    if(category === selectedCategory) return;
+    if(category == "All Icons"){
+      filters = '';
+      store.dispatch('setDataToState', {state: 'hitsPerPage', data: 40});
+    } else{
+      store.dispatch('setDataToState', {state: 'hitsPerPage', data: 500});
+    }
+
+    let statesToChange = [
+      {state: 'selectedCategory', data: category},
+      {state: 'searchFilters', data: filters},
+      {state: 'searchFilters', data: filters},
+      {state: 'algoliaPage', data: 0}
+    ]
+
+    statesToChange.forEach(state => {
+      store.dispatch('setDataToState', {state: state.state, data: state.data});
+    });
+
+    store.dispatch('searchAlgolia', {appendIcons: false});
+  },
+
   async searchAlgolia(store, payload){
-    console.log("payload.category: ", payload.category);
-    const searchResult = await index.search(payload.query, {
-      filters: payload.category,
-      page: 0,
-      hitsPerPage: 500,
+    store.dispatch('setDataToState', {state: 'isFetchingData', data: true});
+
+    let appendIcons = payload.appendIcons
+    ;
+    let query = store.state.searchValue;
+    let filters = store.state.searchFilters;
+    let hitsPerPage = store.state.hitsPerPage;
+    let isFetchingData = store.state.isFetchingData;
+    let page = store.state.algoliaPage;
+    let selectedCategory = store.state.selectedCategory;
+    let iconCategories = store.state.iconCategories;
+    let noOfIcons = store.state.totalNoOfIcons;
+
+    if(selectedCategory != "All Icons"){
+      console.log('Hiii');
+      noOfIcons = iconCategories.filter(category => {
+        return category.categoryName === selectedCategory
+      })[0].noOfIcons;
+    }
+
+    // if (query == '') store.dispatch('clearIcons');
+
+    const searchResult = await index.search(query, {
+      facetFilters: [filters],
+      page: page,
+      hitsPerPage: hitsPerPage,
       attributesToRetrieve: ['iconName', 'iconImage18px', 'iconImage24px', 'objectID', 'downloads'],
       attributesToHighlight: null,
     });
-    console.log(searchResult);
-    // this.searchResults = searchResult;
-    // this.setIcons(searchResult.hits);
+
+    console.log('query: ', query);
+    console.log('filters: ', filters);
+    console.log('page: ', page);
+    console.log('hitsPerPage: ', hitsPerPage);
+
+    console.log("searchResult.hits: ", searchResult.hits);
+    store.dispatch('setDataToState', {state: 'isFetchingData', data: false});
+    if(appendIcons) store.dispatch('addIcons', searchResult.hits);
+    if(!appendIcons) store.dispatch('setIcons', searchResult.hits);
+  },
+
+  async fetchTotalNoOfRecods(store){
+    const noOfRecords = await index.search('', {
+      hitsPerPage: 0,
+      attributesToRetrieve: null,
+      attributesToHighlight: null,
+      analytics: false
+    });
+
+    this.totalNoOfIcons = noOfRecords.nbHits;
+    store.dispatch('setDataToState', {state: 'totalNoOfIcons', data: this.totalNoOfIcons});
   },
 
   async fetchIconCategories(store){
     let iconCategories = await getCategoriesFromStrapi();
-    // console.log("iconCategories: ", iconCategories);
+    console.log("fetchIconCategorie");
     try {
       store.commit('setDataToState', {state: 'iconCategories', data: iconCategories})
     } catch (error) {
@@ -255,6 +335,14 @@ export const getters = {
 
   getSearchValue(state) {
     return state.searchValue;
+  },
+
+  getIsFetchingData(state) {
+    return state.isFetchingData;
+  },
+
+  getAlgoliaPage(state) {
+    return state.algoliaPage;
   },
 
 }

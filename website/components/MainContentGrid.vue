@@ -13,12 +13,9 @@
           <CategoryButton
             v-for="category in categories"
             :key="category.categoryName"
-            :active="category.categoryName == selectedCategory"
             :category="category"
-            :func="setCategory"
             :icons="category.icons"
-            />
-
+          />
           <div class="divider-horizontal w-80 m-all-a opacity-30">‎</div>
 
           <div class="category-side-bar-wrapper">
@@ -27,9 +24,8 @@
               :key="category.categoryName"
               :category="category"
               :active="category.categoryName == selectedCategory"
-              :func="setCategory"
-              :icons="category.icons.data.length"
-            />
+              :icons="category.noOfIcons"
+              />
           </div>
         </div>
       </div>
@@ -134,21 +130,12 @@
         fetchIcons: 'store/fetchIcons',
         fetchIconCategories: 'store/fetchIconCategories',
         fetchSinglePage: 'store/fetchSinglePage',
-        getState: 'store/getState',
-        searchAlgolia: 'store/searchAlgolia'
+        getState: 'store/getState'
       }),
 
       setIconSize(){
         let size = this.size;
         this.setDataToState({state: 'iconSize', data: size})
-      },
-
-      async setCategory(e){
-        let category = e.target.id
-        this.setDataToState({state: 'selectedCategory', data: category})
-        this.searchAlgolia({query: this.getSearchValue, category: 'categories: '+category})
-        // this.scrollTo(520)
-        this.selectedCategory = category
       },
     },
 

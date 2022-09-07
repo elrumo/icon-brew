@@ -213,12 +213,13 @@ export default {
     // },
   },
 
-  // server: {
+  server: {
+    port: 4500,
   //   https: {
   //     key: fs.readFileSync(path.resolve(__dirname, 'server.key')),
   //     cert: fs.readFileSync(path.resolve(__dirname, 'server.crt'))
   //   }
-  // }
+  }
 
 
 }

@@ -149,9 +149,7 @@
           {name: "24px", code: "iconImage24px"}
         ],
 
-        fetchingData: false,
         algoliaPage: 0,
-        totalNoOfIcons: 0
       }
     },
 
@@ -170,7 +168,8 @@
 
     async fetch(){
       try {
-        await this.fetchAlgolia()
+        await this.fetchTotalNoOfRecods();
+        await this.searchAlgolia({appendIcons: false});
       } catch (error) {
         console.log(error);
       }
@@ -192,6 +191,9 @@
         addIcons: 'store/addIcons',
         clearIcons: 'store/clearIcons',
         setDataToState: 'store/setDataToState',
+        fetchTotalNoOfRecods: 'store/fetchTotalNoOfRecods',
+        addOneToPage: 'store/addOneToPage',
+        searchAlgolia: 'store/searchAlgolia',
       }),
 
       scroll() {
@@ -201,10 +203,10 @@
           let bottomOfWindow = Math.ceil(document.body.offsetHeight - (window.pageYOffset + window.innerHeight)) < margin;
           this.isIntersectingElement = this.$refs.searchBarWrapper.getBoundingClientRect().top <= 70;
 
-          if (bottomOfWindow && !this.fetchingData && searchEmpty) {
-            this.fetchingData = true
-            this.algoliaPage++
-            this.fetchAlgolia()
+          if (bottomOfWindow && !this.getIsFetchingData && searchEmpty) {
+            this.setDataToState({state: 'fetchingData', data: true});
+            this.addOneToPage()
+            this.searchAlgolia({appendIcons: true})
           }
         }
       },
@@ -255,49 +257,7 @@
 
       async getFromAlgolia(){
         this.setDataToState({state: 'searchValue', data: this.searchValue});
-
-        if (this.searchValue == '') {
-          this.clearIcons()
-          this.fetchAlgolia()
-          return
-        } else{
-          this.searchAlgolia()
-        }
-
-      },
-
-      async fetchAlgolia(){
-        const searchResult = await index.search('', {
-          page: this.algoliaPage,
-          hitsPerPage: 40,
-          attributesToRetrieve: ['iconName', 'iconImage18px', 'iconImage24px', 'objectID', 'downloads'],
-          attributesToHighlight: null,
-        });
-
-        const noOfRecords = await index.search('', {
-          hitsPerPage: 0,
-          attributesToRetrieve: null,
-          attributesToHighlight: null,
-          analytics: false
-        });
-
-        this.totalNoOfIcons = noOfRecords.nbHits;
-        this.setDataToState({state: 'totalNoOfIcons', data: this.totalNoOfIcons});
-
-        this.searchResults = searchResult;
-        this.addIcons(searchResult.hits);
-        this.fetchingData = false;
-      },
-
-      async searchAlgolia(){
-        const searchResult = await index.search(this.searchValue, {
-          page: 0,
-          hitsPerPage: 500,
-          attributesToRetrieve: ['iconName', 'iconImage18px', 'iconImage24px', 'objectID', 'downloads'],
-          attributesToHighlight: null,
-        });
-        this.searchResults = searchResult;
-        this.setIcons(searchResult.hits);
+        this.searchAlgolia({appendIcons: false});
       },
 
       handleIntersection(payload){
@@ -318,6 +278,8 @@
     computed:{
       ...mapGetters({
         getNumberOfIcons: 'store/getNumberOfIcons',
+        getIsFetchingData: 'store/getIsFetchingData',
+        getAlgoliaPage: 'store/getAlgoliaPage',
       }),
     },
   }

@@ -104,15 +104,6 @@
         });
       },
 
-      async searchAlgolia(){
-        const searchResult = await index.search(this.searchValue, {
-          page: 0,
-          hitsPerPage: 200
-        });
-        this.searchResults = searchResult;
-        this.setIcons(searchResult.hits);
-      },
-
       handleIntersection(payload){
         const y = payload[0].boundingClientRect.y
 

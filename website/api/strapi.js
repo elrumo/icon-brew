@@ -16,8 +16,11 @@ async function getIconsFromStrapi() {
 }
 
 async function getCategoriesFromStrapi() {
-    // let categories = await axios.get('https://api.macosicons.com/api/icon-brew-categories?populate[icon][fields][1]=iconName?populate[icons]=*')
-    let categories = await axios.get('https://api.macosicons.com/api/icon-brew-categories?populate=*')
+    let categories = await axios.get('https://api.macosicons.com/api/icon-brew-categories?populate[0]=icon')
+    // let categories = await axios.get('https://api.macosicons.com/api/icon-brew-categories?fields=noOfIcons,categoryName')
+    // let categories = await axios.get('https://api.macosicons.com/api/icon-brew-categories?populate=*')
+
+    console.log('getCategoriesFromStrapi');
 
     let categoriesArr = []
 

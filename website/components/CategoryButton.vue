@@ -3,11 +3,11 @@
   <div>
     <button
       tabindex="0"
-      @click="func"
+      @click="setCategoryAction(category.categoryName)"
       :id="category.categoryName"
       :class="{
           'category-item-wrapper': true,
-          'category-item-selected': active
+          'category-item-selected': getSelectedCategory == category.categoryName,
         }"
     >
       <div
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+  import { mapMutations, mapActions, mapGetters } from 'vuex'
   import IconBrewIcon from '../components/IconBrewIcon.vue'
 
   export default {
@@ -39,13 +40,7 @@
 
     props:{
       func:{
-        type: Function,
         required: false,
-      },
-
-      active: {
-        type: Boolean,
-        default: false,
       },
 
       icons: {
@@ -61,6 +56,24 @@
           code: 'dashboard'
         }
      }
+    },
+
+    methods: {
+      ...mapActions({
+        setDataToState: 'store/setDataToState',
+        setCategory: 'store/setCategory',
+      }),
+
+      async setCategoryAction(categoryName){
+        this.setCategory({category: categoryName})
+      }
+    },
+
+    computed: {
+      ...mapGetters({
+        getSearchValue: 'store/getSearchValue',
+        getSelectedCategory: 'store/getSelectedCategory',
+      })
     },
 
     data(){
