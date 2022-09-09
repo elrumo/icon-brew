@@ -291,6 +291,7 @@
 
       async getFromAlgolia(){
         this.setDataToState({state: 'searchValue', data: this.searchValue});
+        this.setDataToState({state: 'algoliaPage', data: 0});
         this.searchAlgolia({appendIcons: false});
       },
 

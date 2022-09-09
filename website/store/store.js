@@ -167,6 +167,10 @@ export const actions = {
       })[0].noOfIcons;
     }
 
+    console.log("filters: ", filters);
+    console.log("query: ", query);
+    console.log("page: ", page);
+
     const searchResult = await index.search(query, {
       facetFilters: [filters],
       page: page,
