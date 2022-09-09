@@ -85,10 +85,10 @@
     },
 
     async mounted() {
-      await this.fetchSuggestionsHero()
     },
 
     async fetch() {
+      await this.fetchSuggestionsHero()
         // await this.fetchSinglePage({id: 'icon-brew-about', state: 'aboutPageData'})
     },
 

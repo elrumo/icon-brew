@@ -7,6 +7,36 @@
       :isLink="false"
     />
 
+    <Dialog
+      :closeOnEscape="true"
+      :visible="showDialog"
+      :modal="true"
+      :closable="false"
+    >
+      <template #header>
+        <h3>
+          {{ getHomeData.dialogTitle }}
+        </h3>
+      </template>
+
+        <div
+          class="dialog-content"
+          v-if="getHomeData.dialogText"
+          v-html="$md.render(getHomeData.dialogText)"
+        ></div>
+
+      <template #footer>
+        <div class="p-t-md">
+          <Button
+            @click="showDialog = false"
+            autofocus
+            label="Close"
+            class="p-button-text"
+          />
+        </div>
+        </template>
+    </Dialog>
+
     <!-- <IconBrewIcon
       size="24"
       icon="chromatica"
@@ -58,6 +88,7 @@
   import Footer from '../components/Footer.vue'
   import UploadIcons from '../components/UploadIcons.vue'
   import IconBrewIcon from '../components/IconBrewIcon.vue'
+  import SearchBar from '../components/SearchBar.vue'
 
 
   export default {
@@ -71,19 +102,22 @@
       Footer,
       UploadIcons,
       IconBrewIcon,
-      SearchBar: () => import('../components/SearchBar.vue'),
+      SearchBar
+      // SearchBar: () => import('../components/SearchBar.vue'),
     },
 
     data: function () {
       return {
+        showDialog: false
       }
     },
 
     async mounted() {
-      await this.fetchHomeData()
     },
 
     async fetch() {
+      await this.fetchHomeData();
+      this.showDialog = this.getHomeData.showDialog;
         // await this.fetchSinglePage({id: 'icon-brew-about', state: 'aboutPageData'})
     },
 

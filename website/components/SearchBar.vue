@@ -59,13 +59,23 @@
       <!-- Options wrapper -->
       <div class="options-wrapper">
 
-
         <!-- Color picker -->
-        <ColorPicker
-          defaultColor="ffffff"
+        <div @dblclick="onColorPickerClick('icon')">
+          <ColorPicker
+          defaultColor="FFFFFF"
           id="colorPicker"
           v-model="iconColour"
-        />
+          />
+        </div>
+
+        <!-- Color picker BG -->
+        <div @dblclick="onColorPickerClick('bg')">
+          <ColorPicker
+          defaultColor="1F262F"
+          id="colorPickerBG"
+          v-model="bgColour"
+          />
+        </div>
 
         <!-- Size -->
         <Dropdown
@@ -135,6 +145,7 @@
         // iconWeight: [0, 50, 100],
         searchResults: {},
         iconColour: "#FFFFFF",
+        bgColour: "#1F262F",
 
         downloadAs: {name: 'Download .SVG', code: "downloadSVG"},
         downloadOptions:[
@@ -157,8 +168,7 @@
     },
 
     async mounted(){
-      this.scroll()
-      // this.clearIcons();
+      this.scroll();
 
       if(process.client){
         this.keyboardEvent()
@@ -170,15 +180,21 @@
       try {
         await this.fetchTotalNoOfRecods();
         await this.searchAlgolia({appendIcons: false});
+        this.setDataToState({state: 'previousQuery', data: this.getIcons});
       } catch (error) {
         console.log(error);
       }
     },
 
-     watch:{
+    watch:{
       iconColour:{
         handler() { // Reset toUpdate each time 'icon' changes.
           this.setIconColour()
+        },
+      },
+      bgColour:{
+        handler() { // Reset toUpdate each time 'icon' changes.
+          this.setBgColour()
         },
       }
     },
@@ -199,11 +215,10 @@
       scroll() {
         let margin = 600
         window.onscroll = (e) => {
-          let searchEmpty = this.searchValue == ''
           let bottomOfWindow = Math.ceil(document.body.offsetHeight - (window.pageYOffset + window.innerHeight)) < margin;
           this.isIntersectingElement = this.$refs.searchBarWrapper.getBoundingClientRect().top <= 70;
 
-          if (bottomOfWindow && !this.getIsFetchingData && searchEmpty) {
+          if (bottomOfWindow && !this.getIsFetchingData && this.getPreviousQuery.length != 0) {
             this.setDataToState({state: 'fetchingData', data: true});
             this.addOneToPage()
             this.searchAlgolia({appendIcons: true})
@@ -211,11 +226,30 @@
         }
       },
 
-      setIconColour(e){
-        const colour = this.iconColour
+      setIconColour(){
+        const colour = this.iconColour.replace('#', '')
         const contentArea = document.querySelector(".content-area");
         contentArea.style.color = '#'+colour;
         this.setDataToState({state: 'iconColour', data: colour});
+      },
+
+      setBgColour(){
+        const colour = this.bgColour.replace('#', '');
+        const contentArea = document.querySelectorAll(".icon-card-wrapper");
+        contentArea.forEach((el) => {
+          el.style.backgroundColor = '#'+colour;
+        });
+        this.setDataToState({state: 'bgColour', data: colour});
+      },
+
+      onColorPickerClick(picker){
+        if (picker == 'bg') {
+          this.bgColour = "#1F262F";
+          this.setBgColour()
+        } else{
+          this.iconColour = "#FFFFFF";
+          this.setIconColour()
+        }
       },
 
       setIconWeight(e){
@@ -280,6 +314,8 @@
         getNumberOfIcons: 'store/getNumberOfIcons',
         getIsFetchingData: 'store/getIsFetchingData',
         getAlgoliaPage: 'store/getAlgoliaPage',
+        getIcons: 'store/getIcons',
+        getPreviousQuery: 'store/getPreviousQuery',
       }),
     },
   }

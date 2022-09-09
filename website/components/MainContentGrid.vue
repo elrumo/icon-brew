@@ -16,7 +16,7 @@
             :category="category"
             :icons="category.icons"
           />
-          <div class="divider-horizontal w-80 m-all-a opacity-30">‎</div>
+          <div class="divider-horizontal w-80 m-all-a opacity-30 desktop-only">‎</div>
 
           <div class="category-side-bar-wrapper">
             <CategoryButton

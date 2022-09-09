@@ -32,12 +32,15 @@ export const state = () => ({
   algoliaPage: 0,
   searchFilters: '',
   isFetchingData: false,
+  previousQuery: [],
 
   singlePageData: '',
   aboutPageData: '',
   selectedIcon: {},
+
   iconWeight: 2,
   iconColour: '#FFFFFF',
+  bgColour: '#1F262F'
 })
 
 export const mutations = {
@@ -47,7 +50,6 @@ export const mutations = {
   },
 
   addDataToState(store, payload){
-    console.log('payload: ', payload);
     payload.data.forEach(item => {
       store[payload.state].push(item);
     });
@@ -144,30 +146,26 @@ export const actions = {
     });
 
     store.dispatch('searchAlgolia', {appendIcons: false});
+    store.dispatch('scrollTo', 460);
   },
 
   async searchAlgolia(store, payload){
     store.dispatch('setDataToState', {state: 'isFetchingData', data: true});
 
-    let appendIcons = payload.appendIcons
-    ;
+    let appendIcons = payload.appendIcons;
     let query = store.state.searchValue;
     let filters = store.state.searchFilters;
     let hitsPerPage = store.state.hitsPerPage;
-    let isFetchingData = store.state.isFetchingData;
     let page = store.state.algoliaPage;
     let selectedCategory = store.state.selectedCategory;
     let iconCategories = store.state.iconCategories;
     let noOfIcons = store.state.totalNoOfIcons;
 
     if(selectedCategory != "All Icons"){
-      console.log('Hiii');
       noOfIcons = iconCategories.filter(category => {
         return category.categoryName === selectedCategory
       })[0].noOfIcons;
     }
-
-    // if (query == '') store.dispatch('clearIcons');
 
     const searchResult = await index.search(query, {
       facetFilters: [filters],
@@ -177,13 +175,9 @@ export const actions = {
       attributesToHighlight: null,
     });
 
-    console.log('query: ', query);
-    console.log('filters: ', filters);
-    console.log('page: ', page);
-    console.log('hitsPerPage: ', hitsPerPage);
-
-    console.log("searchResult.hits: ", searchResult.hits);
     store.dispatch('setDataToState', {state: 'isFetchingData', data: false});
+    store.dispatch('setDataToState', {state: 'previousQuery', data: searchResult.hits});
+
     if(appendIcons) store.dispatch('addIcons', searchResult.hits);
     if(!appendIcons) store.dispatch('setIcons', searchResult.hits);
   },
@@ -343,6 +337,10 @@ export const getters = {
 
   getAlgoliaPage(state) {
     return state.algoliaPage;
+  },
+
+  getPreviousQuery(state) {
+    return state.previousQuery;
   },
 
 }

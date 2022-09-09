@@ -29,12 +29,6 @@
     <div
       class="justify-end nav-bar-page-links"
     >
-        <!-- <NuxtLink
-          class="nuxt-link"
-          to="/"
-        >
-          Resources
-        </NuxtLink> -->
 
         <div v-for="item in getHomeData.navBarItems" :key="item.nameToDisplay">
           <NuxtLink
