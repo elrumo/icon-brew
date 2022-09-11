@@ -115,11 +115,10 @@
       }
     },
 
-    mounted(){
+    async mounted(){
     },
 
     async fetch() {
-      await this.fetchIconCategories()
       // await this.fetchIcons()
     },
 

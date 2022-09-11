@@ -180,6 +180,7 @@
       try {
         await this.fetchTotalNoOfRecods();
         await this.searchAlgolia({appendIcons: false});
+        await this.fetchIconCategories();
         this.setDataToState({state: 'previousQuery', data: this.getIcons});
       } catch (error) {
         console.log(error);
@@ -210,11 +211,15 @@
         fetchTotalNoOfRecods: 'store/fetchTotalNoOfRecods',
         addOneToPage: 'store/addOneToPage',
         searchAlgolia: 'store/searchAlgolia',
+        fetchIconCategories: 'store/fetchIconCategories',
       }),
 
       scroll() {
         let margin = 600
         window.onscroll = (e) => {
+          if(! this.$refs.searchBarWrapper){
+            return
+          }
           let bottomOfWindow = Math.ceil(document.body.offsetHeight - (window.pageYOffset + window.innerHeight)) < margin;
           this.isIntersectingElement = this.$refs.searchBarWrapper.getBoundingClientRect().top <= 70;
 

@@ -16,7 +16,6 @@ export const state = () => ({
   icons: [],
   iconCategories: [],
   totalNoOfIcons: 0,
-  hitsPerPage: 0,
   iconSize: 'iconImage24px',
   downloadAs: 'downloadSVG',
   homeData: {

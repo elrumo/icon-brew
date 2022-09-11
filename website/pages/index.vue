@@ -9,7 +9,7 @@
 
     <Dialog
       :closeOnEscape="true"
-      :visible="showDialog"
+      :visible="showDialog && cookieShowDialog"
       :modal="true"
       :closable="false"
     >
@@ -28,10 +28,14 @@
       <template #footer>
         <div class="p-t-md">
           <Button
-            @click="showDialog = false"
-            autofocus
+            @click="closeDialog(false)"
             label="Close"
             class="p-button-text"
+          />
+          <Button
+            @click="closeDialog(true)"
+            autofocus
+            label="Close & don't show again"
           />
         </div>
         </template>
@@ -108,17 +112,34 @@
 
     data: function () {
       return {
-        showDialog: false
+        showDialog: false,
+        cookieShowDialog: false
+      }
+    },
+
+    created() {
+      if (process.client) {
+        // handle client side
       }
     },
 
     async mounted() {
+      let cookie = this.str_obj(document.cookie);
+
+      if (cookie.showDialog == undefined) {
+        let currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() + 30);
+        document.cookie =  "showDialog="+true+ "; expires="+currentDate.toString();
+        this.cookieShowDialog = 'true';
+      } else{
+        this.cookieShowDialog = cookie.showDialog;
+      }
+
     },
 
     async fetch() {
       await this.fetchHomeData();
       this.showDialog = this.getHomeData.showDialog;
-        // await this.fetchSinglePage({id: 'icon-brew-about', state: 'aboutPageData'})
     },
 
     methods: {
@@ -126,12 +147,36 @@
         fetchHomeData: 'store/fetchHomeData',
         fetchSinglePage: 'store/fetchSinglePage',
       }),
+
+      str_obj(str) {
+          str = str.split(', ');
+          var result = {};
+          for (var i = 0; i < str.length; i++) {
+              var cur = str[i].split('=');
+              result[cur[0]] = cur[1] == 'true' ? true : false;
+          }
+          return result;
+      },
+
+      closeDialog(rememberChoice){
+        this.showDialog = false;
+        this.cookieShowDialog = false;
+        let currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() + 30);
+        document.cookie =  "showDialog="+!rememberChoice+ "; expires="+currentDate.toString();
+        // document.cookie =  "showDialog=" + JSON.stringify(cookie) + "; expires=Thu, 9 Oct 2022 12:00:00 UTC";
+        console.log(document.cookie);
+      }
     },
 
     computed: {
       ...mapGetters({
         getHomeData: 'store/getHomeData',
       }),
+
+      getCookie(){
+        return this.str_obj(document.cookie);
+      }
     },
 
 
