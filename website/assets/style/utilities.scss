@@ -9,6 +9,7 @@
 }
 
 :root{
+  --xxsm: 0.25rem;
   --xsm: 0.5rem;
   --sm: 1rem;
   --md: 1.5rem;
@@ -287,6 +288,10 @@
   justify-content: space-between;
 }
 
+.gap-xxsm{
+  gap: var(--xxsm) !important;
+}
+
 .gap-xsm{
   gap: var(--xsm) !important;
 }
@@ -305,6 +310,14 @@
 
 .gap-xlg{
   gap: var(--xlg) !important;
+}
+
+.cursor-pointer{
+  cursor: pointer !important;
+}
+
+.cursor-default{
+  cursor: default !important;
 }
 
 .text-elipses {
@@ -468,6 +481,10 @@ h5{
     display: flex;
     flex-direction: column !important;
   }
+}
+
+.opacity-100{
+  opacity: 1 !important;
 }
 
 .opacity-90{

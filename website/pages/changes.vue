@@ -13,28 +13,11 @@
 
   import LazyHydrate from 'vue-lazy-hydration';
 
-  import HeroSection from '../components/HeroSection.vue'
-  import MainContentGrid from '../components/MainContentGrid.vue'
-  import TopNavBar from '../components/TopNavBar.vue'
-  import Footer from '../components/Footer.vue'
-  import UploadIcons from '../components/UploadIcons.vue'
-  import IconBrewIcon from '../components/IconBrewIcon.vue'
-  import SearchBar from '../components/SearchBar.vue'
-
-
   export default {
     name: 'HomePage',
 
     components:{
       LazyHydrate,
-      MainContentGrid,
-      HeroSection,
-      TopNavBar,
-      Footer,
-      UploadIcons,
-      IconBrewIcon,
-      SearchBar
-      // SearchBar: () => import('../components/SearchBar.vue'),
     },
 
     data: function () {

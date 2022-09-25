@@ -13,7 +13,7 @@
       :width="size == 'large' ? '89px':'28px'"
       class="hero-logo"
       alt="IconBrew logo"
-    >
+    />
     <p
       v-if="withText"
       class="icon-brew-logo-text"

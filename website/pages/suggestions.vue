@@ -7,50 +7,41 @@
       :isLink="false"
     />
 
-    <Toast
-      position="bottom-center"
-      group="iconDownload"
-      class="icon-download-toast"
-    >
-      <template #message="slotProps">
-          <div class="custom-toast">
+    <div class="page-wrapper">
+
+      <div
+        v-for="suggestion in getIconSuggestions"
+        :key="suggestion.id"
+        class="content-card-secondary p-all-md w-max-sm m-all-a"
+      >
+        <div class="icon-card-wrapper cursor-default p-tb-sm p-rl-sm flex-row align-center gap-sm w-100">
+
+          <div class="flex-col gap-xxsm">
             <IconBrewIcon
-              size="24"
-              icon="check"
-              :filled="false"
+              size="18"
+              icon="triangle-up-outline"
+              iconOnHover="triangle-up-filled"
             />
-            <p>
-              <b>
-                '{{slotProps.message.summary}}'
-              </b>
-              {{slotProps.message.detail}}
+            <IconBrewIcon
+              size="18"
+              icon="triangle-down-outline"
+              iconOnHover="triangle-down-filled"
+            />
+          </div>
+
+          <div class="flex-col gap-xxsm">
+            <p class="opacity-100 text-sm">
+              {{suggestion.attributes.name}}
+            </p>
+            <p class="text-sm">
+              AI icon
             </p>
           </div>
-      </template>
-    </Toast>
 
-    <LazyHydrate when-idle>
-      <div class="page-wrapper main-layout-wrapper">
-
-        <div class="content-card-secondary p-all-md w-max-sm m-all-a">
-          <div class="icon-card-wrapper p-tb-xsm p-rl-md flex-row align-center gap-sm w-100">
-            <div class="flex-col">
-              <div> H </div>
-              <div> H </div>
-            </div>
-            <div class="flex-col">
-              <p>
-                AI icon
-              </p>
-              <p>
-                AI icon
-              </p>
-            </div>
-          </div>
         </div>
-
       </div>
-    </LazyHydrate>
+
+    </div>
 
   </div>
 </template>
@@ -62,9 +53,7 @@
 
   import HeroSection from '../components/HeroSection.vue'
   import MainContentGrid from '../components/MainContentGrid.vue'
-  import TopNavBar from '../components/TopNavBar.vue'
-  import Footer from '../components/Footer.vue'
-  import UploadIcons from '../components/UploadIcons.vue'
+  import IconBrewIcon from '../components/IconBrewIcon.vue'
 
   export default {
     name: 'HomePage',
@@ -73,10 +62,7 @@
       LazyHydrate,
       MainContentGrid,
       HeroSection,
-      TopNavBar,
-      Footer,
-      UploadIcons,
-      SearchBar: () => import('../components/SearchBar.vue'),
+      IconBrewIcon
     },
 
     data: function () {
@@ -89,18 +75,20 @@
 
     async fetch() {
       await this.fetchSuggestionsHero()
-        // await this.fetchSinglePage({id: 'icon-brew-about', state: 'aboutPageData'})
+      await this.fetchSuggestions()
     },
 
     methods: {
       ...mapActions({
         fetchSuggestionsHero: 'store/fetchSuggestionsHero',
+        fetchSuggestions: 'store/fetchSuggestions',
       }),
     },
 
     computed: {
       ...mapGetters({
         getSuggestionsHero: 'store/getSuggestionsHero',
+        getIconSuggestions: 'store/getIconSuggestions',
       }),
 
     },

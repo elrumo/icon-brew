@@ -35,10 +35,10 @@
             'movedBySearch': searchValue.length != 0
           }"
         >
-            <img
+          <img
             :src="imgs.searchByAlgolia"
             alt="Search by Algolia"
-          >
+          />
         </a>
         <span
           @click="searchValue = '', getFromAlgolia()"

@@ -8,7 +8,7 @@
         class="article-body-img"
         v-if="contentData.mainImage"
         :src="'https://api.macosicons.com/'+contentData.mainImage.data.attributes.formats.large.url" alt=""
-      >
+      />
 
       <div
         v-if="contentData.body"

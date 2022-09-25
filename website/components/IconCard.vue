@@ -17,30 +17,8 @@
               'icon-image-18': iconSize === 'iconImage18px',
             }"
           :id="icon.name"
-          fill="none"
         ></svg>
-          <!-- style="color: #3f2727" -->
-
-          <!-- <img
-            :src="icon.iconImage24px"
-            :class="{
-              'icon-image-24': iconSize === 'iconImage24px',
-              'icon-image-18': iconSize === 'iconImage18px',
-            }"
-            :id="icon.name"
-            :alt="icon.name"
-          /> -->
-
-        <!-- <div
-          v-html="iconSize === 'iconImage24px'? iconImage24px : iconImage18px"
-          :class="{
-            'icon-image-24': iconSize === 'iconImage24px',
-            'icon-image-18': iconSize === 'iconImage18px',
-          }"
-          :id="icon.name"
-          :alt="icon.name"
-        >
-        </div> -->
+          <!-- fill="none" -->
 
       </div>
 

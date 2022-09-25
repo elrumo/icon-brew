@@ -20,8 +20,6 @@ async function getCategoriesFromStrapi() {
     // let categories = await axios.get('https://api.macosicons.com/api/icon-brew-categories?fields=noOfIcons,categoryName')
     // let categories = await axios.get('https://api.macosicons.com/api/icon-brew-categories?populate=*')
 
-    console.log('getCategoriesFromStrapi');
-
     let categoriesArr = []
 
     categories.data.data.sort((a, b) => {
@@ -59,8 +57,13 @@ async function getHomeData() {
 }
 
 async function getSuggestionsHero() {
-  let suggestionsHome = await axios.get('https://api.macosicons.com/api/suggestions-home?populate=*')
+  let suggestionsHome = await axios.get('https://api.macosicons.com/api/suggestions-hero?populate=*')
   return suggestionsHome.data.data.attributes;
+}
+
+async function getSuggestions() {
+  let suggestionsHome = await axios.get('https://api.macosicons.com/api/icon-suggestions?fields[0]=name&&fields[0]=description&&fields[0]=references&&sort[0]=votes&&populate[categories][fields]=categoryName')
+  return suggestionsHome.data.data;
 }
 
 async function getSinglePage(id) {
@@ -91,5 +94,6 @@ export {
     getTagsFromStrapi,
     getHomeData,
     getSinglePage,
-    getSuggestionsHero
+    getSuggestionsHero,
+    getSuggestions
 }

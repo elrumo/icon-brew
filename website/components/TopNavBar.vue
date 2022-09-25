@@ -14,14 +14,12 @@
         <IconBrewIcon
           size="24"
           icon="twitter"
-          :filled="false"
         />
       </a>
       <a href="https://github.com/elrumo/icon-brew" target="blank">
         <IconBrewIcon
           size="24"
           icon="github"
-          :filled="false"
         />
       </a>
     </div>
@@ -49,14 +47,14 @@
           </a>
         </div>
 
-        <!-- <NuxtLink
+        <NuxtLink
           class="nuxt-link"
           to="/suggestions"
         >
           Suggestions
         </NuxtLink>
 
-        <a
+        <!-- <a
           class="nuxt-link"
           href="https://github.com/elrumo/icon-brew/discussions"
           target="_blank"

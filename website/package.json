@@ -31,5 +31,8 @@
     "vue-server-renderer": "^2.6.14",
     "vue-template-compiler": "^2.6.14",
     "webpack": "^4.46.0"
+  },
+  "devDependencies": {
+    "@nuxt/image": "^0.7.1"
   }
 }

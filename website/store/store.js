@@ -9,7 +9,8 @@ import {
   getCategoriesFromStrapi,
   getHomeData,
   getSinglePage,
-  getSuggestionsHero
+  getSuggestionsHero,
+  getSuggestions
 } from '@/api/strapi';
 
 export const state = () => ({
@@ -24,6 +25,7 @@ export const state = () => ({
   suggestionsHero: {
     "title": "Missing an icon?", "subtitle": "Is there an icon you’d like to see on the site? Suggest it, or if somoene already has, upvote it!.", "createdAt": "2022-03-13T15:52:01.596Z", "updatedAt": "2022-07-16T20:12:28.849Z", "publishedAt": "2022-03-13T15:52:02.867Z", "button": "Suggest an icon", "buttonUrl": "https://www.figma.com/community/file/1121752926262800605", "primaryButtonIcon": "pi-download", "primaryButtonIsOutline": false, "secondaryButton": "", "secondaryButtonUrl": "", "secondaryButtonIcon": "", "secondaryButtonIsOutline": true, "image": { "data": { "id": 47, "attributes": { "name": "IconBrew-large.png", "alternativeText": "IconBrew-large.png", "caption": "IconBrew-large.png", "width": 1024, "height": 1024, "formats": { "large": { "ext": ".png", "url": "/uploads/large_Icon_Brew_large_e7890b6e4f.png", "hash": "large_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "large_IconBrew-large.png", "path": null, "size": 846.09, "width": 1000, "height": 1000 }, "small": { "ext": ".png", "url": "/uploads/small_Icon_Brew_large_e7890b6e4f.png", "hash": "small_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "small_IconBrew-large.png", "path": null, "size": 239.08, "width": 500, "height": 500 }, "medium": { "ext": ".png", "url": "/uploads/medium_Icon_Brew_large_e7890b6e4f.png", "hash": "medium_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "medium_IconBrew-large.png", "path": null, "size": 515.29, "width": 750, "height": 750 }, "thumbnail": { "ext": ".png", "url": "/uploads/thumbnail_Icon_Brew_large_e7890b6e4f.png", "hash": "thumbnail_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "thumbnail_IconBrew-large.png", "path": null, "size": 32.27, "width": 156, "height": 156 } }, "hash": "Icon_Brew_large_e7890b6e4f", "ext": ".png", "mime": "image/png", "size": 168.11, "url": "/uploads/Icon_Brew_large_e7890b6e4f.png", "previewUrl": null, "provider": "local", "provider_metadata": null, "createdAt": "2022-03-13T15:52:45.146Z", "updatedAt": "2022-03-13T15:52:45.146Z" } } }
   },
+  suggestions:{},
   selectedCategory: 'All Icons',
 
   searchValue: '',
@@ -101,6 +103,15 @@ export const actions = {
     }
   },
 
+  async fetchSuggestions(store){
+    try {
+      let data = await getSuggestions();
+      store.commit('setDataToState', {state: 'suggestions', data: data});
+    } catch (error) {
+      console.log("Error fetching getSuggestions: ", error);
+    }
+  },
+
   async fetchSuggestionsHero(store){
     try {
       let data = await getSuggestionsHero();
@@ -166,10 +177,6 @@ export const actions = {
       })[0].noOfIcons;
     }
 
-    console.log("filters: ", filters);
-    console.log("query: ", query);
-    console.log("page: ", page);
-
     const searchResult = await index.search(query, {
       facetFilters: [filters],
       page: page,
@@ -199,7 +206,6 @@ export const actions = {
 
   async fetchIconCategories(store){
     let iconCategories = await getCategoriesFromStrapi();
-    console.log("fetchIconCategorie");
     try {
       store.commit('setDataToState', {state: 'iconCategories', data: iconCategories})
     } catch (error) {
@@ -308,6 +314,10 @@ export const getters = {
 
   getSuggestionsHero(state) {
     return state.suggestionsHero
+  },
+
+  getIconSuggestions(state) {
+    return state.suggestions
   },
 
   getSelectedIcon(state) {
