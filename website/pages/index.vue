@@ -7,7 +7,7 @@
       :isLink="false"
     />
 
-    <UploadIcons/>
+    <!-- <UploadIcons/> -->
     <CustomDialog :isVisible="showDialog && cookieShowDialog"/>
     <CustomToast/>
 

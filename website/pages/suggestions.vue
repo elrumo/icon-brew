@@ -34,7 +34,7 @@
               {{suggestion.attributes.name}}
             </p>
             <p class="text-sm">
-              AI icon
+              {{suggestion.attributes.suggestedBy}}
             </p>
           </div>
 
