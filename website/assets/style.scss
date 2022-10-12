@@ -585,6 +585,7 @@ svg{
   padding: 60px 0px 48px;
   max-width: 520px;
   text-align: center;
+  gap: 18px;
 
   img{
     width: 89px;
@@ -598,8 +599,7 @@ svg{
   gap: 24px;
   align-items: center;
   justify-content: center;
-
-  padding-top: 28px;
+  // padding-top: 28px;
 }
 
 
@@ -617,6 +617,8 @@ svg{
 .sticky-side-bar{
   position: sticky;
   top: 180px;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .category-side-bar-wrapper-container{
@@ -629,6 +631,7 @@ svg{
   height: fit-content;
   width: 100%;
   max-height: calc(91vh - 100px);
+  min-height: 600px;
   padding: 12px;
   z-index: 2;
   overflow-y: auto;
@@ -800,6 +803,11 @@ svg{
   padding: 24px;
 }
 
+.height-weight-18{
+  height: 18px;
+  width: 18px;
+}
+
 @media screen and (max-width: 1350px){
   .content-area{
     // UNCOMMENT
@@ -875,8 +883,23 @@ svg{
     width: 100%;
   }
 
+
   .p-dropdown .p-dropdown-trigger{
     padding: 0px 1.3rem 0px 0.7rem !important;
+  }
+
+  .p-dropdown-panel .p-dropdown-items{
+    padding: 0.5rem 0 !important;
+  }
+
+  .p-dropdown .p-dropdown-panel{
+    overflow: hidden;
+  }
+
+  .dropdown-option{
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   .sticky-side-bar{

@@ -8,6 +8,7 @@
       'cursor-pointer': isLink
     }"
   >
+  <!-- :src="iconBrew[size]" -->
     <img
       :src="iconBrew[size]"
       :width="size == 'large' ? '89px':'28px'"
@@ -66,6 +67,7 @@
       return{
         iconBrew:{
           small: require('@/assets/images/IconBrew-logo/IconBrew-small.png'),
+          mediumSmall: require('@/assets/images/IconBrew-logo/IconBrew-mediumSmall.png'),
           medium: require('@/assets/images/IconBrew-logo/IconBrew-medium.png'),
           large: require('@/assets/images/IconBrew-logo/IconBrew-large.png'),
         }

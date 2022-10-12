@@ -127,7 +127,6 @@
         scrollTo: 'store/scrollTo',
         setDataToState: 'store/setDataToState',
         fetchIcons: 'store/fetchIcons',
-        fetchIconCategories: 'store/fetchIconCategories',
         fetchSinglePage: 'store/fetchSinglePage',
         getState: 'store/getState'
       }),

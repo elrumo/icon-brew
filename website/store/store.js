@@ -217,6 +217,33 @@ export const actions = {
     store.commit('setDataToState', {state: payload.state, data: payload.data})
   },
 
+  async addVote(store, payload){
+
+    let suggestions = store.state.suggestions
+
+    // Find the suggestion in array
+    let suggestion = suggestions.filter(suggestion => {
+      return suggestion.id === payload.id
+    })[0];
+
+    // find the suggestion index in array
+    let suggestionIndex = suggestions.indexOf(suggestion);
+
+    let votes
+    if (payload.operation === 'add') {
+      votes = suggestions[suggestionIndex].attributes.votes + 1;
+    } else{
+      votes = suggestions[suggestionIndex].attributes.votes - 1;
+    }
+
+    await axios.get('https://api.macosicons.com/api/icon-suggestions/'+payload.operation+'add-vote-count/'+payload.id);
+
+    let selectedSuggestion = JSON.parse(JSON.stringify(suggestions));
+    selectedSuggestion[suggestionIndex].attributes.votes = votes;
+
+    store.commit('setDataToState', {state: 'suggestions', data: selectedSuggestion});
+  },
+
   scrollTo(store, target) {
     if (typeof target == 'number') {
       window.scrollTo(0, target-80)
@@ -298,6 +325,17 @@ export const getters = {
 
   getIcons(state) {
     return state.icons;
+  },
+
+  getIconCategoriesForDropdown(state) {
+    let categories = state.iconCategories.map(category => {
+      return {
+        name: category.categoryName,
+        code: category.categoryName,
+        icon: category.icon
+      }
+    })
+    return categories;
   },
 
   getIconCategories(state) {

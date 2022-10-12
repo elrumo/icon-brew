@@ -278,6 +278,11 @@
   justify-content: space-between;
 }
 
+.flex-col{
+  display: flex;
+  flex-direction: column;
+}
+
 .flex-row-center{
   display: flex;
   align-items: center;
@@ -286,6 +291,21 @@
 
 .space-between{
   justify-content: space-between;
+}
+
+.grid-col-1-auto{
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+.grid-col-1{
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.grid-col-2{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .gap-xxsm{

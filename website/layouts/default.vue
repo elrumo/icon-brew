@@ -9,9 +9,20 @@
 </template>
 
 <script>
-export default {
+  import { mapActions, mapGetters } from 'vuex'
 
-}
+  export default {
+
+    mounted() {
+      this.fetchIconCategories();
+    },
+
+    methods:{
+      ...mapActions({
+        fetchIconCategories: 'store/fetchIconCategories',
+      }),
+    }
+  }
 </script>
 
 <style>

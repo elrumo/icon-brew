@@ -4,7 +4,7 @@
 
     <IconBrewLogo
       direction="vertical"
-      :size="'large'"
+      size="mediumSmall"
       :title="homeData.title"
       :to="to"
       :isLink="isLink"
@@ -19,13 +19,19 @@
 
     <div class="hero-btns-wrapper">
 
+      <Button
+        v-if="customBtn"
+        @click="$emit('bttnFunc')"
+        :label="homeData.button"
+      />
+
       <ButtonLink
-        v-if="homeData.button"
+        v-if="homeData.button && isLink"
         :isLink="homeData.primaryButtonIsLink"
         :url="homeData.buttonUrl"
         :isOutline="homeData.primaryButtonIsOutline"
         :icon="homeData.primaryButtonIcon"
-        :label="homeData.button "
+        :label="homeData.button"
       />
 
       <ButtonLink
@@ -59,6 +65,10 @@
       isLink: {
         type: Boolean,
         default: true
+      },
+      customBtn: {
+        type: Boolean,
+        default: false
       }
     },
 

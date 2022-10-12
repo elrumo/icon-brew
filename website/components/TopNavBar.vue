@@ -74,7 +74,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
 
   import IconBrewLogo from '../components/IconBrewLogo.vue'
   import IconBrewIcon from '../components/IconBrewIcon.vue'
@@ -94,6 +94,18 @@
     data(){
       return{
       }
+    },
+
+    async fetch() {
+      await this.fetchHomeData();
+      this.showDialog = this.getHomeData.showDialog;
+    },
+
+    methods: {
+      ...mapActions({
+        fetchHomeData: 'store/fetchHomeData',
+        fetchSinglePage: 'store/fetchSinglePage',
+      }),
     },
 
     computed: {

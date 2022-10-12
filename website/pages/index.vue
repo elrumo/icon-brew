@@ -47,7 +47,7 @@
       return {
         showDialog: false,
         cookieShowDialog: false,
-        iconTest: iconTest,
+        iconTest: iconTest
       }
     },
 
@@ -61,7 +61,7 @@
     },
 
     async fetch() {
-      await this.fetchHomeData();
+    //   await this.fetchHomeData();
       this.showDialog = this.getHomeData.showDialog;
     },
 
@@ -70,6 +70,22 @@
         fetchHomeData: 'store/fetchHomeData',
         fetchSinglePage: 'store/fetchSinglePage',
       }),
+
+      nextPage(event) {
+            for (let field in event.formData) {
+                this.formObject[field] = event.formData[field];
+            }
+
+            this.$router.push(this.items[event.pageIndex + 1].to);
+      },
+
+      prevPage(event) {
+          this.$router.push(this.items[event.pageIndex - 1].to);
+      },
+
+      complete() {
+          this.$toast.add({severity:'success', summary:'Order submitted', detail: 'Dear, ' + this.formObject.firstname + ' ' + this.formObject.lastname + ' your order completed.'});
+      }
     },
 
     computed: {

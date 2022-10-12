@@ -178,9 +178,9 @@
 
     async fetch(){
       try {
-        await this.fetchTotalNoOfRecods();
+        this.fetchTotalNoOfRecods();
         await this.searchAlgolia({appendIcons: false});
-        await this.fetchIconCategories();
+        // await this.fetchIconCategories();
         this.setDataToState({state: 'previousQuery', data: this.getIcons});
       } catch (error) {
         console.log(error);

@@ -62,7 +62,7 @@ async function getSuggestionsHero() {
 }
 
 async function getSuggestions() {
-  let suggestionsHome = await axios.get('https://api.macosicons.com/api/icon-suggestions?fields[0]=name&&fields[0]=description&&fields[0]=suggestedBy&&fields[0]=references&&sort[0]=votes&&populate[categories][fields]=categoryName')
+  let suggestionsHome = await axios.get('https://api.macosicons.com/api/icon-suggestions?fields[0]=name&&fields[0]=description&&fields[0]=suggestedBy&&fields[0]=references&&fields[0]=votes&&populate[categories][fields]=categoryName')
   return suggestionsHome.data.data;
 }
 
