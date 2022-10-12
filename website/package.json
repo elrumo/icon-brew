@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
-    "generate": "nuxt generate"
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "start": "nuxi start",
+    "generate": "nuxi generate"
   },
   "dependencies": {
     "@iconfu/svg-inject": "^1.2.3",
@@ -36,6 +36,7 @@
     "webpack": "^4.46.0"
   },
   "devDependencies": {
+    "@nuxt/bridge": "npm:@nuxt/bridge-edge@^3.0.0-27747000.69db93e",
     "@nuxt/image": "^0.7.1"
   }
 }

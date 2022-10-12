@@ -1,7 +1,8 @@
 import path from 'path'
 import fs from 'fs'
+import { defineNuxtConfig } from '@nuxt/bridge'
 
-export default {
+export default defineNuxtConfig({
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'IconBrew - open source icon pack/set!',
@@ -133,6 +134,7 @@ export default {
   buildModules: [
     '@nuxtjs/dotenv',
     '@nuxt/image',
+    // '@nuxtjs/composition-api/module'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -224,4 +226,4 @@ export default {
   }
 
 
-}
+})
