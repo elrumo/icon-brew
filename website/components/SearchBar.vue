@@ -168,9 +168,9 @@
     },
 
     async mounted(){
-      this.scroll();
 
       if(process.client){
+        this.scroll();
         this.keyboardEvent()
       }
 
@@ -222,7 +222,7 @@
           }
           let bottomOfWindow = Math.ceil(document.body.offsetHeight - (window.pageYOffset + window.innerHeight)) < margin;
           this.isIntersectingElement = this.$refs.searchBarWrapper.getBoundingClientRect().top <= 70;
-
+          console.log(e);
           if (bottomOfWindow && !this.getIsFetchingData && this.getPreviousQuery.length != 0) {
             this.setDataToState({state: 'fetchingData', data: true});
             this.addOneToPage()

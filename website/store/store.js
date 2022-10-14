@@ -39,12 +39,21 @@ export const state = () => ({
   aboutPageData: '',
   selectedIcon: {},
 
+  iconSuggestionForm: {
+    isValid: false,
+    formData: {}
+  },
+
   iconWeight: 2,
   iconColour: '#FFFFFF',
   bgColour: '#1F262F'
 })
 
 export const mutations = {
+
+  mutateFormData(store, payload){
+    store.iconSuggestionForm = payload.data;
+  },
 
   setDataToState(store, payload){
     store[payload.state] = payload.data;
@@ -63,7 +72,6 @@ export const actions = {
   setDataToStore(store, data){
     store.commit('setDataToState', {state: data.state, data: data.data});
   },
-
 
   setIcons(store, icons){
     store.commit('setDataToState', {state: 'icons', data: icons});
@@ -315,6 +323,12 @@ export const actions = {
 
   },
 
+  setIconSuggestionForm(store, payload) {
+    console.log("payload: ", payload);
+    store.commit('mutateFormData', {data: payload})
+    // store.commit('setDataToState', {state: 'iconSuggestionForm', data: payload})
+  },
+
   getState(store, payload) {
     return store.state[payload.state]
   }
@@ -392,6 +406,10 @@ export const getters = {
 
   getPreviousQuery(state) {
     return state.previousQuery;
+  },
+
+  getIconSuggestionForm(state) {
+    return state.iconSuggestionForm;
   },
 
 }

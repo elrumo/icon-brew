@@ -2,7 +2,8 @@
   <div class="grid-col-1 gap-lg">
 
     Fill in this form to request an icon, I'll try my best to design it soon.
-    {{v$.name}}
+    <br>
+    {{getIconSuggestionForm}}
     <div class="grid-col-1 gap-xsm w-100">
 
       <div class="grid-col-1-auto gap-sm">
@@ -10,7 +11,7 @@
         <!-- Icon name -->
         <div class="field">
           <label for="inputtext">* Icon name</label>
-          <InputText class="w-100" id="inputtext" type="text" v-model="formData.iconName"/>
+          <InputText @change="setFormData()" class="w-100" id="inputtext" type="text" v-model="formData.iconName"/>
         </div>
 
         <!-- Categories -->
@@ -50,18 +51,20 @@
         <label class="" for="inputtext">* Your email</label>
         <InputText class="w-100" id="inputtext" type="text" v-model="formData.email"/>
       </div>
-
       <!-- Notes -->
       <div class="field">
         <label for="inputtext">Other notes <small>(optional)</small></label>
         <Textarea
-          placeholder="Here you can add links to examples, similar icons etc..."
-          class="w-100"
-          id="inputtext"
-          type="textArea"
-          v-model="formData.notes"
+        placeholder="Here you can add links to examples, similar icons etc..."
+        class="w-100"
+        id="inputtext"
+        type="textArea"
+        v-model="formData.notes"
         />
       </div>
+
+      {{ isFormValid }}
+
     </div>
   </div>
 </template>
@@ -100,12 +103,11 @@
 
     validations () {
       return {
-        name: { required },
         formData: {
           iconName: { required },
           categorySelected: { required },
           userName: { required },
-          email: { required }
+          email: { required, email }
         }
       }
     },
@@ -125,6 +127,12 @@
       ...mapActions({
         fetchHomeData: 'store/fetchHomeData',
         fetchSinglePage: 'store/fetchSinglePage',
+        setIconSuggestionForm: 'store/setIconSuggestionForm',
+
+        setFormData() {
+          console.log("Hi");
+          this.setIconSuggestionForm({isValid: this.isFormValid, formData: this.formData})
+        }
       }),
     },
 
@@ -132,7 +140,12 @@
       ...mapGetters({
         getHomeData: 'store/getHomeData',
         getIconCategoriesForDropdown: 'store/getIconCategoriesForDropdown',
+        getIconSuggestionForm: 'store/getIconSuggestionForm',
       }),
+
+      isFormValid () {
+        return !this.v$.$invalid
+      }
     },
 
 
