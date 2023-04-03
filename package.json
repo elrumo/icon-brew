@@ -1,0 +1,45 @@
+{
+  "name": "IconBrew",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "start": "nuxi start",
+    "generate": "nuxi generate"
+  },
+  "dependencies": {
+    "@iconfu/svg-inject": "^1.2.3",
+    "@nuxtjs/algolia": "^0.7.1",
+    "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/dotenv": "^1.4.1",
+    "@nuxtjs/markdownit": "^2.0.0",
+    "@nuxtjs/pwa": "^3.3.5",
+    "@svgdotjs/svg.js": "^3.1.2",
+    "@vuelidate/core": "^2.0.0",
+    "@vuelidate/validators": "^2.0.0",
+    "algoliasearch": "^4.12.2",
+    "axios": "^0.27.2",
+    "core-js": "^3.19.3",
+    "markdown-it": "^12.3.2",
+    "nuxt": "^2.15.8",
+    "parse": "^4.0.1",
+    "pinia": "^2.0.33",
+    "primeflex": "^3.1.2",
+    "primeicons": "^5.0.0",
+    "primevue": "^2.9.0",
+    "sass": "^1.49.7",
+    "sass-loader": "^10.2.1",
+    "scss": "^0.2.4",
+    "vee-validate": "^3.4.14",
+    "vue": "^2.6.14",
+    "vue-lazy-hydration": "^2.0.0-beta.4",
+    "vue-server-renderer": "^2.6.14",
+    "vue-template-compiler": "^2.6.14",
+    "webpack": "^4.46.0"
+  },
+  "devDependencies": {
+    "@nuxt/bridge": "npm:@nuxt/bridge-edge@^3.0.0-27747000.69db93e",
+    "@nuxt/image": "^0.7.1"
+  }
+}
