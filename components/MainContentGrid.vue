@@ -3,7 +3,7 @@
   <div
     :class="{
       'main-layout-wrapper': true,
-      'main-layout-wrapper-extended': Object.keys(getSelectedIcon).length > 0,
+      'main-layout-wrapper-extended': Object.keys(selectedIcon).length > 0,
     }"
   >
     <!-- Sidebar -->
@@ -14,22 +14,22 @@
               v-for="category in categories"
               :key="category.categoryName"
               :category="category"
-              :icons="getNumberOfIcons"
+              :icons="numberOfIcons"
               :isStatic="true"
             />
           <div class="divider-horizontal w-80 m-all-a opacity-30 desktop-only">‎</div>
           
-          <div v-if="getIconCategories.length == 0" class="category-side-bar-wrapper">
+          <div v-if="iconCategories.length == 0" class="category-side-bar-wrapper">
               <Skeleton v-for="n in 17" :key="n+'-placeholder-sidebar'" class="h-2rem mb-2 w-full"/>
           </div>
         
-          <div v-if="getIconCategories.length != 0" class="category-side-bar-wrapper">
+          <div v-if="iconCategories.length != 0" class="category-side-bar-wrapper">
             <CategoryButton
-            v-for="category in getIconCategories"
-            :key="category.categoryName"
-            :category="category"
-            :active="category.categoryName == selectedCategory"
-            :icons="category.noOfIcons != undefined ? category.noOfIcons : 0"
+              v-for="category in iconCategories"
+              :key="category.categoryName"
+              :category="category"
+              :active="category.categoryName == selectedCategory"
+              :icons="category.noOfIcons != undefined ? category.noOfIcons : 0"
             />
           </div>
         </div>
@@ -40,13 +40,13 @@
     <div id="mainContentGrid" class="content-card-secondary main-content-wrapper">
 
       <!-- Skeleton placeholder -->
-      <div v-if="getIcons.length == 0 && getSearchValue.length == 0" class="content-area" style="min-height: 100%">
+      <div v-if="icons.length == 0 && searchValue.length == 0" class="content-area" style="min-height: 100%">
         <Skeleton v-for="n in 42" :key="n+'-placeholder'" class="mb-2 h-full w-full"/>
       </div>
 
-      <div v-if="getIcons.length != 0" class="content-area">
+      <div v-if="icons.length != 0" class="content-area">
         <IconCard
-          v-for="icon in getIcons"
+          v-for="icon in icons"
           :key="icon.iconName"
           :icon="{
               name: icon.iconName,
@@ -59,7 +59,7 @@
       </div>
       <p
         class="no-icons-msg"
-        v-if="getIcons.length == 0 && getSearchValue.length != 0"
+        v-if="icons.length == 0 && searchValue.length != 0"
       >
         No icons found
       </p>
@@ -79,7 +79,8 @@
 </template>
 
 <script>
-  import { mapMutations, mapActions, mapGetters } from 'vuex'
+  import { mapWritableState, mapActions } from 'pinia'
+  import { useStore } from '~/stores/myStore'
 
   export default {
     name: 'MainContentGrid',
@@ -91,7 +92,6 @@
 
     data(){
       return{
-        selectedCategory: 'All Icons',
         is24px: true,
         size: "iconImage24px",
         sizes:[
@@ -101,7 +101,7 @@
           {
             categoryName: 'All Icons',
             icon: 'dashboard',
-            icons: this.getNumberOfIcons
+            icons: this.numberOfIcons
           },
           // {
           //   categoryName: 'Popular',
@@ -130,29 +130,23 @@
     },
 
     methods:{
-      ...mapActions({
-        scrollTo: 'store/scrollTo',
-        setDataToState: 'store/setDataToState',
-        getState: 'store/getState'
-      }),
 
       setIconSize(){
         let size = this.size;
-        this.setDataToState({state: 'iconSize', data: size})
+        this.iconSize = size;
       },
     },
 
     computed:{
-      ...mapGetters({
-        getIcons: 'store/getIcons',
-        iconSize: 'store/iconSize',
-        getIconCategories: 'store/getIconCategories',
-        getSelectedIcon: 'store/getSelectedIcon',
-        getNumberOfIcons: 'store/getNumberOfIcons',
-        getSelectedCategory: 'store/getSelectedCategory',
-        getSearchValue: 'store/getSearchValue',
-      }),
-    }
-
+      ...mapWritableState(useStore ,[
+        'icons',
+        'iconSize',
+        'iconCategories',
+        'selectedIcon',
+        'selectedCategory',
+        'searchValue',
+        'numberOfIcons',
+      ]),
+    },
   }
 </script>

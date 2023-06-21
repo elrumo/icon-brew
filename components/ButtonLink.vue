@@ -7,19 +7,21 @@
       target="_blank"
     >
       <Button
-        v-if="icon"
+        v-if="icon != undefined"
         :label="label"
         :class="{
-          'p-button-outlined': isOutline
+          'p-button-outlined': isOutline,
+          'p-button-small': true
         }"
       />
 
+      <!-- :icon="'pi' + icon" -->
       <Button
         v-else
         :label="label"
-        :icon="'pi' + icon"
         :class="{
-          'p-button-outlined': isOutline
+          'p-button-outlined': isOutline,
+          'p-button-small': true
         }"
       />
     </a>
@@ -30,10 +32,11 @@
       class="nuxt-link"
     >
       <Button
-        v-if="icon"
+        v-if="icon != undefined"
         :label="label"
         :class="{
-          'p-button-outlined': isOutline
+          'p-button-outlined': isOutline,
+          'p-button-small': true
         }"
       />
       <Button
@@ -41,7 +44,8 @@
         :label="label"
         :icon="'pi' + icon"
         :class="{
-          'p-button-outlined': isOutline
+          'p-button-outlined': isOutline,
+          'p-button-small': true
         }"
       />
     </NuxtLink>
@@ -49,7 +53,6 @@
 </template>
 
 <script>
-  import { mapMutations, mapActions, mapGetters } from 'vuex'
   import IconBrewLogo from './IconBrewLogo.vue'
 
   export default {
@@ -70,7 +73,10 @@
       },
       url: '',
       label: '',
-      icon: ''
+      icon: {
+        type: String,
+        default: undefined
+      }
     },
 
     methods:{
@@ -82,8 +88,8 @@
     data(){
       return{
         imgs:{
-          iconBrewMedium: require('@/assets/images/IconBrew-logo/IconBrew-medium.png'),
-          iconBrewLarge: require('@/assets/images/IconBrew-logo/IconBrew-large.png'),
+          iconBrewMedium: '@/assets/images/IconBrew-logo/IconBrew-medium.png',
+          iconBrewLarge: '@/assets/images/IconBrew-logo/IconBrew-large.png',
         }
       }
     }

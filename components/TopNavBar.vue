@@ -1,87 +1,103 @@
 <!-- Please remove this file from your project -->
 <template>
-  <div class="top-nav-bar">
+  <div class="top-nav-bar-container">
+    <div class="top-nav-bar">
 
-    <IconBrewLogo
-      direction="horizontal"
-      class="justify-start"
-      size="small"
-      to="/"
-    />
+      <IconBrewLogo
+        direction="horizontal"
+        class="justify-start"
+        size="small"
+        to="/"
+      />
 
-    <div class="nav-bar-links-wrapper">
-      <!-- <Skeleton height="24px" width="24px"></Skeleton> -->
-      <a class="flex" aria-label="Link to Twitter" href="https://twitter.com/elrumo" target="blank">
-        <IconBrewIcon
-          size="24"
-          icon="twitter"
-        />
-      </a>
-      <a class="flex" aria-label="Link to GitHub" href="https://github.com/elrumo/icon-brew" target="blank">
-        <IconBrewIcon
-          size="24"
-          icon="github"
-        />
-      </a>
-      <a class="flex" aria-label="Link to Figma" href="https://www.figma.com/community/file/1121752926262800605" target="blank">
-        <IconBrewIcon
-          size="24"
-          icon="figma"
-        />
-      </a>
-    </div>
+      <div class="nav-bar-links-wrapper">
+        <!-- <Skeleton height="24px" width="24px"></Skeleton> -->
+        <a class="flex" aria-label="Link to Twitter" href="https://twitter.com/elrumo" target="blank">
+          <IconBrewIcon
+            :size="24"
+            icon="twitter"
+          />
+        </a>
+        <a class="flex" aria-label="Link to GitHub" href="https://github.com/elrumo/icon-brew" target="blank">
+          <IconBrewIcon
+            :size="24"
+            icon="github"
+          />
+        </a>
+        <a class="flex" aria-label="Link to Figma" href="https://www.figma.com/community/file/1121752926262800605" target="blank">
+          <IconBrewIcon
+            :size="24"
+            icon="figma"
+          />
+        </a>
+      </div>
 
-    <div
-      class="justify-end nav-bar-page-links"
-    >
+      <div
+        class="justify-end nav-bar-page-links"
+      >
+          <ButtonLink
+            v-if="homeData.button"
+            :isLink="homeData.primaryButtonIsLink"
+            :url="homeData.buttonUrl"
+            :isOutline="homeData.primaryButtonIsOutline"
+            :label="homeData.button"
+          />
 
-        <div v-for="item in getHomeData.navBarItems" :key="item.nameToDisplay">
-          <NuxtLink
-            v-if="!item.isExternalLink"
-            class="nuxt-link"
-            :to="item.goToPage"
-          >
+          <ButtonLink
+            v-if="homeData.secondaryButton"
+            :isLink="homeData.secondaryButtonIsLink"
+            :url="homeData.secondaryButtonUrl"
+            :isOutline="homeData.secondaryButtonIsOutline"
+            :label="homeData.secondaryButton"
+          />  
+          <!-- <div v-for="item in homeData.navBarItems" :key="item.nameToDisplay">
+            <NuxtLink
+              v-if="!item.isExternalLink"
+              class="nuxt-link"
+              :to="item.goToPage"
+            >
+              {{ item.nameToDisplay }}
+            </NuxtLink>
+
+            <a
+              v-else
+              class="nuxt-link"
+              :href="item.goToPage"
+              target="_blank"
+            >
             {{ item.nameToDisplay }}
-          </NuxtLink>
+            </a>
+          </div> -->
 
-          <a
-            v-else
+          <!-- <NuxtLink
             class="nuxt-link"
-            :href="item.goToPage"
+            to="/suggestions"
+          >
+            Suggestions
+          </NuxtLink> -->
+
+          <!-- <a
+            class="nuxt-link"
+            href="https://github.com/elrumo/icon-brew/discussions"
             target="_blank"
           >
-          {{ item.nameToDisplay }}
+            Discussion
           </a>
-        </div>
 
-        <NuxtLink
-          class="nuxt-link"
-          to="/suggestions"
-        >
-          Suggestions
-        </NuxtLink>
-
-        <!-- <a
-          class="nuxt-link"
-          href="https://github.com/elrumo/icon-brew/discussions"
-          target="_blank"
-        >
-          Discussion
-        </a>
-
-        <NuxtLink
-          class="nuxt-link"
-          to="/about"
-        >
-          About
-        </NuxtLink> -->
+          <NuxtLink
+            class="nuxt-link"
+            to="/about"
+          >
+            About
+          </NuxtLink> -->
+      </div>
     </div>
-
   </div>
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex'
+  import { mapWritableState, mapActions } from 'pinia'
+  import { useStore } from '~/stores/myStore'
 
   import IconBrewLogo from '../components/IconBrewLogo.vue'
   import IconBrewIcon from '../components/IconBrewIcon.vue'
@@ -107,7 +123,7 @@
       if (process.client) {
         try {
           await this.fetchHomeData();
-          this.showDialog = this.getHomeData.showDialog;
+          this.showDialog = this.homeData.showDialog;
         } catch (error) {
         }
       }
@@ -116,21 +132,17 @@
     async fetch() {
       // try {
       //     await this.fetchHomeData();
-      //     this.showDialog = this.getHomeData.showDialog;
+      //     this.showDialog = this.homeData.showDialog;
       //   } catch (error) {
       //   }
     },
 
     methods: {
-      ...mapActions({
-        fetchHomeData: 'store/fetchHomeData',
-      }),
+      ...mapActions(useStore, ['fetchHomeData']),
     },
 
     computed: {
-      ...mapGetters({
-        getHomeData: 'store/getHomeData',
-      }),
+      ...mapWritableState(useStore, ['homeData']),
     },
   }
 </script>

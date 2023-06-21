@@ -1,7 +1,7 @@
 <!-- Please remove this file from your project -->
 <template>
   <div class="hero-wrapper">
-
+    <!-- {{ homeData }} -->
     <IconBrewLogo
       direction="vertical"
       size="mediumSmall"
@@ -49,15 +49,10 @@
 </template>
 
 <script>
-  import { mapMutations, mapActions, mapGetters } from 'vuex'
-  import IconBrewLogo from '../components/IconBrewLogo.vue'
+  // import { mapMutations, mapActions, mapGetters } from 'vuex'
 
   export default {
     name: 'HeroSection',
-
-    components:{
-      IconBrewLogo
-    },
 
     props:{
       homeData: {},
@@ -80,10 +75,6 @@
 
     data(){
       return{
-        imgs:{
-          iconBrewMedium: require('@/assets/images/IconBrew-logo/IconBrew-medium.png'),
-          iconBrewLarge: require('@/assets/images/IconBrew-logo/IconBrew-large.png'),
-        }
       }
     }
   }

@@ -15,8 +15,8 @@
 </template>
 
 <script>
-  import { mapMutations, mapActions, mapGetters } from 'vuex';
-  import axios from 'axios';
+  // import axios from 'axios';
+  import Parse from 'parse/dist/parse.min.js';
 
   export default {
     name: 'UploadIcons',
@@ -44,10 +44,6 @@
     },
 
     methods:{
-      ...mapActions({
-        setDataToStore: 'store/setDataToStore',
-      }),
-
       async deleteStrapiMedia(mediaId){
         let deleteMedia = await axios.delete(
           'https://api.macosicons.com/api/upload/files/'+mediaId,
@@ -60,33 +56,87 @@
       },
 
       async doesIconExist(field, value, deleteMedia) {
-          let icon = await axios.get('https://api.macosicons.com/api/icon-brews?filters['+field+'][$eq]='+value+'&&populate=*')
-          let exists = icon.data.data.length > 0;
+        Parse.initialize('LJsRx6ZQQaHcy0CmDnrk60xk2kRl3RoJK4zWvgfw', 'wo5GMOprqCJ5FIaCC7mF3OAinFukXyFaFWbdjXFZ');
+        Parse.serverURL = 'https://parseapi.back4app.com';
 
-          if (deleteMedia && deleteMedia.delete && exists) {
-            console.log("icon.data.data[0]: ", icon.data.data[0]);
-            if (deleteMedia.media18px && icon.data.data[0].attributes.iconImage18px.data) {
-              let mediaId18px = icon.data.data[0].attributes.iconImage18px.data.id
-              this.deleteStrapiMedia(mediaId18px)
-            }
-            if (deleteMedia.media24px && icon.data.data[0].attributes.iconImage24px.data) {
-              let mediaId24px = icon.data.data[0].attributes.iconImage24px.data.id
-              this.deleteStrapiMedia(mediaId24px)
-            }
+        const Icon = Parse.Object.extend('icons');
+        const query = new Parse.Query(Icon);
+        query.equalTo(field, value);
+        query.include('iconImage18px');
+        query.include('iconImage24px');
 
-            return {
-              exists: exists,
-              icon: icon.data.data[0]
-            };
+        const icon = await query.first();
+        const exists = !!icon;
 
-          }else{
-            return {exists: false}
-          }
+        if (deleteMedia && deleteMedia.delete && exists) {
+          console.log("icon: ", icon);
+          // if (deleteMedia.media18px && icon.get('iconImage18px')) {
+          //   const media18px = icon.get('iconImage18px');
+          //   await media18px.destroy();
+          // }
+          // if (deleteMedia.media24px && icon.get('iconImage24px')) {
+          //   const media24px = icon.get('iconImage24px');
+          //   await media24px.destroy();
+          // }
 
+          return {
+            exists: exists,
+            icon: icon.toJSON()
+          };
+
+        } else {
+          return { exists: false }
+        }
       },
+
+      // async doesIconExist(field, value, deleteMedia) {
+      //     let icon = await axios.get('https://api.macosicons.com/api/icon-brews?filters['+field+'][$eq]='+value+'&&populate=*')
+      //     let exists = icon.data.data.length > 0;
+
+      //     if (deleteMedia && deleteMedia.delete && exists) {
+      //       console.log("icon.data.data[0]: ", icon.data.data[0]);
+      //       if (deleteMedia.media18px && icon.data.data[0].attributes.iconImage18px.data) {
+      //         let mediaId18px = icon.data.data[0].attributes.iconImage18px.data.id
+      //         this.deleteStrapiMedia(mediaId18px)
+      //       }
+      //       if (deleteMedia.media24px && icon.data.data[0].attributes.iconImage24px.data) {
+      //         let mediaId24px = icon.data.data[0].attributes.iconImage24px.data.id
+      //         this.deleteStrapiMedia(mediaId24px)
+      //       }
+
+      //       return {
+      //         exists: exists,
+      //         icon: icon.data.data[0]
+      //       };
+
+      //     }else{
+      //       return {exists: false}
+      //     }
+      // },
 
       async uploadData(e){
         const name = this.dataToUpload
+        const files = e.files;
+
+        async function asyncForEach(array, callback) {
+          for (let index = 0; index < array.length; index++) {
+            await callback(array[index], index, array);
+          }
+        }
+
+        await asyncForEach(files, async (file) => {
+          const iconName = file.name.replace('-18px.svg', '').replace('-24px.svg', '')
+          console.log("iconName: ", iconName)
+          let iconExists = await this.doesIconExist('iconName', iconName,
+            {
+              delete: file.iconImage24px != undefined || file.iconImage18px != undefined ? true : false,
+              media24px: file.iconImage24px == undefined ? false : true,
+              media18px: file.iconImage18px == undefined ? false : true
+            }
+          );
+          console.log(iconExists)
+        })
+        return
 
         async function createEntry(payload){
           console.log("createEntry: ", payload);
@@ -218,8 +268,6 @@
     },
 
     computed:{
-      ...mapGetters({
-      }),
 
     }
 

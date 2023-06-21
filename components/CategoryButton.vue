@@ -1,47 +1,52 @@
 <!-- Please remove this file from your project -->
 <template>
-  <div>
-    <button
-      tabindex="0"
-      @click="setCategoryAction(category.categoryName)"
-      :id="category.categoryName"
+     <div>
+        <button
+          tabindex="0"
+          @click="setCategoryAction(category.categoryName)"
+          :id="category.categoryName"
       :class="{
-          'category-item-wrapper': true,
-          'category-item-selected': getSelectedCategory == category.categoryName,
-        }"
-    >
-      <div
-        class="category-item-title font-size-0-9"
-      >
-        <IconBrewIcon
-          size="18"
-          :icon="category.icon"
-        />
-        <p>
+        'category-item-wrapper': true,
+          'category-item-selected': selectedCategory == category.categoryName,
+                        }"
+        >
+          <div
+            class="category-item-title font-size-0-9"
+          >
+            <IconBrewIcon
+              :size="18"
+              :icon="category.icon"
+            />
+            <p>
           
-          {{ getCategoryName }}
-        </p>
-      </div>
+              {{ getCategoryName }}
+            </p>
+          </div>
 
-      <p v-if="!isStatic || (isStatic && icons != 0)" class="category-item-number font-size-0-8">
-        {{ icons }}
-      </p>
-      <div class="w-1rem" v-else>
-          <Skeleton class="w-1rem h-1rem"/>
-      </div>
+          <p v-if="!isStatic || (isStatic && icons != 0)" class="category-item-number font-size-0-8">
+            {{ icons }}
+          </p>
+          <div class="w-1rem" v-else>
+              <Skeleton class="w-1rem h-1rem"/>
+          </div>
 
-    </button>
-  </div>
+        </button>
+      </div>
 </template>
 
 <script>
-  import { mapMutations, mapActions, mapGetters } from 'vuex'
+  import { mapWritableState, mapActions } from 'pinia'
+  import { useStore } from '~/stores/myStore'
+
   import IconBrewIcon from '../components/IconBrewIcon.vue'
 
   export default {
     name: 'CategoryButton',
 
     components:{
+    },
+
+    mounted(){
     },
 
     props:{
@@ -67,10 +72,9 @@
     },
 
     methods: {
-      ...mapActions({
-        setDataToState: 'store/setDataToState',
-        setCategory: 'store/setCategory',
-      }),
+      ...mapActions(useStore, [
+        'setCategory',
+      ]),
 
       async setCategoryAction(categoryName){
         this.setCategory({category: categoryName})
@@ -78,10 +82,10 @@
     },
 
     computed: {
-      ...mapGetters({
-        getSearchValue: 'store/getSearchValue',
-        getSelectedCategory: 'store/getSelectedCategory',
-      }),
+      ...mapWritableState(useStore, [
+        'searchValue',
+        'selectedCategory',
+      ]),
 
       getCategoryName(){
         try {

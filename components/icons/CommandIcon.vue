@@ -1,0 +1,26 @@
+
+<template>
+        <svg v-if="size === 18" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_489_198440)"><path d="M6.4 6.4h5.2m-5.2 0v5.2m0-5.2V4.45a1.95 1.95 0 0 0-3.9 0A1.95 1.95 0 0 0 4.45 6.4H6.4zm5.2 0v5.2m0-5.2V4.45a1.95 1.95 0 1 1 3.9 0 1.95 1.95 0 0 1-1.95 1.95H11.6zm-5.2 5.2h5.2m-5.2 0H4.45a1.95 1.95 0 0 0 0 3.9 1.95 1.95 0 0 0 1.95-1.95V11.6zm5.2 0h1.95a1.95 1.95 0 0 1 0 3.9 1.95 1.95 0 0 1-1.95-1.95V11.6z" :stroke="color"/></g><defs><clipPath id="clip0_489_198440"><path :fill="color" d="M0 0H18V18H0z"/></clipPath></defs></svg>
+        
+
+        <svg v-if="size === 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_489_191303)"><path d="M8.4 8.4h7.2m-7.2 0v7.2m0-7.2V5.7a2.7 2.7 0 1 0-5.4 0 2.7 2.7 0 0 0 2.7 2.7h2.7zm7.2 0v7.2m0-7.2V5.7a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-2.7 2.7h-2.7zm-7.2 7.2h7.2m-7.2 0H5.7a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 2.7-2.7v-2.7zm7.2 0h2.7a2.7 2.7 0 1 1 0 5.4 2.7 2.7 0 0 1-2.7-2.7v-2.7z" :stroke="color" stroke-width="2"/></g><defs><clipPath id="clip0_489_191303"><path :fill="color" d="M0 0H24V24H0z"/></clipPath></defs></svg>
+</template>
+
+
+<script>
+    export default {
+        name: 'commandIcon',
+        props: {
+            size: {
+                type: Number,
+                required: false,
+                default: 24
+            },
+            color: {
+                type: String,
+                required: false,
+                default: "currentColor"
+            }
+        }
+    }
+</script>

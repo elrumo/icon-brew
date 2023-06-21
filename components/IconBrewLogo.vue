@@ -9,10 +9,15 @@
     }"
   >
   <!-- :src="iconBrew[size]" -->
-    <img
+  <!-- <img src="@/assets/images/IconBrew-logo/IconBrew-small.png" alt=""> -->
+  <!-- :src="iconBrew[size]" -->
+  <br>
+  <!-- :src="iconBrew[size]" -->
+  <!-- :src="`IconBrew-logo/IconBrew-${size}.png`" -->
+  <img
       :src="iconBrew[size]"
-      :width="size == 'large' ? '89px':'28px'"
-      :height="size == 'large' ? '89px':'28px'"
+      :width="size == 'large' ? '89':'28'"
+      :height="size == 'large' ? '89':'28'"
       class="hero-logo"
       alt="IconBrew logo"
     />
@@ -67,10 +72,10 @@
     data(){
       return{
         iconBrew:{
-          small: require('@/assets/images/IconBrew-logo/IconBrew-small.png'),
-          mediumSmall: require('@/assets/images/IconBrew-logo/IconBrew-mediumSmall.png'),
-          medium: require('@/assets/images/IconBrew-logo/IconBrew-medium.png'),
-          large: require('@/assets/images/IconBrew-logo/IconBrew-large.png'),
+          small: 'IconBrew-logo/IconBrew-small.png',
+          mediumSmall: 'IconBrew-logo/IconBrew-mediumSmall.png',
+          medium: 'IconBrew-logo/IconBrew-medium.png',
+          large: 'IconBrew-logo/IconBrew-large.png',
         }
       }
     },

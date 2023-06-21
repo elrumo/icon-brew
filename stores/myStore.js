@@ -1,0 +1,539 @@
+import { defineStore } from 'pinia';
+
+// import axios from 'axios';
+import algoliasearch from 'algoliasearch';
+import Parse from 'parse/dist/parse.min.js';
+
+// import {
+//   getIconsFromStrapi,
+//   getCategoriesFromStrapi,
+//   getHomeData,
+//   getSinglePage,
+//   getSuggestionsHero,
+//   getSuggestions,
+// } from '@/api/strapi';
+
+  // Parse.initialize('LJsRx6ZQQaHcy0CmDnrk60xk2kRl3RoJK4zWvgfw', 'wo5GMOprqCJ5FIaCC7mF3OAinFukXyFaFWbdjXFZ');
+  // Parse.serverURL = 'https://parseapi.back4app.com';
+
+// const client = algoliasearch(import.meta.env.ALGOLIA_APP_ID, import.meta.env.ALGOLIA_SEARCH_KEY);
+// const index = client.initIndex(import.meta.env.ALGOLIA_INDEX);
+
+export const useStore = defineStore({
+  id: 'store',
+  state: () => ({
+    icons: [],
+    iconCategories: [],
+    jsonData: '',
+    numberOfIcons: 0,
+    iconSize: 'iconImage24px',
+    downloadAs: { name: 'Download .SVG', code: "downloadSVG" },
+    homeData: {
+      "title": "IconBrew", "subtitle": "A free and open source icon pack. With 280+ icons and new ones being added weekly.", "createdAt": "2022-03-13T15:52:01.596Z", "updatedAt": "2022-07-16T20:12:28.849Z", "publishedAt": "2022-03-13T15:52:02.867Z", "button": "Download all", "primaryButtonIsOutline": true, "buttonUrl": "https://www.figma.com/community/file/1121752926262800605", "secondaryButton": "Donate", "secondaryButtonIsOutline": false, "secondaryButtonUrl": "https://www.paypal.com/donate/?hosted_button_id=SLDP6A7FLN6S6", "image": { "data": { "id": 47, "attributes": { "name": "IconBrew-large.png", "alternativeText": "IconBrew-large.png", "caption": "IconBrew-large.png", "width": 1024, "height": 1024, "formats": { "large": { "ext": ".png", "url": "/uploads/large_Icon_Brew_large_e7890b6e4f.png", "hash": "large_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "large_IconBrew-large.png", "path": null, "size": 846.09, "width": 1000, "height": 1000 }, "small": { "ext": ".png", "url": "/uploads/small_Icon_Brew_large_e7890b6e4f.png", "hash": "small_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "small_IconBrew-large.png", "path": null, "size": 239.08, "width": 500, "height": 500 }, "medium": { "ext": ".png", "url": "/uploads/medium_Icon_Brew_large_e7890b6e4f.png", "hash": "medium_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "medium_IconBrew-large.png", "path": null, "size": 515.29, "width": 750, "height": 750 }, "thumbnail": { "ext": ".png", "url": "/uploads/thumbnail_Icon_Brew_large_e7890b6e4f.png", "hash": "thumbnail_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "thumbnail_IconBrew-large.png", "path": null, "size": 32.27, "width": 156, "height": 156 } }, "hash": "Icon_Brew_large_e7890b6e4f", "ext": ".png", "mime": "image/png", "size": 168.11, "url": "/uploads/Icon_Brew_large_e7890b6e4f.png", "previewUrl": null, "provider": "local", "provider_metadata": null, "createdAt": "2022-03-13T15:52:45.146Z", "updatedAt": "2022-03-13T15:52:45.146Z" } } }
+    },
+    suggestionsHero: {},
+    suggestions: {},
+    selectedCategory: 'All Icons',
+    searchValue: '',
+    hitsPerPage: 40,
+    algoliaPage: 0,
+    searchFilters: '',
+    isFetchingData: false,
+    previousQuery: [],
+    singlePageData: '',
+    aboutPageData: '',
+    selectedIcon: {},
+    iconSuggestionForm: {
+      isValid: false,
+      formData: {},
+    },
+    suggestedIconName: '',
+    suggestedIconCategory: '',
+    suggestedIconUserName: '',
+    suggestedIconEmail: '',
+    suggestedIconNotes: '',
+    iconWeight: 2,
+    iconColour: "#FFFFFF",
+    bgColour: "#1F262F",
+  }),
+
+  actions: {
+    setIcons(icons) {
+      this.icons = icons;
+    },
+    clearIcons(icons) {
+      this.icons = [];
+    },
+    addIcons(icons) {
+      icons.forEach((item) => {
+        this.icons.push(item);
+      });
+    },
+    addOneToPage() {
+      let algoliaPage = this.algoliaPage;
+      this.algoliaPage = algoliaPage + 1;
+    },
+    async fetchIcons() {
+      let icons = await getIconsFromStrapi();
+      try {
+        this.icons = icons;
+      } catch (error) {
+        console.log('Error fetching learning resources: ', error);
+      }
+    },
+    async fetchHomeData() {
+      return
+      try {
+        let data = await getHomeData();
+        this.homeData = data;
+      } catch (error) {
+        console.log('Error fetching learning resources: ', error);
+      }
+    },
+    async fetchSuggestions() {
+      try {
+        let data = await getSuggestions();
+        this.suggestions = data;
+      } catch (error) {
+        console.log('Error fetching getSuggestions: ', error);
+      }
+    },
+    async fetchSuggestionsHero() {
+      try {
+        let data = await getSuggestionsHero();
+        this.suggestionsHero = data;
+      } catch (error) {
+        console.log('Error fetching suggestionsHero: ', error);
+      }
+    },
+
+    async fetchSinglePage(payload) {
+      let data = await getSinglePage(payload.id);
+      console.log(payload.state);
+      try {
+        this[payload.state] = data;
+      } catch (error) {
+        console.log('Error fetching learning resources: ', error);
+      }
+    },
+
+    async setCategory(payload) {
+      let category = payload.category;
+      let filters = 'categories.categoryName:' + category;
+      let selectedCategory = this.selectedCategory;
+      if (category === selectedCategory) {
+        return;
+      }
+      if (category == 'All Icons') {
+        filters = '';
+        this.hitsPerPage = 40;
+      } else {
+        this.hitsPerPage = 500;
+      }
+      let statesToChange = [
+        { state: 'selectedCategory', data: category },
+        { state: 'searchFilters', data: filters },
+        { state: 'algoliaPage', data: 0 },
+      ];
+      statesToChange.forEach((state) => {
+        this[state.state] = state.data;
+      });
+      this.searchAlgolia({ appendIcons: false });
+      this.scrollTo(460);
+    },
+
+    async searchAlgolia(payload) {
+      this.isFetchingData = true;
+
+      const config = useRuntimeConfig().public;
+      const client = algoliasearch(config.ALGOLIA_APP_ID, config.ALGOLIA_SEARCH_KEY);
+      const index = client.initIndex(config.ALGOLIA_INDEX);
+
+      let appendIcons = payload.appendIcons;
+      let query = this.searchValue;
+      let filters = this.searchFilters;
+      let hitsPerPage = 500;
+      let page = this.algoliaPage;
+      let selectedCategory = this.selectedCategory;
+      let iconCategories = this.iconCategories;
+      let noOfIcons = this.numberOfIcons;
+
+      if (selectedCategory != 'All Icons') {
+        noOfIcons = iconCategories.filter((category) => {
+          return category.categoryName === selectedCategory;
+        })[0].noOfIcons;
+      }
+
+      const searchResult = await index.search(query, {
+        filters: filters,
+        page: page,
+        hitsPerPage: hitsPerPage,
+        attributesToHighlight: null,
+      });
+
+      console.log("searchResult: ", searchResult);
+
+      this.isFetchingData = false;
+      this.previousQuery = searchResult.hits;
+      if (appendIcons) {
+        this.addIcons(searchResult.hits);
+      }
+      if (!appendIcons) {
+        this.icons = searchResult.hits;
+      }
+    },
+
+    async fetchTotalNoOfRecods() {
+      const config = useRuntimeConfig().public;
+      const client = algoliasearch(config.ALGOLIA_APP_ID, config.ALGOLIA_SEARCH_KEY);
+      const index = client.initIndex(config.ALGOLIA_INDEX);
+
+      const noOfRecords = await index.search('', {
+        hitsPerPage: 0,
+        attributesToRetrieve: null,
+        attributesToHighlight: null,
+        analytics: false,
+      });
+      this.numberOfIcons = noOfRecords.nbHits;
+    },
+    async fetchIconCategories() {
+      const config = useRuntimeConfig().public;
+
+      Parse.initialize(config.PARSE_APP_ID, config.PARSE_KEY);
+      Parse.serverURL = config.PARSE_SERVER_URL;
+
+      let query = new Parse.Query('categories');
+      let categories = [];
+      let queryResults = await query.find();
+
+      queryResults.forEach(async (result) => {
+        categories.push({
+          categoryName: result.get('categoryName'),
+          noOfIcons: result.get('count'),
+          icon: result.get('icon'),
+          id: result.id,
+        });
+      });
+
+      this.iconCategories = categories;
+
+      try {
+        // let newCategories = [
+        //   {
+        //     "categoryName": "Navigation",
+        //     "noOfIcons": 14,
+        //     "icon": "location",
+        //     "id": "XuOPFCafgV"
+        //   },
+        //   {
+        //     "categoryName": "Arrows",
+        //     "noOfIcons": 51,
+        //     "icon": "arrow-switch",
+        //     "id": "r4WvF9RvW3"
+        //   },
+        //   {
+        //     "categoryName": "Energy",
+        //     "noOfIcons": 17,
+        //     "icon": "lightning",
+        //     "id": "mUlYuvbxuX"
+        //   },
+        //   {
+        //     "categoryName": "Shapes",
+        //     "noOfIcons": 23,
+        //     "icon": "circle-square",
+        //     "id": "gcIh83NRBE"
+        //   },
+        //   {
+        //     "categoryName": "Security",
+        //     "noOfIcons": 6,
+        //     "icon": "locked",
+        //     "id": "XfGd2VUWOA"
+        //   },
+        //   {
+        //     "categoryName": "Accessibility",
+        //     "noOfIcons": 8,
+        //     "icon": "accessibility",
+        //     "id": "NTH9ZCfv8b"
+        //   },
+        //   {
+        //     "categoryName": "Technology",
+        //     "noOfIcons": 8,
+        //     "icon": "chip",
+        //     "id": "5gyitXVd45"
+        //   },
+        //   {
+        //     "categoryName": "Developer",
+        //     "noOfIcons": 15,
+        //     "icon": "expand-horizontal",
+        //     "id": "I1odayY4ri"
+        //   },
+        //   {
+        //     "categoryName": "Documents",
+        //     "noOfIcons": 12,
+        //     "icon": "document",
+        //     "id": "m9DyEOaPqE"
+        //   },
+        //   {
+        //     "categoryName": "Messaging",
+        //     "noOfIcons": 25,
+        //     "icon": "message-bubble",
+        //     "id": "JogPrqjoZw"
+        //   },
+        //   {
+        //     "categoryName": "Apple",
+        //     "noOfIcons": 10,
+        //     "icon": "apple",
+        //     "id": "AkWrGNHGyW"
+        //   },
+        //   {
+        //     "categoryName": "Text",
+        //     "noOfIcons": 30,
+        //     "icon": "abc",
+        //     "id": "9tNRHrnCfL"
+        //   },
+        //   {
+        //     "categoryName": "Maths",
+        //     "noOfIcons": 12,
+        //     "icon": "numbers",
+        //     "id": "DdlxYqMWaz"
+        //   },
+        //   {
+        //     "categoryName": "Weather",
+        //     "noOfIcons": 12,
+        //     "icon": "weather",
+        //     "id": "Q8GCiEPOfb"
+        //   },
+        //   {
+        //     "categoryName": "Things",
+        //     "noOfIcons": 41,
+        //     "icon": "wallet",
+        //     "id": "DjJzff8qiV"
+        //   },
+        //   {
+        //     "categoryName": "Sport",
+        //     "noOfIcons": 2,
+        //     "icon": "sports",
+        //     "id": "SOXgoFJtSi"
+        //   },
+        //   {
+        //     "categoryName": "Networking",
+        //     "noOfIcons": 22,
+        //     "icon": "tree-map-up",
+        //     "id": "Oj3pjucQPM"
+        //   },
+        //   {
+        //     "categoryName": "Science",
+        //     "noOfIcons": 7,
+        //     "icon": "beaker",
+        //     "id": "6MMKQaJz9R"
+        //   },
+        //   {
+        //     "categoryName": "Logos_&_Brands",
+        //     "noOfIcons": 10,
+        //     "icon": "apple",
+        //     "id": "wnRz6Z2fPN"
+        //   },
+        //   {
+        //     "categoryName": "Design",
+        //     "noOfIcons": 77,
+        //     "icon": "pencil-tip",
+        //     "id": "RZAYF0Lfxt"
+        //   },
+        //   {
+        //     "categoryName": "Business",
+        //     "noOfIcons": 11,
+        //     "icon": "apple-watch",
+        //     "id": "miE5aImahV"
+        //   },
+        //   {
+        //     "categoryName": "Audio_&_Music",
+        //     "noOfIcons": 8,
+        //     "icon": "music",
+        //     "id": "DCG4iCRS3v"
+        //   },
+        //   {
+        //     "categoryName": "Symbols",
+        //     "noOfIcons": 1,
+        //     "icon": "peace",
+        //     "id": "LzbIZBVhbj"
+        //   },
+        //   {
+        //     "categoryName": "UI Elements",
+        //     "noOfIcons": 85,
+        //     "icon": "triangle-up-filled",
+        //     "id": "Ib13gAX2ut"
+        //   },
+        //   {
+        //     "categoryName": "Time",
+        //     "noOfIcons": 10,
+        //     "icon": "clock",
+        //     "id": "8NBn8ggOga"
+        //   },
+        //   {
+        //     "categoryName": "Shopping",
+        //     "noOfIcons": 13,
+        //     "icon": "shopping-cart-empty",
+        //     "id": "bAKQ3WLZZW"
+        //   },
+        //   {
+        //     "categoryName": "Notifications",
+        //     "noOfIcons": 7,
+        //     "icon": "bell",
+        //     "id": "gBTdaSt5y1"
+        //   },
+        //   {
+        //     "categoryName": "Multimedia",
+        //     "noOfIcons": 25,
+        //     "icon": "play",
+        //     "id": "6DFRv5u9pv"
+        //   },
+        //   {
+        //     "categoryName": "Health",
+        //     "noOfIcons": 6,
+        //     "icon": "activity",
+        //     "id": "FyXHpjsozx"
+        //   },
+        //   {
+        //     "categoryName": "Education",
+        //     "noOfIcons": 4,
+        //     "icon": "academic-book",
+        //     "id": "RQysTkP6mE"
+        //   }
+        // ]
+        // newCategories.forEach((category) => {
+        //   // udpate category count to parse
+        //   let categoryCount = category.noOfIcons;
+        //   let categoryId = category.id;
+
+        //   // get category from parse using ID
+        //   let query = new Parse.Query('categories');
+        //   query.get(categoryId).then(async (category) => {
+        //     await category.set('iconCount', categoryCount);
+        //     await category.save();
+        //     console.log('category updated: ', category);
+        //   });
+        // });
+
+      } catch (error) {
+        console.log('error: ', error);
+      }
+    },
+
+    // setDataToState(payload) {
+    //   this.setDataToState({ state: payload.state, data: payload.data });
+    // },
+
+    async addSuggestion(payload) {
+      let iconName = this.suggestedIconName + '/';
+      let suggestedBy = this.suggestedIconUserName + '/';
+      let email = this.suggestedIconEmail + '/';
+      let notes =
+        this.suggestedIconNotes.length == 0 ? '-/' : this.suggestedIconNotes + '/';
+      let category = this.suggestedIconCategory.code;
+      try {
+        let postUrl =
+          'https://api.macosicons.com/api/icon-suggestions/create-suggestion/' +
+          iconName +
+          notes +
+          suggestedBy +
+          email +
+          category;
+        console.log('postUrl: ', postUrl);
+        await axios.post(postUrl);
+        await axios.post(
+          'https://api.macosicons.com/api/email/elrumo97@me.com/1/elias'
+        );
+      } catch (error) {
+        console.log('Error adding suggestion: ', error);
+      }
+    },
+    async addVote(payload) {
+      let suggestions = this.suggestions;
+      let suggestion = suggestions.filter((suggestion) => {
+        return suggestion.id === payload.id;
+      })[0];
+      let suggestionIndex = suggestions.indexOf(suggestion);
+      let votes;
+      if (payload.operation === 'add') {
+        votes = suggestions[suggestionIndex].attributes.votes + 1;
+      } else {
+        votes = suggestions[suggestionIndex].attributes.votes - 1;
+      }
+      localStorage.setItem('iconVoted-' + payload.id, JSON.stringify({ id: payload.id, vote: payload.localStorage }));
+      await axios.get('https://api.macosicons.com/api/icon-suggestions/' + payload.operation + '-vote-count/' + payload.id);
+      let selectedSuggestion = JSON.parse(JSON.stringify(suggestions));
+      selectedSuggestion[suggestionIndex].attributes.votes = votes;
+
+      this.suggestions = selectedSuggestion;
+    },
+
+    scrollTo(target) {
+      if (typeof target == 'number') {
+        window.scrollTo(0, target - 80);
+      } else if (typeof target == 'object') {
+        let y = target.getBoundingClientRect().y;
+        window.scrollTo(0, y - 50);
+      }
+    },
+
+    setSearchValue(value) {
+      console.log('setSearchValue', value);
+    },
+
+    downloadImage(payload) {
+      const iconSize = this.iconSize;
+      // this.selectedIcon = payload.id;
+      let url =
+        iconSize == 'iconImage18px'
+          ? payload.url.iconImage18px
+          : payload.url.iconImage24px;
+      let name = payload.name + this.iconSize + '.svg';
+      console.log(url);
+      
+      console.log(this.downloadAs.code);
+
+      switch (this.downloadAs.code) {
+        case 'downloadSVG':
+          fetch(url)
+            .then((resp) => resp.blob())
+            .then((blob) => {
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.style.display = 'none';
+              a.href = url;
+              a.download = name;
+              document.body.appendChild(a);
+              a.click();
+              window.URL.revokeObjectURL(url);
+              console.log(payload.id);
+              // axios.get(
+              //   'https://api.macosicons.com/api/icon-brews/add-download-count/' +
+              //   payload.id
+              // );
+            })
+            .catch(() => alert('An error sorry'));
+          break;
+        case 'copySVG':
+          let iconSvg = document.getElementById(payload.name);
+          console.log(payload.name);
+          // return
+          navigator.clipboard.writeText(iconSvg.children[0].outerHTML);
+          // navigator.clipboard.writeText(iconSvg.children[0].innerHTML);
+          let iconName = payload.name.replaceAll('-', ' ');
+          iconName = iconName.replace(/^\w/, (c) => c.toUpperCase());
+          // this._vm.$toast.add({
+          //   severity: 'success',
+          //   summary: iconName,
+          //   detail: 'copied as SVG',
+          //   group: 'iconDownload',
+          //   life: 3000,
+          // });
+          break;
+        case 'downloadPNG':
+          break;
+        default:
+          break;
+      }
+    },
+  },
+});

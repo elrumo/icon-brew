@@ -26,7 +26,8 @@
 </template>
 
 <script>
-  import { mapMutations, mapActions, mapGetters } from 'vuex'
+  import { mapWritableState, mapActions } from 'pinia'
+  import { useStore } from '~/stores/myStore'
 
   export default {
     name: 'IconOptions',
@@ -60,26 +61,26 @@
     },
 
     methods:{
-      ...mapActions({
-        scrollTo: 'store/scrollTo',
-        setIcons: 'store/setIcons',
-        setDataToState: 'store/setDataToState',
-      }),
+      ...mapActions(useStore, [
+        'scrollTo',
+        'setIcons',
+        'setDataToState',
+      ]),
 
 
       setIconColour(e){
         const colour = this.iconColour
-        this.setDataToState({state: 'iconColour', data: colour});
+        this.iconColour = colour;
       },
 
       setIconWeight(e){
         const weight = e.target.value
-        this.setDataToState({state: 'iconWeight', data: weight});
+        this.iconWeight = weight;
       },
 
       setIconSize(){
         let size = this.size.code;
-        this.setDataToState({state: 'iconSize', data: size})
+        this.iconSize = size
       },
 
       keyboardEvent(){
@@ -121,9 +122,11 @@
     },
 
     computed:{
-      ...mapGetters({
-        getUsername: 'store/getUsername',
-      }),
+      ...mapWritableState(useStore, [
+        'iconColour',
+        'iconWeight',
+        'iconSize',
+      ]),
     },
   }
 </script>

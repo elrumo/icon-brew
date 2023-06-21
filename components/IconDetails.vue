@@ -2,7 +2,7 @@
 <template>
     <div
       class="category-side-bar-wrapper"
-      v-if="Object.keys(getSelectedIcon).length > 0"
+      v-if="Object.keys(selectedIcon).length > 0"
     >
 
       <div class="top-card-action-wrapper-right">
@@ -16,16 +16,17 @@
       </div>
 
       <h3>
-        {{getSelectedIcon.name}}
+        {{selectedIcon.name}}
       </h3>
       <p class="break-word">
-        <img :src="getSelectedIcon.img" alt="">
+        <img :src="selectedIcon.img" alt="">
       </p>
     </div>
 </template>
 
 <script>
-  import { mapMutations, mapActions, mapGetters } from 'vuex'
+  import { mapWritableState, mapActions } from 'pinia'
+  import { useStore } from '~/stores/myStore'
 
   export default {
     name: 'IconDetails',
@@ -45,15 +46,12 @@
     },
 
     methods:{
-      ...mapActions({
-        getState: 'store/getState'
-      }),
     },
 
     computed:{
-      ...mapGetters({
-        getSelectedIcon: 'store/getSelectedIcon',
-      }),
+      ...mapWritableState(useStore, [
+        'selectedIcon'
+      ]),
     }
 
   }

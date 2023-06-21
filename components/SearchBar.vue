@@ -7,28 +7,27 @@
     }"
   >
     <div
-    :class="{
-      'search-bar-wrapper': true,
-    }"
+      :class="{
+        'search-bar-wrapper': true,
+      }"
     >
-
       <!-- Search bar -->
       <span class="p-input-icon-left p-float-label input-search">
         <label for="searchBar" class="hidden">Search icons</label>
         <i class="pi pi-search"/>
-        <!-- v-on:focus.native="onFocus" -->
+
+        <!-- v-if="icons != 0" -->
         <InputText
-          v-if="getNumberOfIcons != 0"
           class="p-inputtext-sm"
           type="text"
           id="searchBar"
           v-model="searchValue"
-          @keyup="getFromAlgolia"
-          :placeholder="'Search ' + getNumberOfIcons + ' icons'"
+          @keyup="getFromAlgolia()"
+          :placeholder="'Search ' + numberOfIcons + ' icons'"
         />
-        <div class="h-full w-full" v-else>
+        <!-- <div class="h-full w-full" v-else>
           <Skeleton v-for="n in 1" :key="n+'-placeholder-sidebar'" class="h-full w-full"/>
-        </div>
+        </div> -->
 
         <a
           href="https://www.algolia.com/"
@@ -40,7 +39,7 @@
           }"
         >
           <img
-            :src="imgs.searchByAlgolia"
+            src="search-by-algolia.svg"
             alt="Search by Algolia"
           />
         </a>
@@ -48,7 +47,7 @@
           @click="searchValue = '', getFromAlgolia()"
         >
           <IconBrewIcon
-            size="24"
+            :size="24"
             icon="close"
             :filled="false"
             v-if="searchValue.length != 0"
@@ -90,14 +89,14 @@
           placeholder="Select a size"
           @change="setIconSize()"
         />
-
+        
         <!-- Download as -->
         <Dropdown
           class="max-height-input"
           v-model="downloadAs"
           :options="downloadOptions"
           optionLabel="name"
-          placeholder="Select a size"
+          placeholder="Download or copy"
           @change="setDownloadOption()"
         />
 
@@ -117,12 +116,10 @@
 </template>
 
 <script>
-  import { mapMutations, mapActions, mapGetters } from 'vuex'
-  import algoliasearch from 'algoliasearch';
-  import IconBrewIcon from '../components/IconBrewIcon.vue'
+  import { mapWritableState, mapActions } from 'pinia'
+  import { useStore } from '~/stores/myStore'
 
-  const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_SEARCH_KEY);
-  const index = client.initIndex(process.env.ALGOLIA_INDEX);
+  import IconBrewIcon from '../components/IconBrewIcon.vue'
 
   export default {
     name: 'SearchBar',
@@ -138,24 +135,18 @@
     data(){
       return{
         imgs:{
-          searchByAlgolia: require('@/assets/images/other/search-by-algolia.svg')
+          searchByAlgolia: './search-by-algolia.svg'
         },
         color: '1976D2',
-        searchValue: '',
         is24px: true,
         isIntersectingElement: false,
         observer: null,
-        iconWeight: 2,
-        // iconWeight: [0, 50, 100],
         searchResults: {},
-        iconColour: "#FFFFFF",
-        bgColour: "#1F262F",
 
-        downloadAs: {name: 'Download .SVG', code: "downloadSVG"},
         downloadOptions:[
           {name: 'Download .SVG', code: "downloadSVG"},
-          // {name: 'Download .PNG', code: "downloadPNG"},
           {name: 'Copy SVG', code: "copySVG"},
+          // {name: 'Download .PNG', code: "downloadPNG"},
         ],
 
         size:  { "name": "24px", "code": "iconImage24px" },
@@ -163,8 +154,6 @@
           {name: "18px", code: "iconImage18px"},
           {name: "24px", code: "iconImage24px"}
         ],
-
-        algoliaPage: 0,
       }
     },
 
@@ -176,8 +165,11 @@
         this.scroll();
         this.keyboardEvent()
         try {
+          await this.searchAlgolia({ appendIcons: false });
           await this.fetchIconCategories();
           await this.fetchTotalNoOfRecods();
+          this.previousQuery = this.icons;
+          // await this.setDataToState({ state: 'previousQuery', data: this.getIcons });
         } catch (error) {
           console.log(error);
         }
@@ -185,14 +177,15 @@
 
     },
 
-    async fetch(){
-      try {
-        await this.searchAlgolia({appendIcons: false});
-        await this.setDataToState({state: 'previousQuery', data: this.getIcons});
-      } catch (error) {
-        console.log("error loading searchbar: ", error);
-      }
-    },
+    // async fetch(){
+    //   try {
+    //     console.log("Gii");
+    //     await this.searchAlgolia({appendIcons: false});
+    //     await this.setDataToState({state: 'previousQuery', data: this.getIcons});
+    //   } catch (error) {
+    //     console.log("error loading searchbar: ", error);
+    //   }
+    // },
 
     watch:{
       iconColour:{
@@ -208,18 +201,17 @@
     },
 
     methods:{
-      ...mapActions({
-        setSearchValue: 'store/setSearchValue',
-        scrollTo: 'store/scrollTo',
-        setIcons: 'store/setIcons',
-        addIcons: 'store/addIcons',
-        clearIcons: 'store/clearIcons',
-        setDataToState: 'store/setDataToState',
-        fetchTotalNoOfRecods: 'store/fetchTotalNoOfRecods',
-        fetchIconCategories: 'store/fetchIconCategories',
-        addOneToPage: 'store/addOneToPage',
-        searchAlgolia: 'store/searchAlgolia',
-      }),
+      ...mapActions(useStore, [
+        'scrollTo',
+        'setIcons',
+        'addIcons',
+        'clearIcons',
+        'setDataToState',
+        'fetchTotalNoOfRecods',
+        'fetchIconCategories',
+        'addOneToPage',
+        'searchAlgolia',
+      ]),
 
       scroll() {
         let margin = 600
@@ -230,8 +222,8 @@
           let bottomOfWindow = Math.ceil(document.body.offsetHeight - (window.pageYOffset + window.innerHeight)) < margin;
           this.isIntersectingElement = this.$refs.searchBarWrapper.getBoundingClientRect().top <= 70;
 
-          if (bottomOfWindow && !this.getIsFetchingData && this.getPreviousQuery.length != 0) {
-            this.setDataToState({state: 'fetchingData', data: true});
+          if (bottomOfWindow && !this.isFetchingData && this.previousQuery.length != 0) {
+            this.fetchingData = true;
             this.addOneToPage()
             this.searchAlgolia({appendIcons: true})
           }
@@ -242,7 +234,7 @@
         const colour = this.iconColour.replace('#', '')
         const contentArea = document.querySelector(".content-area");
         contentArea.style.color = '#'+colour;
-        this.setDataToState({state: 'iconColour', data: colour});
+        this.iconColour = colour;
       },
 
       setBgColour(){
@@ -251,7 +243,7 @@
         contentArea.forEach((el) => {
           el.style.backgroundColor = '#'+colour;
         });
-        this.setDataToState({state: 'bgColour', data: colour});
+        this.bgColour = colour;
       },
 
       onColorPickerClick(picker){
@@ -266,17 +258,17 @@
 
       setIconWeight(e){
         const weight = e.target.value;
-        this.setDataToState({state: 'iconWeight', data: weight});
+        this.iconWeight = weight;
       },
 
       setIconSize(){
         let size = this.size.code;
-        this.setDataToState({state: 'iconSize', data: size});
+        this.iconSize = size;
       },
 
       setDownloadOption(){
-        let downloadAs = this.downloadAs.code;
-        this.setDataToState({state: 'downloadAs', data: downloadAs});
+        let downloadAs = this.downloadAs;
+        this.downloadAs = downloadAs;
       },
 
       keyboardEvent(){
@@ -302,8 +294,9 @@
       },
 
       async getFromAlgolia(){
-        this.setDataToState({state: 'searchValue', data: this.searchValue});
-        this.setDataToState({state: 'algoliaPage', data: 0});
+        // this.setDataToState({state: 'searchValue', data: this.searchValue});
+        // this.setDataToState({state: 'algoliaPage', data: 0});
+        this.algoliaPage = 0
         this.searchAlgolia({appendIcons: false});
       },
 
@@ -323,13 +316,20 @@
     },
 
     computed:{
-      ...mapGetters({
-        getNumberOfIcons: 'store/getNumberOfIcons',
-        getIsFetchingData: 'store/getIsFetchingData',
-        getAlgoliaPage: 'store/getAlgoliaPage',
-        getIcons: 'store/getIcons',
-        getPreviousQuery: 'store/getPreviousQuery',
-      }),
+      ...mapWritableState(useStore, [
+        'searchValue', 
+        'algoliaPage',
+        'iconCategories',
+        'icons',
+        'previousQuery',
+        'isFetchingData',
+        'iconColour',
+        'bgColour',
+        'iconWeight',
+        'iconSize',
+        'downloadAs',
+        'numberOfIcons'
+      ]),
     },
   }
 </script>

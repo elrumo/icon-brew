@@ -8,16 +8,27 @@
       <!-- @click="selectIcon()" -->
       <div>
           <!-- {{iconSize === 'iconImage24px'? 'iconImage24px' : 'iconImage18px'}} -->
-        <svg
-          :key="iconKey"
+        <!-- <svg src="https://parsefiles.back4app.com/LJsRx6ZQQaHcy0CmDnrk60xk2kRl3RoJK4zWvgfw/dd7ee50573d54338850d0790b82f3014_pharmacy-24px.svg"></svg> -->
+        <!-- <IconBrewIcon
+          :size="18"
+          :icon="category.icon"
+        /> -->
+
+        <IconBrewIcon
+          :size="getSizeNumber"
+          :icon="icon.name"
+        />
+
+        <!-- <svg
           :data-src="iconSize === 'iconImage24px'? icon.iconImage24px : icon.iconImage18px"
+          :key="iconKey"
           :class="{
               'icon-image': true,
               'icon-image-24': iconSize === 'iconImage24px',
               'icon-image-18': iconSize === 'iconImage18px',
             }"
           :id="icon.name"
-        ></svg>
+        ></svg> -->
           <!-- fill="none" -->
 
       </div>
@@ -32,7 +43,8 @@
 </template>
 
 <script>
-  import { mapMutations, mapActions, mapGetters } from 'vuex';
+  import { mapWritableState, mapActions } from 'pinia'
+  import { useStore } from '~/stores/myStore'
   import axios from 'axios';
 
   export default {
@@ -57,6 +69,7 @@
       return{
         iconImage24px: '',
         iconImage18px: '',
+        iconData: '',
       }
     },
 
@@ -68,17 +81,14 @@
       // }
     },
 
-    async fetch() {
-    },
-
     mounted(){
+      // this.fetchImage(this.icon.iconImage24px)
     },
 
     methods:{
-      ...mapActions({
-        downloadImage: 'store/downloadImage',
-        setDataToStore: 'store/setDataToStore',
-      }),
+      ...mapActions(useStore ,[
+        'downloadImage'
+      ]),
 
       replaceAllChar(str, toReplace, replacement){
         try {
@@ -111,31 +121,33 @@
       async fetchImage(url){
         let img = await axios.get(url)
         this.iconData = img.data
-        return img.data
+        console.log(img.data);
       },
 
       selectIcon(){
-        this.setDataToStore({
-          state: 'selectedIcon',
-          data: this.icon
-        });
+        this.selectedIcon = this.icon;
       }
 
     },
 
     computed:{
-      ...mapGetters({
-        iconSize: 'store/iconSize',
-        getIconWeight: 'store/getIconWeight',
-        getIconColour: 'store/getIconColour',
-      }),
+      ...mapWritableState(useStore, [
+        'iconSize',
+        'iconWeight',
+        'iconColour',
+        'selectedIcon'
+      ]),
+
+      getSizeNumber(){
+        return this.iconSize === 'iconImage24px'? 24 : 18
+      },
 
       iconKey(){
         let icon = this.icon;
         let iconSize = this.iconSize;
         let key = icon.name+iconSize;
         return key
-      }
+      },
 
     }
 
