@@ -27,7 +27,7 @@ export const useStore = defineStore({
     jsonData: '',
     numberOfIcons: 0,
     iconSize: 'iconImage24px',
-    downloadAs: { name: 'Download .SVG', code: "downloadSVG" },
+    downloadAs: { label: 'Download .SVG', code: "downloadSVG" },
     homeData: {
       "title": "IconBrew", "subtitle": "A free and open source icon pack. With 280+ icons and new ones being added weekly.", "createdAt": "2022-03-13T15:52:01.596Z", "updatedAt": "2022-07-16T20:12:28.849Z", "publishedAt": "2022-03-13T15:52:02.867Z", "button": "Download all", "primaryButtonIsOutline": true, "buttonUrl": "https://www.figma.com/community/file/1121752926262800605", "secondaryButton": "Donate", "secondaryButtonIsOutline": false, "secondaryButtonUrl": "https://www.paypal.com/donate/?hosted_button_id=SLDP6A7FLN6S6", "image": { "data": { "id": 47, "attributes": { "name": "IconBrew-large.png", "alternativeText": "IconBrew-large.png", "caption": "IconBrew-large.png", "width": 1024, "height": 1024, "formats": { "large": { "ext": ".png", "url": "/uploads/large_Icon_Brew_large_e7890b6e4f.png", "hash": "large_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "large_IconBrew-large.png", "path": null, "size": 846.09, "width": 1000, "height": 1000 }, "small": { "ext": ".png", "url": "/uploads/small_Icon_Brew_large_e7890b6e4f.png", "hash": "small_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "small_IconBrew-large.png", "path": null, "size": 239.08, "width": 500, "height": 500 }, "medium": { "ext": ".png", "url": "/uploads/medium_Icon_Brew_large_e7890b6e4f.png", "hash": "medium_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "medium_IconBrew-large.png", "path": null, "size": 515.29, "width": 750, "height": 750 }, "thumbnail": { "ext": ".png", "url": "/uploads/thumbnail_Icon_Brew_large_e7890b6e4f.png", "hash": "thumbnail_Icon_Brew_large_e7890b6e4f", "mime": "image/png", "name": "thumbnail_IconBrew-large.png", "path": null, "size": 32.27, "width": 156, "height": 156 } }, "hash": "Icon_Brew_large_e7890b6e4f", "ext": ".png", "mime": "image/png", "size": 168.11, "url": "/uploads/Icon_Brew_large_e7890b6e4f.png", "previewUrl": null, "provider": "local", "provider_metadata": null, "createdAt": "2022-03-13T15:52:45.146Z", "updatedAt": "2022-03-13T15:52:45.146Z" } } }
     },
@@ -145,10 +145,6 @@ export const useStore = defineStore({
     async searchAlgolia(payload) {
       this.isFetchingData = true;
 
-      const config = useRuntimeConfig().public;
-      const client = algoliasearch(config.ALGOLIA_APP_ID, config.ALGOLIA_SEARCH_KEY);
-      const index = client.initIndex(config.ALGOLIA_INDEX);
-
       let appendIcons = payload.appendIcons;
       let query = this.searchValue;
       let filters = this.searchFilters;
@@ -158,28 +154,36 @@ export const useStore = defineStore({
       let iconCategories = this.iconCategories;
       let noOfIcons = this.numberOfIcons;
 
+      if(iconCategories.length == 0) await this.fetchIconCategories()
+
       if (selectedCategory != 'All Icons') {
         noOfIcons = iconCategories.filter((category) => {
           return category.categoryName === selectedCategory;
         })[0].noOfIcons;
       }
 
-      const searchResult = await index.search(query, {
-        filters: filters,
-        page: page,
-        hitsPerPage: hitsPerPage,
-        attributesToHighlight: null,
-      });
+      try {
+        const searchResult = await $fetch('/api/search', {
+          method: 'POST',
+          body: {
+            searchValue: query,
+            filters: filters,
+            page: page,
+            hitsPerPage: hitsPerPage
+          }
+        });
 
-      console.log("searchResult: ", searchResult);
-
-      this.isFetchingData = false;
-      this.previousQuery = searchResult.hits;
-      if (appendIcons) {
-        this.addIcons(searchResult.hits);
-      }
-      if (!appendIcons) {
-        this.icons = searchResult.hits;
+        this.isFetchingData = false;
+        this.previousQuery = searchResult.hits;
+        if (appendIcons) {
+          this.addIcons(searchResult.hits);
+        }
+        if (!appendIcons) {
+          this.icons = searchResult.hits;
+        }
+      } catch (error) {
+        console.error('Error searching icons:', error);
+        this.isFetchingData = false;
       }
     },
 
@@ -196,232 +200,15 @@ export const useStore = defineStore({
       });
       this.numberOfIcons = noOfRecords.nbHits;
     },
+
     async fetchIconCategories() {
-      const config = useRuntimeConfig().public;
-
-      Parse.initialize(config.PARSE_APP_ID, config.PARSE_KEY);
-      Parse.serverURL = config.PARSE_SERVER_URL;
-
-      let query = new Parse.Query('categories');
-      let categories = [];
-      let queryResults = await query.find();
-
-      queryResults.forEach(async (result) => {
-        categories.push({
-          categoryName: result.get('categoryName'),
-          noOfIcons: result.get('count'),
-          icon: result.get('icon'),
-          id: result.id,
-        });
-      });
-
-      this.iconCategories = categories;
-
       try {
-        // let newCategories = [
-        //   {
-        //     "categoryName": "Navigation",
-        //     "noOfIcons": 14,
-        //     "icon": "location",
-        //     "id": "XuOPFCafgV"
-        //   },
-        //   {
-        //     "categoryName": "Arrows",
-        //     "noOfIcons": 51,
-        //     "icon": "arrow-switch",
-        //     "id": "r4WvF9RvW3"
-        //   },
-        //   {
-        //     "categoryName": "Energy",
-        //     "noOfIcons": 17,
-        //     "icon": "lightning",
-        //     "id": "mUlYuvbxuX"
-        //   },
-        //   {
-        //     "categoryName": "Shapes",
-        //     "noOfIcons": 23,
-        //     "icon": "circle-square",
-        //     "id": "gcIh83NRBE"
-        //   },
-        //   {
-        //     "categoryName": "Security",
-        //     "noOfIcons": 6,
-        //     "icon": "locked",
-        //     "id": "XfGd2VUWOA"
-        //   },
-        //   {
-        //     "categoryName": "Accessibility",
-        //     "noOfIcons": 8,
-        //     "icon": "accessibility",
-        //     "id": "NTH9ZCfv8b"
-        //   },
-        //   {
-        //     "categoryName": "Technology",
-        //     "noOfIcons": 8,
-        //     "icon": "chip",
-        //     "id": "5gyitXVd45"
-        //   },
-        //   {
-        //     "categoryName": "Developer",
-        //     "noOfIcons": 15,
-        //     "icon": "expand-horizontal",
-        //     "id": "I1odayY4ri"
-        //   },
-        //   {
-        //     "categoryName": "Documents",
-        //     "noOfIcons": 12,
-        //     "icon": "document",
-        //     "id": "m9DyEOaPqE"
-        //   },
-        //   {
-        //     "categoryName": "Messaging",
-        //     "noOfIcons": 25,
-        //     "icon": "message-bubble",
-        //     "id": "JogPrqjoZw"
-        //   },
-        //   {
-        //     "categoryName": "Apple",
-        //     "noOfIcons": 10,
-        //     "icon": "apple",
-        //     "id": "AkWrGNHGyW"
-        //   },
-        //   {
-        //     "categoryName": "Text",
-        //     "noOfIcons": 30,
-        //     "icon": "abc",
-        //     "id": "9tNRHrnCfL"
-        //   },
-        //   {
-        //     "categoryName": "Maths",
-        //     "noOfIcons": 12,
-        //     "icon": "numbers",
-        //     "id": "DdlxYqMWaz"
-        //   },
-        //   {
-        //     "categoryName": "Weather",
-        //     "noOfIcons": 12,
-        //     "icon": "weather",
-        //     "id": "Q8GCiEPOfb"
-        //   },
-        //   {
-        //     "categoryName": "Things",
-        //     "noOfIcons": 41,
-        //     "icon": "wallet",
-        //     "id": "DjJzff8qiV"
-        //   },
-        //   {
-        //     "categoryName": "Sport",
-        //     "noOfIcons": 2,
-        //     "icon": "sports",
-        //     "id": "SOXgoFJtSi"
-        //   },
-        //   {
-        //     "categoryName": "Networking",
-        //     "noOfIcons": 22,
-        //     "icon": "tree-map-up",
-        //     "id": "Oj3pjucQPM"
-        //   },
-        //   {
-        //     "categoryName": "Science",
-        //     "noOfIcons": 7,
-        //     "icon": "beaker",
-        //     "id": "6MMKQaJz9R"
-        //   },
-        //   {
-        //     "categoryName": "Logos_&_Brands",
-        //     "noOfIcons": 10,
-        //     "icon": "apple",
-        //     "id": "wnRz6Z2fPN"
-        //   },
-        //   {
-        //     "categoryName": "Design",
-        //     "noOfIcons": 77,
-        //     "icon": "pencil-tip",
-        //     "id": "RZAYF0Lfxt"
-        //   },
-        //   {
-        //     "categoryName": "Business",
-        //     "noOfIcons": 11,
-        //     "icon": "apple-watch",
-        //     "id": "miE5aImahV"
-        //   },
-        //   {
-        //     "categoryName": "Audio_&_Music",
-        //     "noOfIcons": 8,
-        //     "icon": "music",
-        //     "id": "DCG4iCRS3v"
-        //   },
-        //   {
-        //     "categoryName": "Symbols",
-        //     "noOfIcons": 1,
-        //     "icon": "peace",
-        //     "id": "LzbIZBVhbj"
-        //   },
-        //   {
-        //     "categoryName": "UI Elements",
-        //     "noOfIcons": 85,
-        //     "icon": "triangle-up-filled",
-        //     "id": "Ib13gAX2ut"
-        //   },
-        //   {
-        //     "categoryName": "Time",
-        //     "noOfIcons": 10,
-        //     "icon": "clock",
-        //     "id": "8NBn8ggOga"
-        //   },
-        //   {
-        //     "categoryName": "Shopping",
-        //     "noOfIcons": 13,
-        //     "icon": "shopping-cart-empty",
-        //     "id": "bAKQ3WLZZW"
-        //   },
-        //   {
-        //     "categoryName": "Notifications",
-        //     "noOfIcons": 7,
-        //     "icon": "bell",
-        //     "id": "gBTdaSt5y1"
-        //   },
-        //   {
-        //     "categoryName": "Multimedia",
-        //     "noOfIcons": 25,
-        //     "icon": "play",
-        //     "id": "6DFRv5u9pv"
-        //   },
-        //   {
-        //     "categoryName": "Health",
-        //     "noOfIcons": 6,
-        //     "icon": "activity",
-        //     "id": "FyXHpjsozx"
-        //   },
-        //   {
-        //     "categoryName": "Education",
-        //     "noOfIcons": 4,
-        //     "icon": "academic-book",
-        //     "id": "RQysTkP6mE"
-        //   }
-        // ]
-        // newCategories.forEach((category) => {
-        //   // udpate category count to parse
-        //   let categoryCount = category.noOfIcons;
-        //   let categoryId = category.id;
-
-        //   // get category from parse using ID
-        //   let query = new Parse.Query('categories');
-        //   query.get(categoryId).then(async (category) => {
-        //     await category.set('iconCount', categoryCount);
-        //     await category.save();
-        //     console.log('category updated: ', category);
-        //   });
-        // });
-
+        const categories = await $fetch('/api/categories');
+        this.iconCategories = categories;
       } catch (error) {
-        console.log('error: ', error);
+        console.error('Error fetching categories:', error);
       }
     },
-
-    // setDataToState(payload) {
-    //   this.setDataToState({ state: payload.state, data: payload.data });
-    // },
 
     async addSuggestion(payload) {
       let iconName = this.suggestedIconName + '/';
@@ -480,7 +267,7 @@ export const useStore = defineStore({
       console.log('setSearchValue', value);
     },
 
-    downloadImage(payload) {
+    async downloadImage(payload) {
       const iconSize = this.iconSize;
       // this.selectedIcon = payload.id;
       let url =
@@ -489,7 +276,7 @@ export const useStore = defineStore({
           : payload.url.iconImage24px;
       let name = payload.name + this.iconSize + '.svg';
       console.log(url);
-      
+
       console.log(this.downloadAs.code);
 
       switch (this.downloadAs.code) {
@@ -514,20 +301,18 @@ export const useStore = defineStore({
             .catch(() => alert('An error sorry'));
           break;
         case 'copySVG':
-          let iconSvg = document.getElementById(payload.name);
-          console.log(payload.name);
-          // return
-          navigator.clipboard.writeText(iconSvg.children[0].outerHTML);
-          // navigator.clipboard.writeText(iconSvg.children[0].innerHTML);
-          let iconName = payload.name.replaceAll('-', ' ');
-          iconName = iconName.replace(/^\w/, (c) => c.toUpperCase());
-          // this._vm.$toast.add({
-          //   severity: 'success',
-          //   summary: iconName,
-          //   detail: 'copied as SVG',
-          //   group: 'iconDownload',
-          //   life: 3000,
-          // });
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const svgText = await response.text();
+          console.log('svgText: ', svgText)
+          navigator.clipboard.writeText(svgText);
+          // let iconSvg = document.getElementById(payload.name);
+          // console.log(payload.name);
+          // console.log('iconSvg: ', iconSvg)
+          // let iconName = payload.name.replaceAll('-', ' ');
+          // iconName = iconName.replace(/^\w/, (c) => c.toUpperCase());
           break;
         case 'downloadPNG':
           break;

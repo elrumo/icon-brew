@@ -5,20 +5,20 @@
           tabindex="0"
           @click="setCategoryAction(category.categoryName)"
           :id="category.categoryName"
-      :class="{
-        'category-item-wrapper': true,
-          'category-item-selected': selectedCategory == category.categoryName,
-                        }"
+          :class="{
+            'category-item-wrapper': true,
+            'category-item-selected': selectedCategory == category.categoryName,
+          }"
         >
           <div
             class="category-item-title font-size-0-9"
           >
             <IconBrewIcon
               :size="18"
-              :icon="category.icon"
+              :iconName="category.icon"
             />
             <p>
-          
+
               {{ getCategoryName }}
             </p>
           </div>
@@ -27,7 +27,7 @@
             {{ icons }}
           </p>
           <div class="w-1rem" v-else>
-              <Skeleton class="w-1rem h-1rem"/>
+            <USkeleton class="h-4 w-4" :ui="{ rounded: 'rounded-full' }" />
           </div>
 
         </button>

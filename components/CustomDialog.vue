@@ -20,15 +20,16 @@
 
       <template #footer>
         <div class="p-t-md">
-          <Button
+          <UButton
             @click="closeDialog(false)"
             label="Close"
-            class="p-button-text"
+            class="p-button-text rounded-xl"
           />
-          <Button
+          <UButton
             @click="closeDialog(true)"
             autofocus
             label="Close & don't show again"
+            class="rounded-xl"
           />
         </div>
         </template>

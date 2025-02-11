@@ -6,330 +6,282 @@
       'sticky-shadow': isIntersectingElement,
     }"
   >
+
     <div
       :class="{
         'search-bar-wrapper': true,
       }"
     >
       <!-- Search bar -->
-      <span class="p-input-icon-left p-float-label input-search">
-        <label for="searchBar" class="hidden">Search icons</label>
-        <i class="pi pi-search"/>
-
-        <!-- v-if="icons != 0" -->
-        <InputText
-          class="p-inputtext-sm"
-          type="text"
+      <span class="input-search">
+        <UInput
+          icon="i-heroicons-magnifying-glass-20-solid"
           id="searchBar"
           v-model="searchValue"
-          @keyup="getFromAlgolia()"
-          :placeholder="'Search ' + numberOfIcons + ' icons'"
-        />
-        <!-- <div class="h-full w-full" v-else>
-          <Skeleton v-for="n in 1" :key="n+'-placeholder-sidebar'" class="h-full w-full"/>
-        </div> -->
+          :label="'Search ' + numberOfIcons + ' icons'"
+          class="w-full shadow-lg"
+          :ui="{rounded:'rounded-lg', icon: { trailing: { pointer: '' } } }"
+          size="lg"
+        >
+          <template #trailing>
+            <a
+              v-if="searchValue.length != 0"
+              href="https://www.algolia.com/"
+              target="_blank"
+              :class="{
+                'searchByAlgolia': true,
+                'movedBySearch': searchValue.length != 0
+              }"
+            >
+              <img
+                :src="searchByAlgolia"
+                alt="Search by Algolia"
+              />
+            </a>
 
-        <a
-          href="https://www.algolia.com/"
-          target="_blank"
-          v-if="searchValue.length != 0"
-          :class="{
-            'searchByAlgolia': true,
-            'movedBySearch': searchValue.length != 0
-          }"
-        >
-          <img
-            src="search-by-algolia.svg"
-            alt="Search by Algolia"
-          />
-        </a>
-        <span
-          @click="searchValue = '', getFromAlgolia()"
-        >
-          <IconBrewIcon
-            :size="24"
-            icon="close"
-            :filled="false"
-            v-if="searchValue.length != 0"
-            class="clear-search-btn"
-          />
-        </span>
+            <UButton
+              v-show="searchValue !== ''"
+              color="gray"
+              variant="link"
+              icon="i-heroicons-x-mark-20-solid"
+              size="lg"
+              class="z-10"
+              :padded="false"
+              @click="searchValue = ''; getFromAlgolia()"
+            />
+          </template>
+        </UInput>
       </span>
 
-      <Divider class="desktop-only" layout="vertical" />
-      <Divider class="mobile-only"/>
+      <UDivider class="desktop-only h-8" orientation="vertical" />
+      <UDivider class="mobile-only w-8"/>
 
       <!-- Options wrapper -->
       <div class="options-wrapper">
 
         <!-- Color picker -->
-        <div @dblclick="onColorPickerClick('icon')">
-          <ColorPicker
-            defaultColor="FFFFFF"
-            id="colorPicker"
-            v-model="iconColour"
-          />
-        </div>
+        <!-- value="#FFFFFF" -->
+        <input
+          type="color"
+          id="colorPicker"
+          v-model="iconColour"
+          class="color-picker rounded-full"
+          @dblclick="onColorPickerClick('icon')"
+        />
 
         <!-- Color picker BG -->
-        <div @dblclick="onColorPickerClick('bg')">
-          <ColorPicker
-            defaultColor="1F262F"
-            id="colorPickerBG"
-            v-model="bgColour"
-          />
-        </div>
+        <!-- value="#1F262F" -->
+        <input
+          type="color"
+          id="colorPickerBG"
+          v-model="bgColour"
+          class="color-picker rounded-full"
+          @dblclick="onColorPickerClick('bg')"
+        />
 
         <!-- Size -->
-        <Dropdown
-          class="max-height-input"
-          v-model="size"
+        <USelectMenu
           :options="sizes"
-          optionLabel="name"
-          placeholder="Select a size"
+          v-model="size"
+          size="lg"
           @change="setIconSize()"
         />
-        
-        <!-- Download as -->
-        <Dropdown
-          class="max-height-input"
-          v-model="downloadAs"
-          :options="downloadOptions"
-          optionLabel="name"
-          placeholder="Download or copy"
-          @change="setDownloadOption()"
-        />
 
-        <!--
-          <InputText
+        <!-- Download as -->
+        <USelectMenu
+          :options="downloadOptions"
+          v-model="downloadAs"
+          size="lg"
+        />
+        <!-- @change="setDownloadOption()" -->
+
+
+          <!-- <InputText
             class="p-inputtext-sm weight-input-wrapper"
             type="number"
             id="iconWeight"
             v-model="iconWeight"
             @change="setIconWeight($event)"
-          />
-        -->
+          /> -->
+
       </div>
 
     </div>
   </div>
 </template>
 
-<script>
-  import { mapWritableState, mapActions } from 'pinia'
-  import { useStore } from '~/stores/myStore'
+<script setup>
+import { ref, onMounted, watch, computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useStore } from '~/stores/myStore'
+import IconBrewIcon from '../components/IconBrewIcon.vue'
 
-  import IconBrewIcon from '../components/IconBrewIcon.vue'
+// Props
+defineProps({
+  icon: {}
+})
 
-  export default {
-    name: 'SearchBar',
+// Store setup
+const store = useStore()
+const {
+  searchValue,
+  algoliaPage,
+  icons,
+  previousQuery,
+  isFetchingData,
+  iconColour,
+  bgColour,
+  iconWeight,
+  iconSize,
+  downloadAs,
+  numberOfIcons
+} = storeToRefs(store)
 
-    components:{
-      IconBrewIcon,
-    },
+const {
+  fetchTotalNoOfRecods,
+  fetchIconCategories,
+  addOneToPage,
+  searchAlgolia
+} = store
 
-    props:{
-      icon: {}
-    },
+// Reactive state
+const searchByAlgolia = ref('search-by-algolia.svg')
+const isIntersectingElement = ref(false)
+const searchBarWrapper = ref(null)
 
-    data(){
-      return{
-        imgs:{
-          searchByAlgolia: './search-by-algolia.svg'
-        },
-        color: '1976D2',
-        is24px: true,
-        isIntersectingElement: false,
-        observer: null,
-        searchResults: {},
+const downloadOptions = ref([
+  { label: 'Download .SVG', code: 'downloadSVG' },
+  { label: 'Copy SVG', code: 'copySVG' }
+])
 
-        downloadOptions:[
-          {name: 'Download .SVG', code: "downloadSVG"},
-          {name: 'Copy SVG', code: "copySVG"},
-          // {name: 'Download .PNG', code: "downloadPNG"},
-        ],
+const size = ref({ label: '24px', code: 'iconImage24px' })
+const sizes = ref([
+  { label: '18px', code: 'iconImage18px' },
+  { label: '24px', code: 'iconImage24px' }
+])
 
-        size:  { "name": "24px", "code": "iconImage24px" },
-        sizes:[
-          {name: "18px", code: "iconImage18px"},
-          {name: "24px", code: "iconImage24px"}
-        ],
-      }
-    },
-
-    watch: {
-    },
-
-    async mounted(){
-      if(process.client){
-        this.scroll();
-        this.keyboardEvent()
-        try {
-          await this.searchAlgolia({ appendIcons: false });
-          await this.fetchIconCategories();
-          await this.fetchTotalNoOfRecods();
-          this.previousQuery = this.icons;
-          // await this.setDataToState({ state: 'previousQuery', data: this.getIcons });
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-    },
-
-    // async fetch(){
-    //   try {
-    //     console.log("Gii");
-    //     await this.searchAlgolia({appendIcons: false});
-    //     await this.setDataToState({state: 'previousQuery', data: this.getIcons});
-    //   } catch (error) {
-    //     console.log("error loading searchbar: ", error);
-    //   }
-    // },
-
-    watch:{
-      iconColour:{
-        handler() { // Reset toUpdate each time 'icon' changes.
-          this.setIconColour()
-        },
-      },
-      bgColour:{
-        handler() { // Reset toUpdate each time 'icon' changes.
-          this.setBgColour()
-        },
-      }
-    },
-
-    methods:{
-      ...mapActions(useStore, [
-        'scrollTo',
-        'setIcons',
-        'addIcons',
-        'clearIcons',
-        'setDataToState',
-        'fetchTotalNoOfRecods',
-        'fetchIconCategories',
-        'addOneToPage',
-        'searchAlgolia',
-      ]),
-
-      scroll() {
-        let margin = 600
-        window.onscroll = (e) => {
-          if(! this.$refs.searchBarWrapper){
-            return
-          }
-          let bottomOfWindow = Math.ceil(document.body.offsetHeight - (window.pageYOffset + window.innerHeight)) < margin;
-          this.isIntersectingElement = this.$refs.searchBarWrapper.getBoundingClientRect().top <= 70;
-
-          if (bottomOfWindow && !this.isFetchingData && this.previousQuery.length != 0) {
-            this.fetchingData = true;
-            this.addOneToPage()
-            this.searchAlgolia({appendIcons: true})
-          }
-        }
-      },
-
-      setIconColour(){
-        const colour = this.iconColour.replace('#', '')
-        const contentArea = document.querySelector(".content-area");
-        contentArea.style.color = '#'+colour;
-        this.iconColour = colour;
-      },
-
-      setBgColour(){
-        const colour = this.bgColour.replace('#', '');
-        const contentArea = document.querySelectorAll(".icon-card-wrapper");
-        contentArea.forEach((el) => {
-          el.style.backgroundColor = '#'+colour;
-        });
-        this.bgColour = colour;
-      },
-
-      onColorPickerClick(picker){
-        if (picker == 'bg') {
-          this.bgColour = "#1F262F";
-          this.setBgColour()
-        } else{
-          this.iconColour = "#FFFFFF";
-          this.setIconColour()
-        }
-      },
-
-      setIconWeight(e){
-        const weight = e.target.value;
-        this.iconWeight = weight;
-      },
-
-      setIconSize(){
-        let size = this.size.code;
-        this.iconSize = size;
-      },
-
-      setDownloadOption(){
-        let downloadAs = this.downloadAs;
-        this.downloadAs = downloadAs;
-      },
-
-      keyboardEvent(){
-        document.addEventListener('keydown', (event) => {
-
-          let isNotCmd = event.getModifierState('Meta')
-                          || event.key == 'Alt'
-                          || event.key == 'Control'
-                          || event.key == 'CapsLock'
-                          || event.key == 'Backspace'
-                          || event.key == 'Shift'
-                          || event.key == 'Enter'
-                          || event.key == 'Tab'
-                          || event.key == ' '
-                          || document.activeElement.tagName == 'INPUT'
-                          || this.$route.name != 'index'
-
-          if(!isNotCmd){
-            document.getElementById('searchBar').focus()
-          }
-
-        });
-      },
-
-      async getFromAlgolia(){
-        // this.setDataToState({state: 'searchValue', data: this.searchValue});
-        // this.setDataToState({state: 'algoliaPage', data: 0});
-        this.algoliaPage = 0
-        this.searchAlgolia({appendIcons: false});
-      },
-
-      handleIntersection(payload){
-        const y = payload[0].boundingClientRect.y
-        if(y < 120){
-          this.isIntersectingElement = true
-        } else{
-          this.isIntersectingElement = false
-        }
-      },
-
-      onFocus(e){
-        // this.scrollTo(460)
-        // this.$emit('focus')
-      },
-    },
-
-    computed:{
-      ...mapWritableState(useStore, [
-        'searchValue', 
-        'algoliaPage',
-        'iconCategories',
-        'icons',
-        'previousQuery',
-        'isFetchingData',
-        'iconColour',
-        'bgColour',
-        'iconWeight',
-        'iconSize',
-        'downloadAs',
-        'numberOfIcons'
-      ]),
-    },
+// Debounce utility function
+const debounce = (fn, delay) => {
+  let timeoutId
+  return (...args) => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => fn(...args), delay)
   }
+}
+
+// Watchers
+watch(searchValue, debounce(() => {
+  getFromAlgolia();
+}, 100))
+
+watch(iconColour, debounce(() => {
+  setIconColour()
+}, 20))
+
+watch(bgColour, debounce(() => {
+  setBgColour()
+}, 20))
+
+// Methods
+const scroll = () => {
+  const margin = 600
+  window.onscroll = () => {
+    if (!searchBarWrapper.value) return
+
+    const bottomOfWindow = Math.ceil(
+      document.body.offsetHeight - (window.pageYOffset + window.innerHeight)
+    ) < margin
+
+    isIntersectingElement.value = searchBarWrapper.value.getBoundingClientRect().top <= 70
+
+    if (bottomOfWindow && !isFetchingData.value && previousQuery.value.length != 0) {
+      store.fetchingData = true
+      addOneToPage()
+      searchAlgolia({ appendIcons: true })
+    }
+  }
+}
+
+const setIconColour = () => {
+  const colour = iconColour.value.replace('#', '')
+  const contentArea = document.querySelector('.content-area')
+  contentArea.style.color = '#' + colour
+  iconColour.value = colour
+}
+
+const setBgColour = () => {
+  const colour = bgColour.value.replace('#', '')
+  const contentArea = document.querySelectorAll('.icon-card-wrapper')
+  contentArea.forEach((el) => {
+    el.style.backgroundColor = '#' + colour
+  })
+  bgColour.value = colour
+}
+
+const onColorPickerClick = (picker) => {
+  if (picker == 'bg') {
+    bgColour.value = '#1C00ff00'
+    setBgColour()
+  } else {
+    iconColour.value = '#FFFFFF'
+    setIconColour()
+  }
+}
+
+const setIconWeight = (e) => {
+  const weight = e.target.value
+  iconWeight.value = weight
+}
+
+const setIconSize = () => {
+  const newSize = size.value.code
+  iconSize.value = newSize
+}
+
+const keyboardEvent = () => {
+  document.addEventListener('keydown', (event) => {
+    const isNotCmd =
+      event.getModifierState('Meta') ||
+      event.key == 'Alt' ||
+      event.key == 'Control' ||
+      event.key == 'CapsLock' ||
+      event.key == 'Backspace' ||
+      event.key == 'Shift' ||
+      event.key == 'Enter' ||
+      event.key == 'Tab' ||
+      event.key == ' ' ||
+      document.activeElement.tagName == 'INPUT' ||
+      route.name != 'index'
+
+    if (!isNotCmd) {
+      document.getElementById('searchBar').focus()
+    }
+  })
+}
+
+const getFromAlgolia = async () => {
+  algoliaPage.value = 0
+  await searchAlgolia({ appendIcons: false })
+}
+
+const handleIntersection = (payload) => {
+  const y = payload[0].boundingClientRect.y
+  isIntersectingElement.value = y < 120
+}
+
+// Lifecycle hooks
+onMounted(async () => {
+  if (process.client) {
+    scroll()
+    keyboardEvent()
+    try {
+      // await searchAlgolia({ appendIcons: false })
+      await fetchIconCategories()
+      await fetchTotalNoOfRecods()
+      previousQuery.value = icons.value
+    } catch (error) {
+      console.log(error)
+    }
+  }
+})
 </script>

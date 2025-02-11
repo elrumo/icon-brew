@@ -9,7 +9,7 @@
         <div class="custom-toast">
           <IconBrewIcon
             size="24"
-            icon="check"
+            iconName="check"
             :filled="false"
           />
           <p>

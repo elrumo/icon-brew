@@ -5,12 +5,12 @@
   >
     <!-- <InputText type="text" v-model="dataToUpload" /> -->
 
-    <FileUpload
+    <!-- <FileUpload
       name="demo[]"
       :customUpload="true"
       @uploader="uploadData($event)"
       :multiple="true"
-    />
+    /> -->
   </div>
 </template>
 

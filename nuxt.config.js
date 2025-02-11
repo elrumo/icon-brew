@@ -1,4 +1,6 @@
 export default defineNuxtConfig({
+  name: 'IconBrew',
+
   app: {
     head: {
       title: 'IconBrew - Open source icons for everyone',
@@ -8,7 +10,7 @@ export default defineNuxtConfig({
         { hid: 'description', name: 'description', content: 'Hundreds of open source icons for everyone, new ones being added regularly' },
         { name: 'description', content: 'Hundreds of open source icons for everyone, new ones being added regularly' },
 
-        // <!--Facebook Meta Tags-- >
+        // <!--Facebook Meta Tags-->
         { name: 'og:url', content: 'https://iconbrew.com/' },
         { name: 'og:type', content: 'website' },
         { name: 'og:type', content: 'website' },
@@ -16,7 +18,7 @@ export default defineNuxtConfig({
         { name: 'og:description', content: 'Hundreds of open source icons for everyone, new ones being added regularly' },
         { name: 'og:image', content: 'https://i.imgur.com/SnjxPrN.jpg' },
 
-        // <!--Twitter Meta Tags-- >
+        // <!--Twitter Meta Tags-->
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:site', content: '@elrumo' },
         { name: 'twitter:creator', content: '@elrumo' },
@@ -31,34 +33,46 @@ export default defineNuxtConfig({
       ]
     }
   },
+
   css: [
     // 'primevue/resources/themes/saga-blue/theme.css',
-    'assets/style/theme.css',
+    // 'assets/style/theme.css',
     'assets/style/utilities.scss',
     'assets/style/iconBrewIcons.scss',
     'assets/style/style.scss',
 
-    'primevue/resources/primevue.css',
-    'primeicons/primeicons.css',
-    'primeflex/primeflex.css',
+    // 'primevue/resources/primevue.css',
+    // 'primeicons/primeicons.css',
+    // 'primeflex/primeflex.css',
   ],
+
   modules: [
+    '@nuxt/ui',
     '@pinia/nuxt',
+    '@nuxtjs/plausible',
   ],
-  build: {
-    transpile: ['primevue']
+
+  plausible: {
+    apiHost: 'https://plausible.macosicons.com',
+    autoOutboundTracking: true,
+    // proxy: true
   },
 
+  // build: {
+  //   transpile: ['primevue']
+  // },
+
+  // ssr: false
   runtimeConfig: {
     public: {
       PARSE_APP_ID: process.env.PARSE_APP_ID,
       PARSE_KEY: process.env.PARSE_KEY,
       PARSE_SERVER_URL: process.env.PARSE_SERVER_URL,
-      PARSE_APP_ID: process.env.PARSE_APP_ID,
       ALGOLIA_INDEX: process.env.ALGOLIA_INDEX,
       ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
       ALGOLIA_SEARCH_KEY: process.env.ALGOLIA_SEARCH_KEY,
     }
-  }
-  // ssr: false
+  },
+
+  compatibilityDate: '2025-02-11'
 })

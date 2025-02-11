@@ -6,23 +6,21 @@
       :href="url"
       target="_blank"
     >
-      <Button
+      <UButton
         v-if="icon != undefined"
         :label="label"
-        :class="{
-          'p-button-outlined': isOutline,
-          'p-button-small': true
-        }"
+        :variant="isOutline ? 'ghost' : 'solid'"
+        color="white"
+        class="rounded-full font-sans"
       />
 
       <!-- :icon="'pi' + icon" -->
-      <Button
+      <UButton
         v-else
         :label="label"
-        :class="{
-          'p-button-outlined': isOutline,
-          'p-button-small': true
-        }"
+        color="white"
+        :variant="isOutline ? 'ghost' : 'solid'"
+        class="rounded-full font-sans"
       />
     </a>
 
@@ -31,22 +29,20 @@
       :to="'/'+url"
       class="nuxt-link"
     >
-      <Button
+      <UButton
         v-if="icon != undefined"
         :label="label"
-        :class="{
-          'p-button-outlined': isOutline,
-          'p-button-small': true
-        }"
+        color="white"
+        :variant="isOutline ? 'ghost' : 'solid'"
+        class="rounded-full font-sans"
       />
-      <Button
+      <UButton
         v-else
         :label="label"
-        :icon="'pi' + icon"
-        :class="{
-          'p-button-outlined': isOutline,
-          'p-button-small': true
-        }"
+        color="white"
+        :icon="icon"
+        :variant="isOutline ? 'ghost' : 'solid'"
+        class="rounded-full font-sans"
       />
     </NuxtLink>
   </div>

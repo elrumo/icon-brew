@@ -15,19 +15,19 @@
         <a class="flex" aria-label="Link to Twitter" href="https://twitter.com/elrumo" target="blank">
           <IconBrewIcon
             :size="24"
-            icon="twitter"
+            iconName="twitter"
           />
         </a>
         <a class="flex" aria-label="Link to GitHub" href="https://github.com/elrumo/icon-brew" target="blank">
           <IconBrewIcon
             :size="24"
-            icon="github"
+            iconName="github"
           />
         </a>
         <a class="flex" aria-label="Link to Figma" href="https://www.figma.com/community/file/1121752926262800605" target="blank">
           <IconBrewIcon
             :size="24"
-            icon="figma"
+            iconName="figma"
           />
         </a>
       </div>
@@ -49,7 +49,7 @@
             :url="homeData.secondaryButtonUrl"
             :isOutline="homeData.secondaryButtonIsOutline"
             :label="homeData.secondaryButton"
-          />  
+          />
           <!-- <div v-for="item in homeData.navBarItems" :key="item.nameToDisplay">
             <NuxtLink
               v-if="!item.isExternalLink"

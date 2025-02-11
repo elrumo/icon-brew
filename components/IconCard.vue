@@ -16,8 +16,10 @@
 
         <IconBrewIcon
           :size="getSizeNumber"
-          :icon="icon.name"
+          :iconName="icon.name"
+          :icon="icon"
         />
+        <!-- :style="'color: '+iconColour" -->
 
         <!-- <svg
           :data-src="iconSize === 'iconImage24px'? icon.iconImage24px : icon.iconImage18px"
@@ -34,7 +36,9 @@
       </div>
 
       <div>
-        <p>
+        <!-- :style="'color: '+iconColour" -->
+        <p
+        >
           {{replaceAllChar(icon.name, '-', ' ')}}
         </p>
       </div>

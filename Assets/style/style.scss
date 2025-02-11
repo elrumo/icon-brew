@@ -1,5 +1,4 @@
-@import 'primeflex/primeflex.scss';
-
+// @import 'primeflex/primeflex.scss';
 
 html {
   font-size: 16px;
@@ -32,7 +31,8 @@ $buttonPadding: 5rem 10rem !important;
 
 $primary-text: white;
 
-$primary-color: #1F262F;
+$primary-color: #262c35;
+// $primary-color: #1F262F;
 // $primary-color: #E0D9D0;
 
 $main-blue: #76ADF1;
@@ -123,14 +123,11 @@ svg{
 }
 
 .searchByAlgolia{
-  position: absolute;
-  z-index: 1;
-  right: 19px;
-  top: 54%;
-  transform: translateY(-50%);
-  opacity: 0.4;
-  transition: 0.2s;
-  height: 16px;
+  @apply pr-2 opacity-55;
+  // right: 18px;
+  // opacity: 0.4;
+  // transition: 0.2s;
+  // height: 16px;
 
   &:hover{
     opacity: 1;
@@ -301,15 +298,10 @@ svg{
 }
 
 .main-layout-wrapper{
-  display: grid;
+  @apply grid pt-4;
 
-  // UNCOMMENT
   grid-template-columns: 280px auto;
-  // grid-template-columns: 212px auto;
-  // grid-template-columns: auto;
-
   gap: 18px;
-  padding-top: 42px;
   transition: 0.3s;
 }
 
@@ -320,6 +312,8 @@ svg{
 
 
 .main-content-wrapper{
+  // @apply bg-transparent;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -338,24 +332,31 @@ svg{
 
 .content-card-primary{
   @extend .content-card;
+  @apply
+    border border-transparent
+    shadow-none
+  ;
 
-  border: $border-main;
-  box-shadow: $secondary-shadow;
-  background: $primary-color;
+  // border: $border-main;
+  // box-shadow: $secondary-shadow;
 
   &:hover{
+    @apply  border-gray-700 !bg-gray-900;
+    // background: $primary-color;
     box-shadow: $secondary-shadow-hover;
-    border: $border-main-hover;
+    // border: $border-main-hover;
     cursor: pointer;
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1.07);
   }
 }
 
 .content-card-secondary{
+  @apply max-h-[83vh] overflow-auto border border-gray-700/50;
+
   @extend .content-card;
-  min-height: 123px;
-  background: $secondary-color;
+  // min-height: 123px;
   position: relative;
+  // background: $secondary-color;
 
 }
 
@@ -368,15 +369,15 @@ svg{
 }
 
 .content-area{
-  display: grid;
-
-  // UNCOMMENT
-  // grid-template-columns: repeat(6, 1fr);
-  grid-template-columns: repeat(9, 1fr);
+  @apply
+    flex flex-row flex-wrap justify-around h-fit
+  ;
+  // display: grid;
+  // grid-template-columns: repeat(9, 1fr);
 
   gap: 12px;
   width: 100%;
-  min-height: 140px;
+  // min-height: 140px;
   padding: 18px;
   z-index: 0;
 
@@ -387,13 +388,24 @@ svg{
 
 .icon-card-wrapper{
   @extend .content-card-primary;
+  @apply flex py-4 px-2 max-w-32 w-full;
 
-  padding: 0px;
-  display: flex;
-  // gap: 32px;
-  // padding: 28px 21px 21px;
+  aspect-ratio: 1/1;
+
+  &:hover{
+    p{
+      @apply opacity-100;
+    }
+  }
 
   p{
+    @apply
+      font-light
+      w-full
+      whitespace-normal
+      line-clamp-1 truncate
+      transition
+    ;
     font-size: 12px;
     font-weight: 400;
     margin: 0px;
@@ -403,18 +415,22 @@ svg{
 }
 
 .icon-card-container{
-  text-align: center;
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  align-items: center;
-  padding: 22px 16px 16px 16px;
-  gap: 16px;
-  margin: auto;
+  @apply
+    text-center
+    grid
+    grid-rows-2
+    items-center
+    gap-1
+    w-full
+  ;
+    // p-[22px_16px_16px_16px]
 
-   > :first-child{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  > :first-child {
+    @apply
+      w-full
+      flex
+      justify-center
+      items-center;
   }
 }
 
@@ -541,15 +557,13 @@ svg{
 }
 
 .search-bar-wrapper{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 8px;
+  @apply
+    h-fit
+    flex flex-row justify-center items-center gap-6
+    pt-2 pb-2
+  ;
   width: 95%;
   margin: auto;
-  padding-top: 28px;
-  padding-bottom: 18px;
   max-width: $max-width-main;
 
   .p-dropdown{
@@ -558,9 +572,31 @@ svg{
 }
 
 .options-wrapper{
-  display: flex;
-  gap: 18px;
-  align-items: flex-end;
+  @apply flex gap-2 md:gap-3 h-fit items-end;
+}
+
+.color-picker{
+  @apply
+    w-10 h-10
+    rounded-lg
+    cursor-pointer
+    !p-0
+    bg-gray-900
+    border border-gray-700 hover:border-gray-600
+    transition-colors
+  ;
+
+  &::-webkit-color-swatch-wrapper {
+    @apply m-0 p-0.5 h-full w-full border-none;
+  }
+
+  &::-webkit-color-swatch {
+    @apply m-0 rounded-md border-none;
+  }
+
+  &::-moz-color-swatch {
+    @apply m-0 rounded-sm border-none;
+  }
 }
 
 .p-colorpicker-preview{
@@ -574,20 +610,11 @@ svg{
 }
 
 .input-search{
-  @include styleclass('w-11');
+  @apply relative flex flex-row w-full max-w-xl gap-4 items-center;
+  // @include styleclass('w-11');
 
-  height: 43px;
-  max-width: 620px;
-
-  input{
-    @include styleclass('shadow-3');
-    width: 100%;
-    height: 100%;
-
-    &:focus{
-      @include styleclass('shadow-6');
-    }
-  }
+  // height: 43px;
+  // max-width: 620px;
 }
 
 .switch-with-title-horizontal{
@@ -644,6 +671,10 @@ svg{
 }
 
 .category-side-bar-wrapper-container{
+  @apply
+    max-h-[83vh]
+    // bg-gray-800
+  ;
   @extend .content-card-secondary;
 
   display: flex;
@@ -652,7 +683,6 @@ svg{
 
   height: fit-content;
   width: 100%;
-  max-height: calc(91vh - 100px);
   min-height: 600px;
   padding: 12px;
   z-index: 2;
@@ -669,7 +699,7 @@ svg{
 }
 
 .side-bar-title{
-  @include styleclass('text-base font-semibold pb-3');
+  // @include styleclass('text-base font-semibold pb-3');
 }
 
 .category-item-wrapper{
@@ -721,9 +751,9 @@ svg{
   border-radius: 24px !important;
 }
 
-.p-button-small{
-  padding: 0.5rem 1rem !important;
-}
+// .p-button-small{
+//   padding: 0.5rem 1rem !important;
+// }
 
 .border-image{
   border: 1px solid #3F4B5B;
@@ -856,30 +886,6 @@ svg{
 //   }
 // }
 
-@media screen and (max-width: 1350px){
-  .content-area{
-    // UNCOMMENT
-    // grid-template-columns: repeat(5, 1fr);
-    grid-template-columns: repeat(7, 1fr);
-  }
-}
-
-@media screen and (max-width: 1150px){
-  .content-area{
-    // UNCOMMENT
-    // grid-template-columns: repeat(4, 1fr);
-    grid-template-columns: repeat(6, 1fr);
-  }
-}
-
-@media screen and (max-width: 1080px){
-
-  .content-area{
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-}
-
 @media screen and (max-width: 760px){
 
   .desktop-only{
@@ -896,17 +902,12 @@ svg{
     grid-template-columns: 1fr;
   }
 
-  .searchByAlgolia{
-    display: none;
-  }
+  // .searchByAlgolia{
+  //   display: none;
+  // }
 
   .nav-bar-links-wrapper {
     gap: 5px;
-  }
-
-  .content-area{
-    grid-template-columns: repeat(2, 1fr);
-    padding: 12px;
   }
 
   .page-wrapper{
@@ -922,11 +923,6 @@ svg{
     margin: auto;
     flex-direction: column;
     gap: 0px;
-  }
-
-  .options-wrapper{
-    gap: 8px;
-    width: 100%;
   }
 
 

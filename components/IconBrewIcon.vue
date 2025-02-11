@@ -6,31 +6,27 @@
     @mouseleave="mouseOut"
     :id="icon"
   >
-    <component :is="iconComp()" :size="size"></component>
-    <!-- <AcademicBookIcon/> -->
+<!-- <img
+  v-if="icon?.icon?.base64_24px"
+  :src="icon.icon.base64_24px"
+  :width="size"
+  :height="size"
+  :style="{ color: iconColor }"
+/> -->
+    <div
+      v-if="icon?.icon?.base64_24px"
+      v-html="svgContent"
+      :style="{ width: `${size}px`, height: `${size}px`, color: iconColor }"
+      class="svg-container"
+    ></div>
 
-
-    <!-- <svg
-      v-if="iconOnHover.length == 0 || !isHovering"
-      :class="'icon-image-' + size"
-      :data-src="getIcon"
-    ></svg>
-
-    
-    <svg
-      v-if="iconOnHover.length != 0 && isHovering"
-      :class="'icon-image-' + size"
-      :data-src="getHoverIcon"
-      class="cursor-pointer"
-    ></svg> -->
+    <component v-else :is="iconComp()" :size="size"></component>
 
   </div>
-  <!-- <div></div> -->
 </template>
 
 <script>
   import { defineAsyncComponent } from "vue";
-  
 
   export default {
     name: 'IconBrewIcon',
@@ -423,6 +419,10 @@
 
     props:{
       icon: {
+        type: Object,
+        default: {},
+      },
+      iconName: {
         type: String,
         default: 'dashboard',
       },
@@ -473,13 +473,13 @@
       },
 
       iconComp(){
-        const iconNameCamelCase = this.icon.replace(/-| /g, ' ').split(' ').map((word, index) => {
+        const iconNameCamelCase = this.iconName.replace(/-| /g, ' ').split(' ').map((word, index) => {
             return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
         }).join('') + 'Icon';
 
         return iconNameCamelCase
       }
-      
+
     },
 
     computed:{
@@ -490,7 +490,7 @@
           size = '24';
         }
 
-        
+
         try {
           // return defineAsyncComponent(() => import(`~~/assets/icons/18px/abc-18px.svg`))
           // return defineAsyncComponent(() => import(`@/assets/icons/${this.size}px/${this.icon}-${this.size}px.svg`))
@@ -499,6 +499,18 @@
         } catch (error) {
           console.log('error: ', error);
           return ''
+        }
+      },
+
+      svgContent() {
+        try{
+          if (!this.icon?.icon?.base64_24px || this.icon?.icon?.base64_24px.includes('https://parsefiles.back4app.com/') ) return '';
+          const base64Content = this.icon.icon.base64_24px;
+          const svgString = atob(base64Content.split(',')[1]);
+          return svgString;
+        }catch(error){
+          console.log('svgContent error 1: ', this.icon?.icon?.base64_24px)
+          console.log('svgContent error 2: ', error)
         }
       },
 
@@ -520,3 +532,11 @@
     }
   }
 </script>
+
+<style scoped>
+.svg-container :deep(svg) {
+  width: 100%;
+  height: 100%;
+  color: currentColor;
+}
+</style>

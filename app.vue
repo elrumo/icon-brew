@@ -1,5 +1,5 @@
 <template>
-	<div class="h-100">
+	<div class="h-100 dark">
 		<TopNavBar/>
 		<!-- <HeroSection
 			class="page-wrapper"
@@ -8,7 +8,7 @@
 		/> -->
 
 		<!-- <UploadIcons/> -->
-		
+
 		<SearchBar/>
 		<MainContentGrid class="page-wrapper"/>
 	</div>
@@ -16,7 +16,7 @@
 
 <script lang="ts">
 // import { defineComponent } from "vue";
-import { useToast } from "primevue/usetoast";
+// import { useToast } from "primevue/usetoast";
 
 export default {
 	data() {
