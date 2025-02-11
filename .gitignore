@@ -7,6 +7,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+
+bun.lock
+package-lock.json
+
 # Runtime data
 pids
 *.pid
@@ -102,3 +106,5 @@ sw.*
 
 
 /api
+package-lock.json
+bun.lock

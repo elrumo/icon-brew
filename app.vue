@@ -14,7 +14,7 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script>
 // import { defineComponent } from "vue";
 // import { useToast } from "primevue/usetoast";
 
@@ -36,9 +36,3 @@ export default {
 	},
 };
 </script>
-
-<style>
-/* // @import 'primeflex/primeflex.scss';
-// @import 'style/utilities.scss';
-// @import 'iconBrewIcons.scss'; */
-</style>
