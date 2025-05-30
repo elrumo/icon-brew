@@ -1,7 +1,7 @@
-export default defineAppConfig({
+export default defineAppConfig<any>({
   ui: {
     primary: 'blue',
-    gray: 'cool',
+    gray: 'slate',
 
     divider: {
       wrapper: {
@@ -54,6 +54,12 @@ export default defineAppConfig({
         size: '2xs',
         type: 'solid'
       }
+    },
+
+    skeleton:{
+      base: 'animate-pulse',
+      background: 'bg-gray-900/10',
+      rounded: 'rounded-md'
     }
   }
 })

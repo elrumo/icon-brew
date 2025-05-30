@@ -1,6 +1,9 @@
 <template>
 	<div class="h-100 dark">
-		<TopNavBar/>
+		<div id="topArea" class="sticky w-full z-10 top-0 bg-gray-900/80 backdrop-blur-md">
+			<TopNavBar/>
+			<SearchBar/>
+		</div>
 		<!-- <HeroSection
 			class="page-wrapper"
 			:isLink="false"
@@ -9,7 +12,6 @@
 
 		<!-- <UploadIcons/> -->
 
-		<SearchBar/>
 		<MainContentGrid class="page-wrapper"/>
 	</div>
 </template>

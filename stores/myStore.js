@@ -19,6 +19,9 @@ import Parse from 'parse/dist/parse.min.js';
 // const client = algoliasearch(import.meta.env.ALGOLIA_APP_ID, import.meta.env.ALGOLIA_SEARCH_KEY);
 // const index = client.initIndex(import.meta.env.ALGOLIA_INDEX);
 
+// Debounce timeout for search
+let searchTimeout;
+
 export const useStore = defineStore({
   id: 'store',
   state: () => ({
@@ -138,53 +141,65 @@ export const useStore = defineStore({
       statesToChange.forEach((state) => {
         this[state.state] = state.data;
       });
-      this.searchAlgolia({ appendIcons: false });
+      this.searchAlgolia({ appendIcons: false, immediate: true });
       this.scrollTo(460);
     },
 
     async searchAlgolia(payload) {
+      // Clear previous timeout
+      clearTimeout(searchTimeout);
+      
+      // Set fetching state immediately to prevent "No icons found" message
       this.isFetchingData = true;
+      
+      // For immediate actions like category changes, don't debounce
+      const shouldDebounce = !payload.immediate;
+      const delay = shouldDebounce ? 300 : 0;
+      
+      searchTimeout = setTimeout(async () => {
 
-      let appendIcons = payload.appendIcons;
-      let query = this.searchValue;
-      let filters = this.searchFilters;
-      let hitsPerPage = 500;
-      let page = this.algoliaPage;
-      let selectedCategory = this.selectedCategory;
-      let iconCategories = this.iconCategories;
-      let noOfIcons = this.numberOfIcons;
+        let appendIcons = payload.appendIcons;
+        let query = this.searchValue;
+        let filters = this.searchFilters;
+        let hitsPerPage = 500;
+        let page = this.algoliaPage;
+        let selectedCategory = this.selectedCategory;
+        let iconCategories = this.iconCategories;
+        let noOfIcons = this.numberOfIcons;
 
-      if(iconCategories.length == 0) await this.fetchIconCategories()
+        if(iconCategories.length == 0) await this.fetchIconCategories()
 
-      if (selectedCategory != 'All Icons') {
-        noOfIcons = iconCategories.filter((category) => {
-          return category.categoryName === selectedCategory;
-        })[0].noOfIcons;
-      }
+        if (selectedCategory != 'All Icons') {
+          noOfIcons = iconCategories.filter((category) => {
+            return category.categoryName === selectedCategory;
+          })[0].noOfIcons;
+        }
 
-      try {
-        const searchResult = await $fetch('/api/search', {
-          method: 'POST',
-          body: {
-            searchValue: query,
-            filters: filters,
-            page: page,
-            hitsPerPage: hitsPerPage
+        try {
+          const { dedupedFetch } = await import('~/utils/requestDeduplication');
+          const searchResult = await dedupedFetch('/api/search', {
+            method: 'POST',
+            body: {
+              searchValue: query,
+              filters: filters,
+              page: page,
+              hitsPerPage: hitsPerPage
+            }
+          });
+
+          this.isFetchingData = false;
+          this.previousQuery = searchResult.hits;
+          if (appendIcons) {
+            this.addIcons(searchResult.hits);
           }
-        });
-
-        this.isFetchingData = false;
-        this.previousQuery = searchResult.hits;
-        if (appendIcons) {
-          this.addIcons(searchResult.hits);
+          if (!appendIcons) {
+            this.icons = searchResult.hits;
+          }
+        } catch (error) {
+          console.error('Error searching icons:', error);
+          this.isFetchingData = false;
         }
-        if (!appendIcons) {
-          this.icons = searchResult.hits;
-        }
-      } catch (error) {
-        console.error('Error searching icons:', error);
-        this.isFetchingData = false;
-      }
+      }, delay);
     },
 
     async fetchTotalNoOfRecods() {
@@ -202,11 +217,32 @@ export const useStore = defineStore({
     },
 
     async fetchIconCategories() {
+      // Only fetch if not already loaded in store
+      if (this.iconCategories.length > 0) {
+        return this.iconCategories;
+      }
+      
+      // Check localStorage cache first
+      const { getCache, setCache, CACHE_KEYS } = useCache();
+      const cached = getCache(CACHE_KEYS.CATEGORIES);
+      
+      if (cached) {
+        this.iconCategories = cached;
+        return cached;
+      }
+      
       try {
-        const categories = await $fetch('/api/categories');
+        const { dedupedFetch } = await import('~/utils/requestDeduplication');
+        const categories = await dedupedFetch('/api/categories');
         this.iconCategories = categories;
+        
+        // Cache the results
+        setCache(CACHE_KEYS.CATEGORIES, categories);
+        
+        return categories;
       } catch (error) {
         console.error('Error fetching categories:', error);
+        return [];
       }
     },
 

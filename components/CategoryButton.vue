@@ -1,10 +1,13 @@
 <!-- Please remove this file from your project -->
 <template>
      <div>
-        <button
+        <UButton
+          color="gray"
+          variant="ghost"
           tabindex="0"
           @click="setCategoryAction(category.categoryName)"
           :id="category.categoryName"
+          class="opacity-70 hover:opacity-100 hover:!bg-gray-900/60"
           :class="{
             'category-item-wrapper': true,
             'category-item-selected': selectedCategory == category.categoryName,
@@ -30,7 +33,7 @@
             <USkeleton class="h-4 w-4" :ui="{ rounded: 'rounded-full' }" />
           </div>
 
-        </button>
+        </UButton>
       </div>
 </template>
 

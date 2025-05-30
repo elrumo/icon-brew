@@ -19,6 +19,7 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "@iconify/tools": "^4.1.2",
     "@nuxt/ui": "^2.21.0",
     "@pinia/nuxt": "^0.4.11",
     "add": "^2.0.6",
@@ -28,7 +29,8 @@
     "nuxi": "^3.21.1",
     "parse": "^4.3.1",
     "pinia": "^2.2.5",
-    "ui": "^0.2.4"
+    "ui": "^0.2.4",
+    "vue-virtual-scroller": "^2.0.0-beta.8"
   },
   "overrides": {
     "vue": "latest"

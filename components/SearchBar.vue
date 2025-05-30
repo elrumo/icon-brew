@@ -3,7 +3,7 @@
     ref="searchBarWrapper"
     :class="{
       'search-bar-container': true,
-      'sticky-shadow': isIntersectingElement,
+      'shadow-xl': isIntersectingElement,
     }"
   >
 
@@ -54,30 +54,29 @@
       </span>
 
       <UDivider class="desktop-only h-8" orientation="vertical" />
-      <UDivider class="mobile-only w-8"/>
 
       <!-- Options wrapper -->
       <div class="options-wrapper">
-
+        
         <!-- Color picker -->
-        <!-- value="#FFFFFF" -->
-        <input
-          type="color"
-          id="colorPicker"
-          v-model="iconColour"
-          class="color-picker rounded-full"
-          @dblclick="onColorPickerClick('icon')"
-        />
+        <div class="flex flex-row gap-2">
+          <input
+            type="color"
+            id="colorPicker"
+            v-model="iconColour"
+            class="color-picker w-fit"
+            @dblclick="onColorPickerClick('icon')"
+          />
 
-        <!-- Color picker BG -->
-        <!-- value="#1F262F" -->
-        <input
-          type="color"
-          id="colorPickerBG"
-          v-model="bgColour"
-          class="color-picker rounded-full"
-          @dblclick="onColorPickerClick('bg')"
-        />
+          <!-- Color picker BG -->
+          <input
+            type="color"
+            id="colorPickerBG"
+            v-model="bgColour"
+            class="color-picker  w-fit"
+            @dblclick="onColorPickerClick('bg')"
+          />
+        </div>
 
         <!-- Size -->
         <USelectMenu
@@ -93,6 +92,11 @@
           v-model="downloadAs"
           size="lg"
         />
+
+        <div class="flex flex-row gap-2">
+          <SvgUploader/>
+          <IconifyTester/>
+        </div>
         <!-- @change="setDownloadOption()" -->
 
 
@@ -106,6 +110,7 @@
 
       </div>
 
+      <!-- <UDivider class="mobile-only w-8"/> -->
     </div>
   </div>
 </template>
@@ -185,15 +190,18 @@ watch(bgColour, debounce(() => {
 // Methods
 const scroll = () => {
   const margin = 600
-  window.onscroll = () => {
+  window.onscroll = (event) => {
     if (!searchBarWrapper.value) return
-
+    
     const bottomOfWindow = Math.ceil(
       document.body.offsetHeight - (window.pageYOffset + window.innerHeight)
     ) < margin
 
-    isIntersectingElement.value = searchBarWrapper.value.getBoundingClientRect().top <= 70
+    
+    isIntersectingElement.value = (window.pageYOffset || document.documentElement.scrollTop) >= 70
+    // console.log("isIntersectingElement.value: ", isIntersectingElement.value)
 
+    console.log("bottomOfWindow: ", bottomOfWindow)
     if (bottomOfWindow && !isFetchingData.value && previousQuery.value.length != 0) {
       store.fetchingData = true
       addOneToPage()
@@ -206,7 +214,6 @@ const setIconColour = () => {
   const colour = iconColour.value.replace('#', '')
   const contentArea = document.querySelector('.content-area')
   contentArea.style.color = '#' + colour
-  iconColour.value = colour
 }
 
 const setBgColour = () => {
@@ -215,7 +222,6 @@ const setBgColour = () => {
   contentArea.forEach((el) => {
     el.style.backgroundColor = '#' + colour
   })
-  bgColour.value = colour
 }
 
 const onColorPickerClick = (picker) => {
@@ -276,7 +282,7 @@ onMounted(async () => {
     keyboardEvent()
     try {
       // await searchAlgolia({ appendIcons: false })
-      await fetchIconCategories()
+      // await fetchIconCategories()
       await fetchTotalNoOfRecods()
       previousQuery.value = icons.value
     } catch (error) {

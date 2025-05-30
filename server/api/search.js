@@ -14,13 +14,14 @@ export default defineEventHandler(async (event) => {
       page: query.page,
       hitsPerPage: query.hitsPerPage,
       attributesToHighlight: null,
+      attributesToRetrieve: ['iconName', 'iconImage18px', 'iconImage24px', 'objectID', 'category'] // Only retrieve needed fields
     });
-    // console.log('searchResult: ', searchResult)
-    return searchResult;
+    
     return {
       hits: searchResult.hits,
       nbHits: searchResult.nbHits,
-      page: searchResult.page
+      page: searchResult.page,
+      nbPages: searchResult.nbPages
     };
   } catch (error) {
     console.log('Error performing Algolia search:', error);

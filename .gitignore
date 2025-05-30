@@ -108,3 +108,4 @@ sw.*
 /api
 package-lock.json
 bun.lock
+/.output

@@ -40,6 +40,7 @@ export default defineNuxtConfig({
     'assets/style/utilities.scss',
     'assets/style/iconBrewIcons.scss',
     'assets/style/style.scss',
+    'vue-virtual-scroller/dist/vue-virtual-scroller.css',
 
     // 'primevue/resources/primevue.css',
     // 'primeicons/primeicons.css',
@@ -50,6 +51,10 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@pinia/nuxt',
     '@nuxtjs/plausible',
+  ],
+
+  plugins: [
+    '~/plugins/vue-virtual-scroller.client.js'
   ],
 
   plausible: {
