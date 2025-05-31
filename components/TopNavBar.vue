@@ -50,6 +50,14 @@
             :isOutline="homeData.secondaryButtonIsOutline"
             :label="homeData.secondaryButton"
           />
+
+          <UButton
+            variant="ghost"
+            color="white"
+            icon="i-heroicons-user-circle-solid"
+            square
+            class="font-sans"
+          />
           <!-- <div v-for="item in homeData.navBarItems" :key="item.nameToDisplay">
             <NuxtLink
               v-if="!item.isExternalLink"

@@ -1,4 +1,5 @@
-import { IconSet, SVG, cleanupSVG, parseColors, isEmptyColor } from '@iconify/tools'
+import { IconSet, SVG, cleanupSVG } from '@iconify/tools'
+import { validateIconSet } from '@iconify/utils';
 
 export default defineEventHandler(async (event) => {
   try {
@@ -259,7 +260,10 @@ export default defineEventHandler(async (event) => {
       processingStrategy: 'auto-detect-multiple-sizes'
     }
 
-    return JSON.stringify(iconifyJSON, null, 2)
+    const validationResult = validateIconSet(iconifyJSON)
+
+    return JSON.stringify(validationResult, null, 2)
+    // return JSON.stringify(iconifyJSON, null, 2)
 
   } catch (error) {
     console.error('Generate IconifyJSON error:', error)

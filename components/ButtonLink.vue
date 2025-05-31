@@ -11,16 +11,15 @@
         :label="label"
         :variant="isOutline ? 'ghost' : 'solid'"
         color="white"
-        class="rounded-full font-sans"
+        class="font-sans"
       />
 
-      <!-- :icon="'pi' + icon" -->
       <UButton
         v-else
         :label="label"
-        color="white"
+        :color="isOutline ? 'white' :   'primary'"
         :variant="isOutline ? 'ghost' : 'solid'"
-        class="rounded-full font-sans"
+        class="font-sans"
       />
     </a>
 
@@ -34,7 +33,7 @@
         :label="label"
         color="white"
         :variant="isOutline ? 'ghost' : 'solid'"
-        class="rounded-full font-sans"
+        class="font-sans"
       />
       <UButton
         v-else
@@ -42,7 +41,7 @@
         color="white"
         :icon="icon"
         :variant="isOutline ? 'ghost' : 'solid'"
-        class="rounded-full font-sans"
+        class="font-sans"
       />
     </NuxtLink>
   </div>

@@ -1,7 +1,14 @@
 <template>
   <div>
     <!-- Trigger Button -->
-    <UButton @click="isOpen = true" icon="i-heroicons-arrow-up-tray" size="lg" square color="white" variant="solid" />
+    <UButton
+      @click="isOpen = true" 
+      icon="i-heroicons-arrow-up-tray" 
+      size="lg" 
+      square 
+      color="gray" 
+      variant="solid"
+    />
 
     <!-- Modal -->
     <!-- <UModal class="dark" v-model="isOpen" :ui="{ width: 'w-full max-w-2xl' }"> -->
@@ -191,8 +198,6 @@
           <!-- Uploaded Files List -->
           <!-- <Transition name="files-list" mode="out-in"> -->
           <div class="flex flex-col w-full md:w-1/2">
-            <!-- File Upload Area - Compact when files are uploaded -->
-            <!-- <div class="flex h-full w-full"> -->
             <!-- Full upload area when no files -->
             <div v-if="uploadedFiles.length === 0" @drop="handleDrop" @dragover.prevent @dragenter.prevent
               class="h-full w-full flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-primary-400 transition-colors"
@@ -213,9 +218,14 @@
 
             <div v-if="uploadedFiles.length > 0" class="flex flex-col gap-6 w-full">
               <div class="flex items-center justify-between">
-                <h4 class="text-sm font-medium text-gray-900 dark:text-white">
-                  Uploaded Files ({{ uploadedFiles.length }})
-                </h4>
+                <div class="flex flex-col gap-1">
+                  <h4 class="text-sm font-semibold text-gray-900 dark:text-white">
+                    Uploaded Files ({{ uploadedFiles.length }})
+                  </h4>
+                  <p class="font-normal text-xs opacity-90">
+                    {{ singleSizeIcons.length + multipleSizeIcons.length }} Unique Icons
+                  </p>
+                </div>
                 <UButton @click="clearFiles" variant="ghost" size="xs" color="red">
                   Clear All
                 </UButton>
@@ -274,7 +284,7 @@
           </UButton>
 
           <UButton
-            @click="generateIconifyJSON"
+            @click="generateIconifyJSON()"
             :loading="isGenerating" 
             :disabled="uploadedFiles.length === 0 || iconSetName.length === 0 || iconSetPrefix.length === 0 && !isGenerating"
             color="primary" icon="i-heroicons-arrow-down-tray">

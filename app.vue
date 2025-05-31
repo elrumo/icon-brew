@@ -1,5 +1,7 @@
 <template>
 	<div class="h-100 dark">
+		<UNotifications class="dark" />
+
 		<div id="topArea" class="sticky w-full z-10 top-0 bg-gray-900/80 backdrop-blur-md">
 			<TopNavBar/>
 			<SearchBar/>
@@ -9,8 +11,6 @@
 			:isLink="false"
 			:homeData="homeData"
 		/> -->
-
-		<!-- <UploadIcons/> -->
 
 		<MainContentGrid class="page-wrapper"/>
 	</div>

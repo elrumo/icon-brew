@@ -16,10 +16,11 @@
           <div
             class="category-item-title font-size-0-9"
           >
-            <IconBrewIcon
+            <!-- <IconBrewIcon
               :size="18"
               :iconName="category.icon"
-            />
+            /> -->
+              <Icon :name="'ib:'+category.icon+'-24'" />
             <p>
 
               {{ getCategoryName }}

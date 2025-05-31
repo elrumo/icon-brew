@@ -18,9 +18,19 @@
           icon="i-heroicons-magnifying-glass-20-solid"
           id="searchBar"
           v-model="searchValue"
-          :label="'Search ' + numberOfIcons + ' icons'"
+          :placeholder="'Search ' + numberOfIcons + ' icons'"
           class="w-full shadow-lg"
-          :ui="{rounded:'rounded-lg', icon: { trailing: { pointer: '' } } }"
+          :ui="{
+            rounded:'rounded-lg', 
+            icon: { 
+              trailing: { pointer: '' } 
+            },
+            color: {
+              white: { 
+                outline: 'bg-gray-200 dark:bg-gray-800/50',
+              }
+            }
+          }"
           size="lg"
         >
           <template #trailing>
@@ -73,7 +83,7 @@
             type="color"
             id="colorPickerBG"
             v-model="bgColour"
-            class="color-picker  w-fit"
+            class="color-picker w-fit"
             @dblclick="onColorPickerClick('bg')"
           />
         </div>
@@ -96,6 +106,7 @@
         <div class="flex flex-row gap-2">
           <SvgUploader/>
           <IconifyTester/>
+          <UploadIcons/>
         </div>
         <!-- @change="setDownloadOption()" -->
 
@@ -143,8 +154,8 @@ const {
 } = storeToRefs(store)
 
 const {
-  fetchTotalNoOfRecods,
   fetchIconCategories,
+  fetchTotalNoOfRecods,
   addOneToPage,
   searchAlgolia
 } = store
@@ -197,13 +208,17 @@ const scroll = () => {
       document.body.offsetHeight - (window.pageYOffset + window.innerHeight)
     ) < margin
 
-    
     isIntersectingElement.value = (window.pageYOffset || document.documentElement.scrollTop) >= 70
-    // console.log("isIntersectingElement.value: ", isIntersectingElement.value)
 
-    console.log("bottomOfWindow: ", bottomOfWindow)
-    if (bottomOfWindow && !isFetchingData.value && previousQuery.value.length != 0) {
-      store.fetchingData = true
+    // Fix: Check if we have icons and are not currently searching
+    // Only trigger infinite scroll when there's no active search (searchValue is empty)
+    const hasIcons = icons.value.length > 0
+    const noActiveSearch = searchValue.value === ''
+    const notCurrentlyFetching = !isFetchingData.value
+    
+    if (bottomOfWindow && hasIcons && noActiveSearch && notCurrentlyFetching) {
+      console.log('Triggering infinite scroll - loading more icons')
+      isFetchingData.value = true
       addOneToPage()
       searchAlgolia({ appendIcons: true })
     }
@@ -266,8 +281,14 @@ const keyboardEvent = () => {
 }
 
 const getFromAlgolia = async () => {
-  algoliaPage.value = 0
-  await searchAlgolia({ appendIcons: false })
+  // Reset pagination when starting a new search
+  store.algoliaPage = 0
+  
+  // Use the store's searchAlgolia function with immediate flag for search
+  await store.searchAlgolia({ 
+    appendIcons: false,
+    immediate: true // Don't debounce when user explicitly searches
+  })
 }
 
 const handleIntersection = (payload) => {
@@ -278,13 +299,9 @@ const handleIntersection = (payload) => {
 // Lifecycle hooks
 onMounted(async () => {
   if (process.client) {
-    scroll()
     keyboardEvent()
     try {
-      // await searchAlgolia({ appendIcons: false })
-      // await fetchIconCategories()
       await fetchTotalNoOfRecods()
-      previousQuery.value = icons.value
     } catch (error) {
       console.log(error)
     }

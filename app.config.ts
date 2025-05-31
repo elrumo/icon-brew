@@ -56,6 +56,16 @@ export default defineAppConfig<any>({
       }
     },
 
+    notifications: {
+      // Show toasts at the top right of the screen
+      position: 'top-0 bottom-[unset]'
+    },
+
+    button:{
+      base: 'focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 aria-disabled:cursor-not-allowed aria-disabled:opacity-75 flex-shrink-0',
+      rounded: 'rounded-lg',
+    },
+    
     skeleton:{
       base: 'animate-pulse',
       background: 'bg-gray-900/10',

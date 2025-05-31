@@ -1,4 +1,3 @@
-
 <template>
   <div
     :class="{
@@ -14,16 +13,17 @@
           height: heightSideBar,
         }"
       >
-          <CategoryButton
-            v-for="category in categories"
-            :key="category.categoryName"
-            :category="category"
-            :icons="numberOfIcons"
-            :isStatic="true"
-          />
+        <CategoryButton
+          v-for="category in categories"
+          :key="category.categoryName"
+          :category="category"
+          :icons="numberOfIcons"
+          :isStatic="true"
+        />
+
         <div class="divider-horizontal w-80 m-all-a opacity-30 desktop-only">‎</div>
 
-        <div v-if="categoriesData.length == 0" class="category-side-bar-wrapper">
+        <div v-if="iconCategories.length == 0" class="category-side-bar-wrapper">
             <USkeleton
               v-for="n in 17" :key="n+'-placeholder-sidebar'"
               class="h-8 mb-1 w-full"
@@ -31,9 +31,9 @@
             />
         </div>
 
-        <div v-if="categoriesData.length != 0" class="category-side-bar-wrapper">
+        <div v-if="iconCategories.length != 0" class="category-side-bar-wrapper">
           <CategoryButton
-            v-for="category in categoriesData"
+            v-for="category in iconCategories"
             :key="category.categoryName"
             :category="category"
             :active="category.categoryName == selectedCategory"
@@ -70,19 +70,23 @@
           />
         </div>
         
-        <!-- Infinite scroll trigger -->
+        <!-- Infinite scroll trigger - only show when conditions are met -->
         <div 
           ref="loadMoreTrigger" 
-          v-if="hasMoreIcons && searchValue === ''"
+          v-if="shouldShowLoadMoreTrigger"
           class="load-more-trigger"
         >
-          <USkeleton
-            v-if="isLoadingMore"
-            v-for="n in 10" 
-            :key="n+'-loading'"
-            class="h-32 w-32 mb-1"
-            :ui="{ rounded: 'rounded-lg' }"
-          />
+          <div v-if="isLoadingMore" class="loading-more-container">
+            <USkeleton
+              v-for="n in 10" 
+              :key="n+'-loading'"
+              class="h-32 w-32 mb-1"
+              :ui="{ rounded: 'rounded-lg' }"
+            />
+          </div>
+          <div v-else class="load-more-sentinel">
+            <!-- This invisible div triggers the intersection observer -->
+          </div>
         </div>
       </div>
       
@@ -107,51 +111,33 @@
         No icons found
       </p>
     </div>
-
-    <!-- Icon details -->
-    <!-- <div class="">
-      <div class="sticky-side-bar">
-        <div class="category-side-bar-wrapper" >
-          <IconOptions/>
-        </div>
-          <IconDetails/>
-      </div>
-    </div> -->
-
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useStore } from '~/stores/myStore'
+import { Icon } from '@iconify/vue'
 
-// Use lazy fetch with caching for categories
-const {data: categoriesData} = await useLazyFetch('/api/categories', {
-  key: 'categories',
-  server: false,
-  default: () => []
-})
+const store = useStore()
 
-// Initial load with smaller batch for faster rendering and caching
+// Initial load using store's searchAlgolia function
 const { data } = await useLazyAsyncData(
   'searchResult',
   async () => {
-    const { dedupedFetch } = await import('~/utils/requestDeduplication');
-    const searchResult = await dedupedFetch('/api/search', {
-        method: 'POST',
-        body: {
-          searchValue: '',
-          filters: '',
-          page: 0,
-          hitsPerPage: 80 // Reduced from 500 to 50 for faster initial load
-        }
-      });
+    // Use store's searchAlgolia for consistency
+    const searchResult = await store.searchAlgolia({
+      immediate: true,
+      searchValue: '',
+      filters: '',
+      page: 0,
+      hitsPerPage: 80
+    });
 
-      console.log("searchResult: ", searchResult);
-
-    // Return icons without base64 conversion for faster initial load
-    return {icons: searchResult.hits}
+    console.log("Initial searchResult: ", searchResult);
+    
+    return { icons: searchResult.hits }
   },
   {
     server: false,
@@ -159,114 +145,192 @@ const { data } = await useLazyAsyncData(
   }
 )
 
+await store.fetchIconCategories()
+
 // State for managing additional icons and loading
 const isLoadingMore = ref(false)
 const allIcons = ref([])
 const currentPage = ref(0)
 const hasMoreIcons = ref(true)
 const heightSideBar = ref('calc(100vh - 12rem)')
+const loadMoreTrigger = ref(null)
+const observer = ref(null)
 
-// Watch for data changes and update allIcons
-watch(data, (newData) => {
-  if (newData?.icons) {
-    allIcons.value = newData.icons
-  }
-}, { immediate: true })
-
-// Function to convert SVG URL to base64 (moved outside and optimized)
-const svgToBase64 = async (url, retries = 2) => {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const svgText = await response.text();
-      return `data:image/svg+xml;base64,${btoa(svgText)}`;
-    } catch (error) {
-      if (i === retries - 1) {
-        console.error(`Failed after ${retries} attempts: ${error} for url: ${url}`);
-        return url; // Fallback to original URL
-      }
-      await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
-    }
-  }
-};
-
-// Load more icons function
-const loadMoreIcons = async () => {
-  if (isLoadingMore.value || !hasMoreIcons.value) return;
-  
-  isLoadingMore.value = true;
-  try {
-    const nextPage = currentPage.value + 1;
-    const { dedupedFetch } = await import('~/utils/requestDeduplication');
-    const searchResult = await dedupedFetch('/api/search', {
-      method: 'POST',
-      body: {
-        searchValue: '',
-        filters: '',
-        page: nextPage,
-        hitsPerPage: 50
-      }
-    });
-    
-    if (searchResult.hits.length > 0) {
-      allIcons.value = [...allIcons.value, ...searchResult.hits];
-      currentPage.value = nextPage;
-    } else {
-      hasMoreIcons.value = false;
-    }
-  } catch (error) {
-    console.error('Error loading more icons:', error);
-  } finally {
-    isLoadingMore.value = false;
-  }
-};
-
-// Intersection observer for infinite scroll
-const loadMoreTrigger = ref(null);
-onMounted(() => {
-
-  if(window){
-    
-    let topArea = document.getElementById('topArea')
-    if(topArea){
-      const topAreaHeight = topArea.getBoundingClientRect().height;
-      heightSideBar.value = `calc(100vh - ${topAreaHeight}px - 2rem)`;
-    }
-  }
-
-  if (process.client && loadMoreTrigger.value) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMoreIcons.value) {
-          loadMoreIcons();
-        }
-      },
-      { threshold: 0.1 }
-    );
-    observer.observe(loadMoreTrigger.value);
-    
-    onUnmounted(() => {
-      observer.disconnect();
-    });
-  }
-});
-
-// Components
-// const IconCard = defineAsyncComponent(() => import('./IconCard.vue'))
-
-// Store
-const store = useStore()
 const {
   icons,
   selectedIcon,
   selectedCategory,
   searchValue,
   numberOfIcons,
-  isFetchingData
+  isFetchingData,
+  iconCategories,
+  nbPages,
+  algoliaPage
 } = storeToRefs(store)
+
+// Computed property to determine when to show the load more trigger
+const shouldShowLoadMoreTrigger = computed(() => {
+  return (
+    searchValue.value === '' && // No active search
+    hasMoreIcons.value && // More icons available
+    iconsToShow.value.length > 0 && // Has some icons to show
+    !isFetchingData.value // Not currently fetching from search
+  )
+})
+
+// Setup intersection observer
+const setupIntersectionObserver = () => {
+  if (!process.client || !loadMoreTrigger.value) return
+  
+  // Clean up existing observer
+  if (observer.value) {
+    observer.value.disconnect()
+  }
+  
+  observer.value = new IntersectionObserver(
+    (entries) => {
+      const entry = entries[0]
+      // console.log('Intersection observed:', {
+      //   isIntersecting: entry.isIntersecting,
+      //   isLoadingMore: isLoadingMore.value,
+      //   hasMoreIcons: hasMoreIcons.value,
+      //   searchValue: searchValue.value,
+      //   currentIconsCount: iconsToShow.value.length
+      // })
+      
+      if (entry.isIntersecting && !isLoadingMore.value && hasMoreIcons.value && searchValue.value === '') {
+        loadMoreIcons()
+      }
+    },
+    { 
+      threshold: 0.1,
+      rootMargin: '100px' // Trigger 100px before the element comes into view
+    }
+  )
+  
+  observer.value.observe(loadMoreTrigger.value)
+}
+
+// Load more icons function
+const loadMoreIcons = async () => {
+  if (isLoadingMore.value || !hasMoreIcons.value || searchValue.value !== '') {
+    console.log('Load more blocked:', {
+      isLoadingMore: isLoadingMore.value,
+      hasMoreIcons: hasMoreIcons.value,
+      searchValue: searchValue.value
+    })
+    return
+  }
+  
+  // console.log('Loading more icons...')
+  isLoadingMore.value = true
+  
+  try {
+    const nextPage = currentPage.value + 1
+    const { dedupedFetch } = await import('~/utils/requestDeduplication')
+    
+    const searchResult = await dedupedFetch('/api/search', {
+      method: 'POST',
+      body: {
+        searchValue: '',
+        filters: selectedCategory.value === 'All Icons' ? '' : `categories.categoryName:${selectedCategory.value}`,
+        page: nextPage,
+        hitsPerPage: 50
+      }
+    })
+    
+    // console.log('Load more result:', searchResult)
+    
+    if (searchResult.hits && searchResult.hits.length > 0) {
+      allIcons.value = [...allIcons.value, ...searchResult.hits]
+      currentPage.value = nextPage
+      // console.log(`Loaded ${searchResult.hits.length} more icons. Total: ${allIcons.value.length}`)
+    } else {
+      hasMoreIcons.value = false
+      console.log('No more icons to load')
+    }
+  } catch (error) {
+    console.error('Error loading more icons:', error)
+  } finally {
+    isLoadingMore.value = false
+  }
+}
+
+// Watch for data changes and update allIcons
+watch(data, (newData) => {
+  if (newData?.icons) {
+    allIcons.value = newData.icons
+    // console.log('Initial icons loaded:', newData.icons.length)
+  }
+}, { immediate: true })
+
+// Watch for search value changes to reset infinite scroll
+watch(searchValue, async (newValue, oldValue) => {
+  console.log('Search value changed:', { newValue, oldValue })
+  
+  if (newValue === '' && oldValue !== '') {
+    // Search cleared - reload initial data using store
+    currentPage.value = 0
+    hasMoreIcons.value = true
+    
+    // Reload initial data
+    const searchResult = await store.searchAlgolia({
+      immediate: true,
+      searchValue: '',
+      filters: selectedCategory.value === 'All Icons' ? '' : `categories.categoryName:${selectedCategory.value}`,
+      page: 0,
+      hitsPerPage: 80
+    })
+    
+    allIcons.value = searchResult.hits
+  } else if (newValue !== '' && oldValue === '') {
+    // Started searching - infinite scroll will be disabled by computed property
+    console.log('Search started - infinite scroll disabled')
+  }
+})
+
+// Watch for category changes to reset infinite scroll
+watch(selectedCategory, async (newCategory, oldCategory) => {
+  if (newCategory !== oldCategory) {
+    console.log('Category changed:', { newCategory, oldCategory })
+    currentPage.value = 0
+    hasMoreIcons.value = true
+    
+    // Let the store handle category change, but also update local state
+    // The store's setCategory method will call searchAlgolia
+    nextTick(() => {
+      // After store updates, sync with local state if not searching
+      if (searchValue.value === '') {
+        allIcons.value = icons.value
+      }
+    })
+  }
+})
+
+// Setup intersection observer when the trigger element is available
+watch(loadMoreTrigger, (newTrigger) => {
+  if (newTrigger && process.client) {
+    nextTick(() => {
+      setupIntersectionObserver()
+    })
+  }
+}, { immediate: true })
+
+onMounted(() => {
+  if (window) {
+    let topArea = document.getElementById('topArea')
+    if (topArea) {
+      const topAreaHeight = topArea.getBoundingClientRect().height
+      heightSideBar.value = `calc(100vh - ${topAreaHeight}px - 2rem)`
+    }
+  }
+})
+
+onUnmounted(() => {
+  if (observer.value) {
+    observer.value.disconnect()
+  }
+})
 
 // Data
 const categories = computed(() => [
@@ -278,22 +342,21 @@ const categories = computed(() => [
 ])
 
 const iconsToShow = computed(() => {
-  // If there's a search value, show search results from store
-  if(searchValue.value != '' && icons.value.length == 0) return []
-  if(icons.value.length > 0) return icons.value
+  // console.log('iconsToShow computed - searchValue:', searchValue.value, 'icons.length:', icons.value.length, 'allIcons.length:', allIcons.value.length)
   
-  // Otherwise show all loaded icons (initial + lazy loaded)
+  // If there's an active search, show search results from store
+  if (searchValue.value !== '') {
+    // console.log('Showing search results from store:', icons.value.length)
+    return icons.value
+  }
+  
+  // For browsing (no search), always show allIcons which includes infinite scroll results
+  // console.log('Showing all loaded icons (browse mode):', allIcons.value.length)
   return allIcons.value
 })
 </script>
 
 <style scoped>
-/* .content-area {
-  height: calc(100vh - 200px);
-  overflow-y: auto;
-  padding: 18px;
-} */
-
 .icons-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -302,11 +365,21 @@ const iconsToShow = computed(() => {
 }
 
 .load-more-trigger {
+  width: 100%;
+  padding: 2rem 0;
+}
+
+.loading-more-container {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
-  padding: 2rem 0;
   width: 100%;
+}
+
+.load-more-sentinel {
+  height: 20px;
+  width: 100%;
+  /* This is the invisible trigger element */
 }
 </style>

@@ -1,7 +1,14 @@
 <template>
     <div class="dark">
         <!-- Trigger Button -->
-        <UButton @click="isOpen = true" icon="i-heroicons-beaker" size="lg" square color="white" variant="solid" />
+        <UButton
+            @click="isOpen = true" 
+            icon="i-heroicons-beaker" 
+            size="lg" 
+            square 
+            color="gray"
+            variant="solid"
+        />
 
         <UModal class="dark" v-model="isOpen" :ui="{ width: 'w-full !max-w-[80vw]' }">
             <UCard class="max-w-[90vw] w-full max-h-[90vh]">

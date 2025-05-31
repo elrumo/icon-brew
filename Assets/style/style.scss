@@ -680,7 +680,7 @@ svg{
 .category-side-bar-wrapper-container{
   @apply
     // max-h-[83vh]
-    bg-gray-800
+    bg-gray-800/50
     border border-gray-700/50
   ;
   @extend .content-card-secondary;
