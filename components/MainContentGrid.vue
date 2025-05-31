@@ -13,7 +13,8 @@
           height: heightSideBar,
         }"
       >
-        <CategoryButton
+      
+      <CategoryButton
           v-for="category in categories"
           :key="category.categoryName"
           :category="category"
@@ -119,6 +120,7 @@ import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useStore } from '~/stores/myStore'
 import { Icon } from '@iconify/vue'
+import { ClientOnly } from '#components'
 
 const store = useStore()
 

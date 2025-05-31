@@ -168,47 +168,6 @@
                                 </ul>
                             </div>
                         </div>
-
-                        <!-- Test in Browser -->
-                        <div v-if="testResults.isValid" class="space-y-4">
-                            <h4 class="font-medium text-gray-900 dark:text-white">Test Icons in Browser:</h4>
-
-                            <!-- Icon Preview -->
-                            <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 flex flex-row flex-wrap gap-4 justify-between">
-                                <div class="flex items-center space-x-2">
-                                    <label class="text-sm font-medium">Select icon to preview:</label>
-                                    <USelectMenu
-                                        v-model="selectedIcon"
-                                        :options="iconOptions"
-                                        placeholder="Choose an icon..."
-                                        class="w-64"
-                                    />
-                                </div>
-
-                                <!-- SVG Preview -->
-                                <div v-if="selectedIcon && iconSvg" class="flex items-center space-x-4">
-                                    <div class="flex items-center space-x-2">
-                                        <span class="text-sm">16px:</span>
-                                        <div class="w-4 h-4 border border-gray-300 dark:border-gray-600 rounded flex items-center justify-center"
-                                            v-html="iconSvg"></div>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <span class="text-sm">24px:</span>
-                                        <div class="w-6 h-6 border border-gray-300 dark:border-gray-600 rounded flex items-center justify-center"
-                                            v-html="iconSvg"></div>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <span class="text-sm">32px:</span>
-                                        <div class="w-8 h-8 border border-gray-300 dark:border-gray-600 rounded flex items-center justify-center"
-                                            v-html="iconSvg"></div>
-                                    </div>
-                                    <div v-if="selectedIconInfo" class="text-xs text-gray-500 dark:text-gray-400 ml-4">
-                                        <div>Original: {{ selectedIconInfo.width }}×{{ selectedIconInfo.height }}px</div>
-                                        <div v-if="selectedIconInfo.detectedSize">Detected size: {{ selectedIconInfo.detectedSize }}px</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 

@@ -14,11 +14,18 @@
           :icon="category.icon"
         /> -->
 
-        <IconBrewIcon
+
+        <Icon 
+          :name="`ib:${icon.name}-${getSizeNumber}`"
+          size="24"
+        />
+        <!-- <Icon[BrewIcon
           :size="getSizeNumber"
           :iconName="icon.name"
           :icon="icon"
-        />
+        />] -->
+
+
         <!-- :style="'color: '+iconColour" -->
 
         <!-- <svg

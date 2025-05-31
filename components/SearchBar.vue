@@ -106,7 +106,7 @@
         <div class="flex flex-row gap-2">
           <SvgUploader/>
           <IconifyTester/>
-          <UploadIcons/>
+          <!-- <UploadIcons/> -->
         </div>
         <!-- @change="setDownloadOption()" -->
 
