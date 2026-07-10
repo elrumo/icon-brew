@@ -8,7 +8,6 @@ yarn-debug.log*
 yarn-error.log*
 
 
-bun.lock
 package-lock.json
 
 # Runtime data
@@ -107,5 +106,4 @@ sw.*
 
 /api
 package-lock.json
-bun.lock
 /.output
