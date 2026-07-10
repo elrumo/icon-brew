@@ -1,0 +1,13 @@
+{
+  "name": "iconbrew-parse-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@parse/s3-files-adapter": "^5.3.1",
+    "parse-server": "^9.9.0"
+  }
+}

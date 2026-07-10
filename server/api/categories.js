@@ -7,7 +7,10 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 const VITE_PARSE_APP_ID = import.meta.env.VITE_PARSE_APP_ID;
 const VITE_PARSE_KEY = import.meta.env.VITE_PARSE_KEY;
-const VITE_PARSE_SERVER_URL = import.meta.env.VITE_PARSE_SERVER_URL;
+// Prefer the internal Docker network URL for server-to-server calls so this
+// doesn't depend on the external domain/Traefik being reachable; falls back
+// to the public URL for non-containerized setups (e.g. local `nuxt dev`).
+const VITE_PARSE_SERVER_URL = import.meta.env.PARSE_SERVER_URL || import.meta.env.VITE_PARSE_SERVER_URL;
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig().public;

@@ -1,0 +1,70 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - parse-server
+      - meilisearch
+    networks:
+      - iconbrew
+      - dokploy-network
+    # Assign this service's domain (pointing at container port 3000)
+    # from the Dokploy UI under this app's "Domains" tab — it will
+    # generate and manage the Traefik labels/routing automatically.
+
+  parse-server:
+    build:
+      context: ./parse
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      PARSE_SERVER_DATABASE_URI: mongodb://mongo:27017/parse
+    depends_on:
+      - mongo
+    networks:
+      - iconbrew
+      - dokploy-network
+    # Assign this service's domain (pointing at container port 1337)
+    # from the Dokploy UI under this app's "Domains" tab — this is what
+    # makes the Parse Server reachable externally for the browser SDK
+    # and the externally-hosted Parse Dashboard.
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - iconbrew
+    # Intentionally not attached to dokploy-network and has no exposed
+    # ports — only reachable by parse-server on the internal network.
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.11
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
+      MEILI_ENV: production
+    volumes:
+      - meili_data:/meili_data
+    networks:
+      - iconbrew
+      - dokploy-network
+    # Assign this service's domain (pointing at container port 7700)
+    # from the Dokploy UI under this app's "Domains" tab for external
+    # access (e.g. Meilisearch admin UI / external indexing tools).
+
+networks:
+  iconbrew:
+  dokploy-network:
+    external: true
+
+volumes:
+  mongo_data:
+  meili_data:
