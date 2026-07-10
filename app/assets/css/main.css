@@ -454,6 +454,21 @@ svg {
   align-items: center;
   gap: 10px;
   text-transform: capitalize;
+  min-width: 0;
+}
+
+.category-item-icon {
+  flex-shrink: 0;
+  color: var(--muted-text);
+  transition: color 0.12s;
+}
+
+.category-item-wrapper:hover .category-item-icon {
+  color: var(--primary-text);
+}
+
+.category-item-selected .category-item-icon {
+  color: var(--accent);
 }
 
 .category-item-number {

@@ -10,6 +10,13 @@
     }"
   >
     <span class="category-item-title">
+      <Icon
+        v-if="category.icon"
+        :name="'ib:' + category.icon + '-24'"
+        size="18"
+        class="category-item-icon"
+        :ssr="true"
+      />
       {{ getCategoryName }}
     </span>
 
