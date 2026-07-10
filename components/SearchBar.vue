@@ -6,7 +6,6 @@
       'shadow-xl': isIntersectingElement,
     }"
   >
-
     <div
       :class="{
         'search-bar-wrapper': true,
@@ -65,9 +64,8 @@
 
       <UDivider class="desktop-only h-8" orientation="vertical" />
 
-      <!-- Options wrapper -->
-      <div class="options-wrapper">
-        
+      <!-- Desktop Options wrapper -->
+      <div class="options-wrapper desktop-only">
         <!-- Color picker -->
         <div class="flex flex-row gap-2">
           <input
@@ -108,29 +106,93 @@
           <IconifyTester/>
           <!-- <UploadIcons/> -->
         </div>
-        <!-- @change="setDownloadOption()" -->
-
-
-          <!-- <InputText
-            class="p-inputtext-sm weight-input-wrapper"
-            type="number"
-            id="iconWeight"
-            v-model="iconWeight"
-            @change="setIconWeight($event)"
-          /> -->
-
       </div>
 
-      <!-- <UDivider class="mobile-only w-8"/> -->
+      <!-- Mobile Options Popover -->
+      <div class="mobile-only">
+        <UPopover>
+          <UButton 
+            color="white" 
+            label="Options" 
+            trailing-icon="i-heroicons-chevron-down-20-solid"
+            size="lg"
+          />
+
+          <template #panel>
+            <div class="p-4 space-y-4 w-64">
+              <!-- Color picker -->
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Colors</label>
+                <div class="flex flex-row gap-2">
+                  <div class="flex flex-col items-center gap-1">
+                    <input
+                      type="color"
+                      id="colorPickerMobile"
+                      v-model="iconColour"
+                      class="color-picker w-8 h-8"
+                      @dblclick="onColorPickerClick('icon')"
+                    />
+                    <span class="text-xs text-gray-500">Icon</span>
+                  </div>
+                  <div class="flex flex-col items-center gap-1">
+                    <input
+                      type="color"
+                      id="colorPickerBGMobile"
+                      v-model="bgColour"
+                      class="color-picker w-8 h-8"
+                      @dblclick="onColorPickerClick('bg')"
+                    />
+                    <span class="text-xs text-gray-500">Background</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Size -->
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Size</label>
+                <USelectMenu
+                  :options="sizes"
+                  v-model="size"
+                  size="lg"
+                  @change="setIconSize()"
+                  class="w-full"
+                />
+              </div>
+
+              <!-- Download as -->
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Download Format</label>
+                <USelectMenu
+                  :options="downloadOptions"
+                  v-model="downloadAs"
+                  size="lg"
+                  class="w-full"
+                />
+              </div>
+
+              <!-- Additional Tools -->
+              <div class="space-y-2">
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Tools</label>
+                <div class="flex flex-col gap-2">
+                  <SvgUploader showLabel/>
+                  <IconifyTester showLabel/>
+                </div>
+              </div>
+            </div>
+          </template>
+        </UPopover>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useStore } from '~/stores/myStore'
-import IconBrewIcon from '../components/IconBrewIcon.vue'
+
+const route = useRoute()
 
 // Props
 defineProps({
@@ -155,7 +217,6 @@ const {
 
 const {
   fetchIconCategories,
-  fetchTotalNoOfRecods,
   addOneToPage,
   searchAlgolia
 } = store
@@ -167,7 +228,8 @@ const searchBarWrapper = ref(null)
 
 const downloadOptions = ref([
   { label: 'Download .SVG', code: 'downloadSVG' },
-  { label: 'Copy SVG', code: 'copySVG' }
+  { label: 'Copy SVG', code: 'copySVG' },
+  { label: 'Copy Name', code: 'copyName' }
 ])
 
 const size = ref({ label: '24px', code: 'iconImage24px' })
@@ -300,11 +362,6 @@ const handleIntersection = (payload) => {
 onMounted(async () => {
   if (process.client) {
     keyboardEvent()
-    try {
-      await fetchTotalNoOfRecods()
-    } catch (error) {
-      console.log(error)
-    }
   }
 })
 </script>

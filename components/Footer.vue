@@ -10,16 +10,10 @@
 </template>
 
 <script>
-  import IconBrewIcon from './IconBrewIcon.vue'
-
   var MarkdownIt = require('markdown-it'), md = new MarkdownIt();
 
   export default {
     name: 'Footer',
-
-    components:{
-      IconBrewIcon
-    },
 
     props:{
       footerText1: {

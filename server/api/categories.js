@@ -5,6 +5,10 @@ let cachedCategories = null;
 let cacheTimestamp = null;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
+const VITE_PARSE_APP_ID = import.meta.env.VITE_PARSE_APP_ID;
+const VITE_PARSE_KEY = import.meta.env.VITE_PARSE_KEY;
+const VITE_PARSE_SERVER_URL = import.meta.env.VITE_PARSE_SERVER_URL;
+
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig().public;
   const now = Date.now();
@@ -14,8 +18,8 @@ export default defineEventHandler(async (event) => {
     return cachedCategories;
   }
 
-  Parse.initialize(config.PARSE_APP_ID, config.PARSE_KEY);
-  Parse.serverURL = config.PARSE_SERVER_URL;
+  Parse.initialize(VITE_PARSE_APP_ID, VITE_PARSE_KEY);
+  Parse.serverURL = VITE_PARSE_SERVER_URL;
 
   let query = new Parse.Query('categories');
   let categories = [];

@@ -39,14 +39,9 @@
 <script>
   import { mapGetters } from 'vuex'
 
-  import IconBrewIcon from './IconBrewIcon.vue'
 
   export default {
     name: 'CustomToast',
-
-    components:{
-      IconBrewIcon
-    },
 
     props:{
       isVisible: false,

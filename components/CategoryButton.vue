@@ -16,11 +16,7 @@
           <div
             class="category-item-title font-size-0-9"
           >
-            <!-- <IconBrewIcon
-              :size="18"
-              :iconName="category.icon"
-            /> -->
-              <Icon :name="'ib:'+category.icon+'-24'" />
+              <Icon :name="'ib:'+category.icon+'-24'" :ssr="true" />
             <p>
 
               {{ getCategoryName }}
@@ -41,8 +37,6 @@
 <script>
   import { mapWritableState, mapActions } from 'pinia'
   import { useStore } from '~/stores/myStore'
-
-  import IconBrewIcon from '../components/IconBrewIcon.vue'
 
   export default {
     name: 'CategoryButton',

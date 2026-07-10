@@ -27,13 +27,18 @@
       </template>
 
       <div class="space-y-4">
-        <div>
-          <UFormGroup label="Data to Upload" description="Optional metadata for the upload">
+        <div class="flex flex-row gap-4">
+          <UFormGroup label="Data to Upload" description="Optional metadata for the upload" class="w-full">
             <UInput 
               v-model="dataToUpload" 
               placeholder="Enter data to upload"
             />
           </UFormGroup>
+
+          <div class="flex flex-col gap-2">
+            <p class="text-sm opacity-90">Update if Duplicate</p>
+            <UToggle v-model="updateIfDuplicate" />
+          </div>
         </div>
 
         <div class="flex flex-col w-full">
@@ -94,102 +99,102 @@
             </div>
             
             <!-- Icon list grouped by icon name -->
-            <DynamicScroller class="max-h-64 pr-2" :items="Object.entries(groupedIcons)" :min-item-size="100" key-field="0">
-              <template v-slot="{ item, index, active }">
-                <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item[1]]" :data-index="index">
-                  <div v-for="(iconGroup, iconName) in { [item[0]]: item[1] }" 
+            <div v-bind="containerProps" class="max-h-64 pr-2 overflow-auto">
+              <div v-bind="wrapperProps">
+                <div v-for="item in iconGroupsList" :key="item.index" class="mb-4" style="min-height: 100px">
+                  <div v-for="(iconGroup, iconName) in { [item.data[0]]: item.data[1] }" 
                     :key="iconName"
-                    class="mb-4 p-4 bg-gray-800 rounded-lg border border-gray-700">
+                    class="p-4 bg-gray-800 rounded-lg border border-gray-700">
                 
-                <!-- Icon header -->
-                <div class="flex items-center justify-between mb-3">
-                  <div class="flex items-center gap-3">
-                      <div class="flex items-center space-x-2">
-                        <div class="h-5 w-5 text-gray-300 flex items-center justify-center">
-                          <div v-if="getIconSvgContent(iconGroup)" v-html="getIconSvgContent(iconGroup)" class="h-5 w-5"></div>
-                          <UIcon v-else name="i-heroicons-squares-2x2" class="h-5 w-5" />
-                        </div>
-                        <h5 class="text-sm font-semibold text-white">
-                          {{ iconName }}
-                        </h5>
-                      </div>
-                    
-                    <!-- Status badge -->
-                    <UBadge 
-                      :color="iconGroup.isComplete ? 'green' : 'yellow'" 
-                      variant="soft" 
-                      size="xs"
-                    >
-                      {{ iconGroup.isComplete ? 'Complete' : 'Incomplete' }}
-                    </UBadge>
-                  </div>
-                  
-                  <!-- Remove entire icon group -->
-                  <UButton 
-                    @click="removeIconGroup(iconName)" 
-                    variant="ghost" 
-                    size="xs" 
-                    color="red" 
-                    icon="i-heroicons-trash"
-                  />
-                </div>
-
-                <!-- Files for this icon -->
-                <div class="flex flex-row gap-2">
-                  <div
-                    v-for="(file, fileIndex) in iconGroup.files" 
-                    :key="file.name"
-                    class="flex items-center justify-between p-2 bg-gray-700 rounded-lg border border-gray-600 w-full"
-                  >
-                    
-                    <div class="flex items-center space-x-3">
-                      <div class="flex items-center space-x-2">
-                        <UIcon name="i-heroicons-document" class="h-4 w-4 text-gray-400" />
-                        <!-- <div> -->
-                          <!-- <p class="text-xs font-medium text-white">
-                            {{ getFileDisplayName(file.name) }}
-                          </p> -->
+                    <!-- Icon header -->
+                    <div class="flex items-center justify-between mb-3">
+                      <div class="flex items-center gap-3">
                           <div class="flex items-center space-x-2">
-                            <UBadge 
-                              color="gray"
-                              size="sm"
-                            >
-                              {{ getFileSizeLabel(file.name) }}
-                            </UBadge>
-
-                            <span class="text-xs text-gray-400">
-                              {{ formatFileSize(file.size) }}
-                            </span>
-                            <!-- Size indicator -->
-                            <!-- :color="getFileSizeColor(file.name)"  -->
+                            <div class="h-5 w-5 text-gray-300 flex items-center justify-center">
+                              <div v-if="getIconSvgContent(iconGroup)" v-html="getIconSvgContent(iconGroup)" class="h-5 w-5"></div>
+                              <UIcon v-else name="i-heroicons-squares-2x2" class="h-5 w-5" />
+                            </div>
+                            <h5 class="text-sm font-semibold text-white">
+                              {{ iconName }}
+                            </h5>
                           </div>
-                        <!-- </div> -->
+                        
+                        <!-- Status badge -->
+                        <UBadge 
+                          :color="iconGroup.isComplete ? 'green' : 'yellow'" 
+                          variant="soft" 
+                          size="xs"
+                        >
+                          {{ iconGroup.isComplete ? 'Complete' : 'Incomplete' }}
+                        </UBadge>
+                      </div>
+                      
+                      <!-- Remove entire icon group -->
+                      <UButton 
+                        @click="removeIconGroup(iconName)" 
+                        variant="ghost" 
+                        size="xs" 
+                        color="red" 
+                        icon="i-heroicons-trash"
+                      />
+                    </div>
+
+                    <!-- Files for this icon -->
+                    <div class="flex flex-row gap-2">
+                      <div
+                        v-for="(file, fileIndex) in iconGroup.files" 
+                        :key="file.name"
+                        class="flex items-center justify-between p-2 bg-gray-700 rounded-lg border border-gray-600 w-full"
+                      >
+                        
+                        <div class="flex items-center space-x-3">
+                          <div class="flex items-center space-x-2">
+                            <UIcon name="i-heroicons-document" class="h-4 w-4 text-gray-400" />
+                            <!-- <div> -->
+                              <!-- <p class="text-xs font-medium text-white">
+                                {{ getFileDisplayName(file.name) }}
+                              </p> -->
+                              <div class="flex items-center space-x-2">
+                                <UBadge 
+                                  color="gray"
+                                  size="sm"
+                                >
+                                  {{ getFileSizeLabel(file.name) }}
+                                </UBadge>
+
+                                <span class="text-xs text-gray-400">
+                                  {{ formatFileSize(file.size) }}
+                                </span>
+                                <!-- Size indicator -->
+                                <!-- :color="getFileSizeColor(file.name)"  -->
+                              </div>
+                            <!-- </div> -->
+                          </div>
+                        </div>
+                        
+                        <!-- Remove individual file -->
+                        <UButton 
+                          @click="removeFileFromIcon(iconName, fileIndex)" 
+                          variant="ghost" 
+                          size="xs" 
+                          color="red" 
+                          icon="i-heroicons-x-mark"
+                        />
+                      </div>
+                      
+                      <!-- Missing sizes indicator -->
+                      <div
+                        v-if="!iconGroup.isComplete" 
+                        class="flex items-center justify-center space-x-2 text-xs text-amber-400 mt-2 w-full"
+                      >
+                        <UIcon name="i-heroicons-exclamation-triangle" class="h-4 w-4" />
+                        <span>Missing: {{ getMissingSizes(iconGroup).join(', ') }}</span>
                       </div>
                     </div>
-                    
-                    <!-- Remove individual file -->
-                    <UButton 
-                      @click="removeFileFromIcon(iconName, fileIndex)" 
-                      variant="ghost" 
-                      size="xs" 
-                      color="red" 
-                      icon="i-heroicons-x-mark"
-                    />
-                  </div>
-                  
-                  <!-- Missing sizes indicator -->
-                  <div
-                    v-if="!iconGroup.isComplete" 
-                    class="flex items-center justify-center space-x-2 text-xs text-amber-400 mt-2 w-full"
-                  >
-                    <UIcon name="i-heroicons-exclamation-triangle" class="h-4 w-4" />
-                    <span>Missing: {{ getMissingSizes(iconGroup).join(', ') }}</span>
                   </div>
                 </div>
-                  </div>
-                </DynamicScrollerItem>
-              </template>
-            </DynamicScroller>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -218,6 +223,7 @@
 
 <script setup>
 import Parse from 'parse/dist/parse.min.js'
+import { useVirtualList } from '@vueuse/core'
 
 // Props
 const props = defineProps({
@@ -237,10 +243,11 @@ const isDragging = ref(false)
 const fileInput = ref(null)
 const uploadProgress = ref({ processed: 0, total: 0 })
 const svgContents = ref({})
+const updateIfDuplicate = ref(false)
 
 // Initialize Parse
-Parse.initialize(import.meta.env.VITE_PARSE_ID, import.meta.env.VITE_PARSE_JS_KEY)
-Parse.serverURL = import.meta.env.VITE_PARSE_URL;
+Parse.initialize(import.meta.env.VITE_PARSE_APP_ID, import.meta.env.VITE_PARSE_KEY)
+Parse.serverURL = import.meta.env.VITE_PARSE_SERVER_URL;
 
 // Cache for optimization
 const iconCache = new Map()
@@ -416,10 +423,12 @@ const batchCreateOrUpdateIcons = async (iconEntries, existingIconsMap) => {
   // Separate creation vs updates
   Object.entries(iconEntries).forEach(([iconName, iconData]) => {
     if (existingIconsMap.has(iconName)) {
-      toUpdate.push({
-        icon: existingIconsMap.get(iconName),
-        data: iconData
-      })
+      if(updateIfDuplicate.value) {
+        toUpdate.push({
+          icon: existingIconsMap.get(iconName),
+          data: iconData
+        })
+      }
     } else {
       toCreate.push(iconData)
     }
@@ -427,6 +436,8 @@ const batchCreateOrUpdateIcons = async (iconEntries, existingIconsMap) => {
   
   const results = { created: [], updated: [], errors: [] }
   
+  console.log(`toUpdate: `, toUpdate)
+
   // Batch create new icons
   if (toCreate.length > 0) {
     try {
@@ -898,6 +909,15 @@ const completeIcons = computed(() => {
 const incompleteIcons = computed(() => {
   return Object.values(groupedIcons.value).filter(icon => !icon.isComplete)
 })
+
+// Virtual list setup
+const groupedIconsEntries = computed(() => Object.entries(groupedIcons.value))
+const { list: iconGroupsList, containerProps, wrapperProps } = useVirtualList(
+  groupedIconsEntries,
+  {
+    itemHeight: 100,
+  }
+)
 
 // Legacy computed properties for backward compatibility
 const singleSizeIcons = computed(() => {

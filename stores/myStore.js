@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
 
-// import axios from 'axios';
-import algoliasearch from 'algoliasearch';
-import Parse from 'parse/dist/parse.min.js';
-
 // Debounce timeout for search
 let searchTimeout;
+
+const VITE_ALGOLIA_APP_ID = import.meta.env.VITE_ALGOLIA_APP_ID;
+const VITE_ALGOLIA_SEARCH_KEY = import.meta.env.VITE_ALGOLIA_SEARCH_KEY;
+const VITE_ALGOLIA_INDEX = import.meta.env.VITE_ALGOLIA_INDEX;
 
 export const useStore = defineStore({
   id: 'store',
@@ -162,6 +162,7 @@ export const useStore = defineStore({
         const query = searchValue !== null ? searchValue : this.searchValue;
         const searchFilters = filters !== null ? filters : this.searchFilters;
         const searchPage = page !== null ? page : this.algoliaPage;
+        const getNumberOfIcons = payload.getNumberOfIcons !== null? payload.getNumberOfIcons : false;
         
         // Determine hitsPerPage based on context
         let searchHitsPerPage;
@@ -194,13 +195,16 @@ export const useStore = defineStore({
     
         try {
           const { dedupedFetch } = await import('~/utils/requestDeduplication');
-    
+
           const body = {
             searchValue: query,
             filters: searchFilters,
             page: searchPage,
+            getNumberOfIcons, 
             hitsPerPage: searchHitsPerPage
           };
+
+          console.log('body: ', body)
           
           // console.log('searchAlgolia request body:', body);
           
@@ -263,22 +267,11 @@ export const useStore = defineStore({
       });
     },
 
-    async fetchTotalNoOfRecods() {
-      const config = useRuntimeConfig().public;
-      const client = algoliasearch(config.ALGOLIA_APP_ID, config.ALGOLIA_SEARCH_KEY);
-      const index = client.initIndex(config.ALGOLIA_INDEX);
-
-      const noOfRecords = await index.search('', {
-        hitsPerPage: 0,
-        attributesToRetrieve: null,
-        attributesToHighlight: null,
-        analytics: false,
-      });
-      this.numberOfIcons = noOfRecords.nbHits;
-    },
-
     async fetchIconCategories() {
       try {
+
+        console.log('fetchIconCategories called');
+
         // Only fetch if not already loaded in store
         if (this.iconCategories.length > 0) {
           return this.iconCategories;
@@ -312,49 +305,50 @@ export const useStore = defineStore({
       }
     },
 
-    async addSuggestion(payload) {
-      let iconName = this.suggestedIconName + '/';
-      let suggestedBy = this.suggestedIconUserName + '/';
-      let email = this.suggestedIconEmail + '/';
-      let notes =
-        this.suggestedIconNotes.length == 0 ? '-/' : this.suggestedIconNotes + '/';
-      let category = this.suggestedIconCategory.code;
-      try {
-        let postUrl =
-          'https://api.macosicons.com/api/icon-suggestions/create-suggestion/' +
-          iconName +
-          notes +
-          suggestedBy +
-          email +
-          category;
-        console.log('postUrl: ', postUrl);
-        await axios.post(postUrl);
-        await axios.post(
-          'https://api.macosicons.com/api/email/elrumo97@me.com/1/elias'
-        );
-      } catch (error) {
-        console.log('Error adding suggestion: ', error);
-      }
-    },
-    async addVote(payload) {
-      let suggestions = this.suggestions;
-      let suggestion = suggestions.filter((suggestion) => {
-        return suggestion.id === payload.id;
-      })[0];
-      let suggestionIndex = suggestions.indexOf(suggestion);
-      let votes;
-      if (payload.operation === 'add') {
-        votes = suggestions[suggestionIndex].attributes.votes + 1;
-      } else {
-        votes = suggestions[suggestionIndex].attributes.votes - 1;
-      }
-      localStorage.setItem('iconVoted-' + payload.id, JSON.stringify({ id: payload.id, vote: payload.localStorage }));
-      await axios.get('https://api.macosicons.com/api/icon-suggestions/' + payload.operation + '-vote-count/' + payload.id);
-      let selectedSuggestion = JSON.parse(JSON.stringify(suggestions));
-      selectedSuggestion[suggestionIndex].attributes.votes = votes;
+    // async addSuggestion(payload) {
+    //   let iconName = this.suggestedIconName + '/';
+    //   let suggestedBy = this.suggestedIconUserName + '/';
+    //   let email = this.suggestedIconEmail + '/';
+    //   let notes =
+    //     this.suggestedIconNotes.length == 0 ? '-/' : this.suggestedIconNotes + '/';
+    //   let category = this.suggestedIconCategory.code;
+    //   try {
+    //     let postUrl =
+    //       'https://api.macosicons.com/api/icon-suggestions/create-suggestion/' +
+    //       iconName +
+    //       notes +
+    //       suggestedBy +
+    //       email +
+    //       category;
+    //     console.log('postUrl: ', postUrl);
+    //     await axios.post(postUrl);
+    //     await axios.post(
+    //       'https://api.macosicons.com/api/email/elrumo97@me.com/1/elias'
+    //     );
+    //   } catch (error) {
+    //     console.log('Error adding suggestion: ', error);
+    //   }
+    // },
 
-      this.suggestions = selectedSuggestion;
-    },
+    // async addVote(payload) {
+    //   let suggestions = this.suggestions;
+    //   let suggestion = suggestions.filter((suggestion) => {
+    //     return suggestion.id === payload.id;
+    //   })[0];
+    //   let suggestionIndex = suggestions.indexOf(suggestion);
+    //   let votes;
+    //   if (payload.operation === 'add') {
+    //     votes = suggestions[suggestionIndex].attributes.votes + 1;
+    //   } else {
+    //     votes = suggestions[suggestionIndex].attributes.votes - 1;
+    //   }
+    //   localStorage.setItem('iconVoted-' + payload.id, JSON.stringify({ id: payload.id, vote: payload.localStorage }));
+    //   await axios.get('https://api.macosicons.com/api/icon-suggestions/' + payload.operation + '-vote-count/' + payload.id);
+    //   let selectedSuggestion = JSON.parse(JSON.stringify(suggestions));
+    //   selectedSuggestion[suggestionIndex].attributes.votes = votes;
+
+    //   this.suggestions = selectedSuggestion;
+    // },
 
     scrollTo(target) {
       if (typeof target == 'number') {
@@ -402,6 +396,18 @@ export const useStore = defineStore({
             })
             .catch(() => alert('An error sorry'));
           break;
+          
+        case 'copyName':
+          navigator.clipboard.writeText(payload.name);
+          // const { $toast } = useNuxtApp();
+          // $toast.add({
+          //   severity: 'success',
+          //   summary: 'Copied!',
+          //   detail: `Icon name "${payload.name}" copied to clipboard`,
+          //   life: 3000
+          // });
+          break;
+
         case 'copySVG':
           const response = await fetch(url);
           if (!response.ok) {

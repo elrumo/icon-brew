@@ -8,6 +8,8 @@
             square 
             color="gray"
             variant="solid"
+            :class="{ 'w-full': showLabel }"
+            :label="showLabel ? 'Test iconifyJSON' : ''"
         />
 
         <UModal class="dark" v-model="isOpen" :ui="{ width: 'w-full !max-w-[80vw]' }">
@@ -64,94 +66,64 @@
                             </span>
                         </div>
 
-                        <!-- JSON Info -->
-                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-2">
-                            <h4 class="font-medium text-gray-900 dark:text-white">JSON Information:</h4>
-                            <div class="grid grid-cols-2 gap-4 text-sm">
-                                <div>
-                                    <span class="text-gray-600 dark:text-gray-400">Prefix:</span>
-                                    <span class="ml-2 font-mono">{{ testResults.info.prefix }}</span>
-                                </div>
-                                <div>
-                                    <span class="text-gray-600 dark:text-gray-400">Total Icons:</span>
-                                    <span class="ml-2 font-mono">{{ testResults.info.iconCount }}</span>
-                                </div>
-                                <div>
-                                    <span class="text-gray-600 dark:text-gray-400">Aliases:</span>
-                                    <span class="ml-2 font-mono">{{ testResults.info.aliasCount }}</span>
-                                </div>
-                                <div>
-                                    <span class="text-gray-600 dark:text-gray-400">File Size:</span>
-                                    <span class="ml-2 font-mono">{{ formatFileSize(testResults.info.fileSize) }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Icon Organization Display -->
-                        <!-- <div
-                            v-if="iconGroups.single.length > 0 || iconGroups.multiple.length > 0"
-                            class="max-h-[50vh] overflow-auto bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4"
-                        >
-                            <h4 class="font-medium text-blue-800 dark:text-blue-200 mb-3">Icon Organization:</h4>
-                            <div class="grid grid-cols-2 gap-6 text-sm">
-                                <div v-if="iconGroups.single.length > 0">
-                                    <div class="font-medium text-blue-700 dark:text-blue-300 mb-2">Single Size Icons:</div>
-                                    <div class="space-y-1">
-                                        <div v-for="group in iconGroups.single" :key="group.baseName" class="text-xs">
-                                            <span class="font-mono text-blue-600 dark:text-blue-400">{{ group.baseName }}</span>
-                                            <span class="text-gray-600 dark:text-gray-400"> ({{ group.size }}px)</span>
-                                        </div>
+                        <div class="flex flex-col flex-wrap gap-4 w-full">
+                            <!-- JSON Info -->
+                            <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-2">
+                                <h4 class="font-medium text-gray-900 dark:text-white">JSON Information:</h4>
+                                <div class="grid grid-cols-2 gap-4 text-sm">
+                                    <div>
+                                        <span class="text-gray-600 dark:text-gray-400">Prefix:</span>
+                                        <span class="ml-2 font-mono">{{ testResults.info.prefix }}</span>
                                     </div>
-                                </div>
-                                
-                                <div v-if="iconGroups.multiple.length > 0">
-                                    <div class="font-medium text-blue-700 dark:text-blue-300 mb-2">Multiple Size Icons:</div>
-                                    <div class="space-y-1">
-                                        <div v-for="group in iconGroups.multiple" :key="group.baseName" class="text-xs">
-                                            <span class="font-medium">{{ group.baseName }}:</span>
-                                            <span class="font-mono text-blue-600 dark:text-blue-400">{{ group.icons.join(', ') }}</span>
-                                        </div>
+                                    <div>
+                                        <span class="text-gray-600 dark:text-gray-400">Total Icons:</span>
+                                        <span class="ml-2 font-mono">{{ testResults.info.iconCount }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600 dark:text-gray-400">Aliases:</span>
+                                        <span class="ml-2 font-mono">{{ testResults.info.aliasCount }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600 dark:text-gray-400">File Size:</span>
+                                        <span class="ml-2 font-mono">{{ formatFileSize(testResults.info.fileSize) }}</span>
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
 
-                        <div class="flex flex-row gap-4">
-                            <!-- Icons List -->
-                            <div v-if="testResults.icons.length > 0" class="space-y-2 w-full">
-                                <h4 class="font-medium text-gray-900 dark:text-white">Icons Found ({{ testResults.icons.length }})</h4>
-                                <div class="max-h-[34vh] bg-gray-50 dark:bg-gray-800 rounded-lg p-3 overflow-auto">
-                                    <DynamicScroller
-                                        class="scroller"
-                                        :items="testResults.icons"
-                                        :item-size="40"
-                                        :key-field="(item, index) => item"
-                                        v-slot="{ item }"
-                                    >
-                                        <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded px-2 py-1 border border-gray-200 dark:border-gray-600 mb-2 mr-2 inline-flex">
-                                            <div class="w-4 h-4 flex-shrink-0" v-html="generateIconSvg(item)"></div>
-                                            <span class="font-mono text-xs">{{ item }}</span>
-                                            <span v-if="getIconSize(item)" class="text-xs text-gray-500 dark:text-gray-400">({{ getIconSize(item) }}px)</span>
+                            <div class="flex flex-row gap-4">
+                                <!-- Icons List -->
+                                <div v-if="testResults.icons.length > 0" class="space-y-2 w-full">
+                                    <h4 class="font-medium text-gray-900 dark:text-white">Icons Found ({{ testResults.icons.length }})</h4>
+                                    <div class="max-h-[34vh] h-full bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
+                                        <div v-bind="iconsContainerProps" class="h-full overflow-auto">
+                                            <div v-bind="iconsWrapperProps">
+                                                <div v-for="item in iconsList" :key="item.index" class="mb-2" style="height: 40px">
+                                                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded px-2 py-1 border border-gray-200 dark:border-gray-600 mr-2 h-full">
+                                                        <div class="w-4 h-4 flex-shrink-0" v-html="generateIconSvg(item.data)"></div>
+                                                        {{ getIconName(item.data) }}
+                                                        <span class="font-mono text-xs">{{ item.data }}</span>
+                                                        <span v-if="getIconSize(item.data)" class="text-xs text-gray-500 dark:text-gray-400">({{ getIconSize(item.data) }}px)</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </DynamicScroller>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Aliases List -->
-                            <div v-if="testResults.aliases.length > 0" class="space-y-2 w-full h-ful">
-                                <h4 class="font-medium text-gray-900 dark:text-white">Aliases Found ({{ testResults.aliases.length }})</h4>
-                                <div class="max-h-[34vh] bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
-                                    <RecycleScroller
-                                        class="scroller"
-                                        :items="testResults.aliases"
-                                        :item-size="24"
-                                        key-field="name"
-                                        v-slot="{ item }"
-                                    >
-                                        <div class="text-gray-700 dark:text-gray-300 text-sm font-mono mb-1">
-                                            <span class="text-blue-600 dark:text-blue-400">{{ item.name }}</span> → {{ item.parent }}
+                                <!-- Aliases List -->
+                                <div v-if="testResults.aliases.length > 0" class="space-y-2 w-full h-ful">
+                                    <h4 class="font-medium text-gray-900 dark:text-white">Aliases Found ({{ testResults.aliases.length }})</h4>
+                                    <div class="max-h-[34vh] h-full bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
+                                        <div v-bind="aliasesContainerProps" class="h-full overflow-auto">
+                                            <div v-bind="aliasesWrapperProps">
+                                                <div v-for="item in aliasesList" :key="item.index" class="mb-1" style="height: 24px">
+                                                    <div class="text-gray-700 dark:text-gray-300 text-sm font-mono h-full flex items-center">
+                                                        <span class="text-blue-600 dark:text-blue-400">{{ item.data.name }}</span> → {{ item.data.parent }}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </RecycleScroller>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -185,6 +157,15 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useVirtualList } from '@vueuse/core'
+
+defineProps({
+  showLabel: {
+    type: Boolean,
+    required: false,
+    default: false
+  }
+})
 
 const isOpen = ref(false)
 const testResults = ref(null)
@@ -192,6 +173,24 @@ const selectedIcon = ref('')
 const currentIconSet = ref(null)
 
 const toast = useToast()
+
+// Virtual lists setup
+const iconsListData = computed(() => testResults.value?.icons || [])
+const aliasesListData = computed(() => testResults.value?.aliases || [])
+
+const { list: iconsList, containerProps: iconsContainerProps, wrapperProps: iconsWrapperProps } = useVirtualList(
+  iconsListData,
+  {
+    itemHeight: 40,
+  }
+)
+
+const { list: aliasesList, containerProps: aliasesContainerProps, wrapperProps: aliasesWrapperProps } = useVirtualList(
+  aliasesListData,
+  {
+    itemHeight: 24,
+  }
+)
 
 // Handle file drop
 const handleDrop = (event) => {
@@ -428,6 +427,12 @@ const generateIconSvg = (iconName) => {
         console.error('SVG generation error:', error)
         return null
     }
+}
+
+const getIconName = (icon) => {
+    // Extract base name by removing size suffix if present
+    const match = icon.match(/^(.+)-\d+$/)
+    return match ? match[1] : icon
 }
 
 // Generate options for icon selector with size info

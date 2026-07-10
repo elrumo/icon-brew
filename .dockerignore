@@ -1,0 +1,13 @@
+node_modules
+.nuxt
+.output
+.vercel
+.git
+.github
+.vscode
+.DS_Store
+*.log
+.env
+.env.*
+*.pem
+README.md

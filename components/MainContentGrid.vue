@@ -10,7 +10,7 @@
       <div
         class="category-side-bar-wrapper-container gap-md"
         :style="{
-          height: heightSideBar,
+          height: $device.isMobile ? '' : heightSideBar,
         }"
       >
       
@@ -117,10 +117,10 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+const { isMobile } = useDevice()
 import { storeToRefs } from 'pinia'
 import { useStore } from '~/stores/myStore'
 import { Icon } from '@iconify/vue'
-import { ClientOnly } from '#components'
 
 const store = useStore()
 
@@ -131,18 +131,20 @@ const { data } = await useLazyAsyncData(
     // Use store's searchAlgolia for consistency
     const searchResult = await store.searchAlgolia({
       immediate: true,
+      getNumberOfIcons: true,
       searchValue: '',
       filters: '',
       page: 0,
       hitsPerPage: 80
     });
 
-    console.log("Initial searchResult: ", searchResult);
-    
+    // console.log("Initial searchResult: ", searchResult);
+    store.numberOfIcons = searchResult.nbHits;
+
     return { icons: searchResult.hits }
   },
   {
-    server: false,
+    server: true,
     default: () => ({ icons: [] })
   }
 )
@@ -321,9 +323,12 @@ watch(loadMoreTrigger, (newTrigger) => {
 onMounted(() => {
   if (window) {
     let topArea = document.getElementById('topArea')
-    if (topArea) {
+    if (topArea && window.innerWidth >= 768) { // Only run on desktop/tablet (>= 768px)
+      console.log('topAreaHeight:', topArea.getBoundingClientRect().height)
       const topAreaHeight = topArea.getBoundingClientRect().height
       heightSideBar.value = `calc(100vh - ${topAreaHeight}px - 2rem)`
+    } else {
+      heightSideBar.value = 'fit-content'
     }
   }
 })

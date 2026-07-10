@@ -6,12 +6,13 @@
       icon="i-heroicons-arrow-up-tray" 
       size="lg" 
       square 
-      color="gray" 
+      color="gray"
       variant="solid"
+      :class="{ 'w-full': showLabel }"
+      :label="showLabel ? 'Create iconifyJSON' : ''"
     />
 
     <!-- Modal -->
-    <!-- <UModal class="dark" v-model="isOpen" :ui="{ width: 'w-full max-w-2xl' }"> -->
     <UModal class="dark" v-model="isOpen" :ui="{ width: 'w-full !max-w-[90vw] md:!max-w-[80vw]' }">
       <UCard class="w-[90vw] md:w-[80vw] max-h-[97vh] md:max-h-[98vh] overflow-auto">
         <template #header>
@@ -32,7 +33,50 @@
         <div class="flex flex-col md:!flex-row gap-6 max-h-[77vh] md:max-h-[77vh] overflow-auto pb-14">
           
           <!-- Info & options -->
-          <div class="flex flex-col gap-4 w-full transition-all md:pr-3">
+          <div class="flex flex-col gap-4 w-full transition-all md:pr-3 h-fit">
+            <!-- Existing IconifyJSON Upload -->
+            <div class="space-y-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <h4 class="text-sm font-medium text-blue-800 dark:text-blue-200">
+                Existing IconifyJSON (Optional)
+              </h4>
+              <p class="text-xs text-blue-700 dark:text-blue-300">
+                Upload an existing IconifyJSON file to add new icons to it. The form will be auto-populated with existing metadata.
+              </p>
+              
+              <div class="flex items-center gap-3">
+                <UButton 
+                  @click="$refs.jsonFileInput.click()" 
+                  variant="outline" 
+                  size="sm"
+                  icon="i-heroicons-document-arrow-up"
+                  :color="existingIconifyJSON ? 'green' : 'blue'"
+                >
+                  {{ existingIconifyJSON ? 'JSON Loaded' : 'Upload JSON' }}
+                </UButton>
+                
+                <div v-if="existingIconifyJSON" class="flex items-center gap-2">
+                  <span class="text-xs text-blue-700 dark:text-blue-300">
+                    {{ existingIconifyJSON.prefix }} ({{ Object.keys(existingIconifyJSON.icons || {}).length }} icons)
+                  </span>
+                  <UButton 
+                    @click="clearExistingJSON" 
+                    variant="ghost" 
+                    size="xs" 
+                    color="red"
+                    icon="i-heroicons-x-mark"
+                  />
+                </div>
+              </div>
+              
+              <input 
+                ref="jsonFileInput" 
+                type="file" 
+                accept=".json" 
+                @change="handleJSONFileSelect" 
+                class="hidden" 
+              />
+            </div>
+
             <!-- Icon Set Configuration -->
             <div class="space-y-4 bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
               <h4 class="text-sm font-medium text-gray-900 dark:text-white">
@@ -45,7 +89,7 @@
                   <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Icon Set Name
                   </label>
-                  <UInput v-model="iconSetName" placeholder="My Custom Icons" :ui="{ base: 'text-sm' }" />
+                  <UInput v-model="iconSetName" placeholder="My Custom Icons" :ui="{ base: 'text-sm' }" :disabled="!!existingIconifyJSON" />
                   <p class="text-xs text-gray-500 dark:text-gray-400">
                     Display name for your icon set
                   </p>
@@ -57,7 +101,7 @@
                     Prefix
                   </label>
                   <div class="relative">
-                    <UInput v-model="iconSetPrefix" placeholder="my-icons" :ui="{ base: 'text-sm pr-8' }" />
+                    <UInput v-model="iconSetPrefix" placeholder="my-icons" :ui="{ base: 'text-sm pr-8' }" :disabled="!!existingIconifyJSON" />
                     <div class="absolute inset-y-0 right-0 flex items-center pr-2">
                       <UIcon v-if="prefixCheckStatus === 'checking'" name="i-heroicons-arrow-path"
                         class="h-4 w-4 text-gray-400 animate-spin" />
@@ -77,13 +121,60 @@
                     {{ prefixCheckMessage }}
                   </div>
                 </div>
+
+                <!-- Author Name -->
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Author Name
+                  </label>
+                  <UInput v-model="authorName" placeholder="Your Name" :ui="{ base: 'text-sm' }" :disabled="!!existingIconifyJSON" />
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Name of the icon set creator
+                  </p>
+                </div>
+
+                <!-- License -->
+                <div class="space-y-2">
+                  <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    License
+                  </label>
+                  <USelect 
+                    v-model="selectedLicense" 
+                    :options="licenseOptions" 
+                    placeholder="Select a license"
+                    :ui="{ base: 'text-sm' }"
+                    :disabled="!!existingIconifyJSON"
+                  />
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    License for your icon set
+                  </p>
+                </div>
+              </div>
+
+              <!-- Advanced Options -->
+              <div class="space-y-1 pt-2">
+                <h5 class="text-sm font-normal text-gray-300 opacity-80">
+                  Advanced Options
+                </h5>
+                
+                <!-- Include Metadata Toggle -->
+                <div class="flex items-center justify-between">
+                  <div class="space-y-1">
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Include Processing Metadata
+                    </label>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                      Add detailed processing information to the JSON output
+                    </p>
+                  </div>
+                  <UToggle v-model="includeMetadata" />
+                </div>
               </div>
             </div>
 
             <!-- Upload Instructions -->
             <div
               class="flex flex-row gap-3 bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-800 rounded-lg p-4 w-full">
-              <!-- <UIcon name="i-heroicons-information-circle" class="h-5 w-5 text-gray-400 mt-0.5" /> -->
               <div class="">
                 <h4 class="text-sm font-medium text-gray-800 dark:text-gray-200">
                   File Format Requirements
@@ -196,8 +287,7 @@
           </div>
 
           <!-- Uploaded Files List -->
-          <!-- <Transition name="files-list" mode="out-in"> -->
-          <div class="flex flex-col w-full md:w-1/2">
+          <div class="flex flex-col w-full md:w-1/2 sticky top-0">
             <!-- Full upload area when no files -->
             <div v-if="uploadedFiles.length === 0" @drop="handleDrop" @dragover.prevent @dragenter.prevent
               class="h-full w-full flex flex-col items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-primary-400 transition-colors"
@@ -214,7 +304,6 @@
               </UButton>
               <input ref="fileInput" type="file" multiple accept=".svg" @change="handleFileSelect" class="hidden" />
             </div>
-            <!-- </div> -->
 
             <div v-if="uploadedFiles.length > 0" class="flex flex-col gap-6 w-full">
               <div class="flex items-center justify-between">
@@ -224,6 +313,9 @@
                   </h4>
                   <p class="font-normal text-xs opacity-90">
                     {{ singleSizeIcons.length + multipleSizeIcons.length }} Unique Icons
+                    <span v-if="existingIconifyJSON" class="text-blue-600 dark:text-blue-400">
+                      + {{ Object.keys(existingIconifyJSON.icons || {}).length }} existing
+                    </span>
                   </p>
                 </div>
                 <UButton @click="clearFiles" variant="ghost" size="xs" color="red">
@@ -250,28 +342,26 @@
               
               <!-- Virtual scrolled upload area -->
               <div class="h-full md:max-h-[58vh] md:pr-3 pt-2">
-                <DynamicScroller
-                  class="scroller"
-                  :items="uploadedFiles"
-                  :min-item-size="68"
-                  key-field="name"
-                  v-slot="{ item, index }"
-                >
-                  <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg mb-2">
-                    <div class="flex items-center space-x-3">
-                      <UIcon name="i-heroicons-document" class="h-5 w-5 text-gray-400" />
-                      <div>
-                        <p class="text-sm font-medium text-gray-900 dark:text-white line-clamp-1">
-                          {{ item.name }}
-                        </p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">
-                          {{ formatFileSize(item.size) }}
-                        </p>
+                <div v-bind="containerProps" class="h-full overflow-auto">
+                  <div v-bind="wrapperProps">
+                    <div v-for="item in list" :key="item.index" class="mb-2" style="height: 68px">
+                      <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg h-full">
+                        <div class="flex items-center space-x-3">
+                          <UIcon name="i-heroicons-document" class="h-5 w-5 text-gray-400" />
+                          <div>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white line-clamp-1">
+                              {{ item.data.name }}
+                            </p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                              {{ formatFileSize(item.data.size) }}
+                            </p>
+                          </div>
+                        </div>
+                        <UButton @click="removeFile(item.index)" variant="ghost" size="xs" color="red" icon="i-heroicons-trash" />
                       </div>
                     </div>
-                    <UButton @click="removeFile(index)" variant="ghost" size="xs" color="red" icon="i-heroicons-trash" />
                   </div>
-                </DynamicScroller>
+                </div>
               </div>
             </div>
           </div>
@@ -286,20 +376,19 @@
           <UButton
             @click="generateIconifyJSON()"
             :loading="isGenerating" 
-            :disabled="uploadedFiles.length === 0 || iconSetName.length === 0 || iconSetPrefix.length === 0 && !isGenerating"
+            :disabled="uploadedFiles.length === 0 || iconSetName.length === 0 || iconSetPrefix.length === 0 || authorName.length === 0 && !isGenerating"
             color="primary" icon="i-heroicons-arrow-down-tray">
-            Generate IconifyJSON
+            {{ existingIconifyJSON ? 'Update IconifyJSON' : 'Generate IconifyJSON' }}
           </UButton>
         </div>
       </UCard>
     </UModal>
-
-    <!-- Toast notifications will be handled by Nuxt UI automatically -->
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useVirtualList } from '@vueuse/core'
 
 const isOpen = ref(false)
 const isDragging = ref(false)
@@ -307,10 +396,42 @@ const uploadedFiles = ref([])
 const isGenerating = ref(false)
 const iconSetName = ref('')
 const iconSetPrefix = ref('')
+const authorName = ref('')
+const selectedLicense = ref('MIT')
+const includeMetadata = ref(false)
 const prefixCheckStatus = ref(null) // null, 'checking', 'available', 'taken'
 const prefixCheckMessage = ref('')
+const existingIconifyJSON = ref(null)
+
+// License options for dropdown
+const licenseOptions = [
+  { label: 'MIT License', value: 'MIT' },
+  { label: 'Apache 2.0', value: 'Apache-2.0' },
+  { label: 'GPL v3', value: 'GPL-3.0' },
+  { label: 'BSD 3-Clause', value: 'BSD-3-Clause' },
+  { label: 'Creative Commons CC0', value: 'CC0-1.0' },
+  { label: 'Creative Commons BY 4.0', value: 'CC-BY-4.0' },
+  { label: 'ISC License', value: 'ISC' },
+  { label: 'Custom License', value: 'Custom' }
+]
 
 const toast = useToast()
+
+defineProps({
+  showLabel: {
+    type: Boolean,
+    required: false,
+    default: false
+  }
+})
+
+// Virtual list setup
+const { list, containerProps, wrapperProps } = useVirtualList(
+  uploadedFiles,
+  {
+    itemHeight: 68,
+  }
+)
 
 let prefixCheckTimeout = null
 
@@ -519,6 +640,14 @@ const generateIconifyJSON = async () => {
     // Add configuration
     formData.append('prefix', prefix)
     formData.append('name', name || 'Custom Icons')
+    formData.append('author', authorName.value || 'Unknown Author')
+    formData.append('license', selectedLicense.value)
+    formData.append('includeMetadata', includeMetadata.value.toString())
+    
+    // Add existing IconifyJSON if present
+    if (existingIconifyJSON.value) {
+      formData.append('existingIconifyJSON', JSON.stringify(existingIconifyJSON.value))
+    }
 
     // Send files directly to the generate endpoint
     const response = await fetch('/api/generate-iconify', {
@@ -543,14 +672,17 @@ const generateIconifyJSON = async () => {
     window.URL.revokeObjectURL(url)
     document.body.removeChild(a)
 
+    const totalIcons = uploadedFiles.value.length + (existingIconifyJSON.value ? Object.keys(existingIconifyJSON.value.icons || {}).length : 0)
+    
     toast.add({
       title: 'Success!',
-      description: `IconifyJSON "${name}" with ${uploadedFiles.value.length} icons has been downloaded`,
+      description: `IconifyJSON "${name}" with ${totalIcons} icons has been downloaded`,
       color: 'green'
     })
 
     // Clear files and close modal after successful generation
     uploadedFiles.value = []
+    existingIconifyJSON.value = null
     isOpen.value = false
 
   } catch (error) {
@@ -563,6 +695,74 @@ const generateIconifyJSON = async () => {
   } finally {
     isGenerating.value = false
   }
+}
+
+// Handle JSON file selection
+const handleJSONFileSelect = async (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  try {
+    const text = await file.text()
+    const jsonData = JSON.parse(text)
+    
+    // Validate that it's a valid IconifyJSON
+    if (!jsonData.prefix || !jsonData.icons) {
+      toast.add({
+        title: 'Invalid IconifyJSON',
+        description: 'The uploaded file is not a valid IconifyJSON format',
+        color: 'red'
+      })
+      return
+    }
+
+    // Store the existing JSON
+    existingIconifyJSON.value = jsonData
+    
+    // Populate form fields with existing data
+    iconSetPrefix.value = jsonData.prefix || ''
+    iconSetName.value = jsonData.info?.name || ''
+    authorName.value = jsonData.info?.author?.name || ''
+    
+    // Handle license
+    if (jsonData.info?.license) {
+      const license = jsonData.info.license
+      if (typeof license === 'string') {
+        selectedLicense.value = license
+      } else if (license.title) {
+        selectedLicense.value = license.title
+      }
+    }
+    
+    toast.add({
+      title: 'IconifyJSON loaded',
+      description: `Loaded ${Object.keys(jsonData.icons).length} existing icons from ${jsonData.prefix}`,
+      color: 'green'
+    })
+    
+  } catch (error) {
+    console.error('Error parsing JSON:', error)
+    toast.add({
+      title: 'Invalid JSON file',
+      description: 'Could not parse the uploaded JSON file',
+      color: 'red'
+    })
+  }
+  
+  // Clear the file input
+  event.target.value = ''
+}
+
+// Clear existing JSON
+const clearExistingJSON = () => {
+  existingIconifyJSON.value = null
+  // Re-enable form fields by not resetting their values
+  // Users can modify them again
+  toast.add({
+    title: 'JSON cleared',
+    description: 'Existing IconifyJSON has been removed',
+    color: 'blue'
+  })
 }
 </script>
 

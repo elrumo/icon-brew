@@ -7,11 +7,8 @@
   >
     <template #message="slotProps">
         <div class="custom-toast">
-          <IconBrewIcon
-            size="24"
-            iconName="check"
-            :filled="false"
-          />
+          
+          <Icon name="ib:check-24" size="24" />
           <p>
             <b>
               '{{slotProps.message.summary}}'
@@ -26,14 +23,9 @@
 <script>
   import { mapGetters } from 'vuex'
 
-  import IconBrewIcon from './IconBrewIcon.vue'
 
   export default {
     name: 'CustomToast',
-
-    components:{
-      IconBrewIcon
-    },
 
     props:{
       icon: {}

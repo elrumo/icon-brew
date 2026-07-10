@@ -13,22 +13,13 @@
       <div class="nav-bar-links-wrapper">
         <!-- <Skeleton height="24px" width="24px"></Skeleton> -->
         <a class="flex" aria-label="Link to Twitter" href="https://twitter.com/elrumo" target="blank">
-          <IconBrewIcon
-            :size="24"
-            iconName="twitter"
-          />
+          <Icon name="ib:twitter-24" size="24" />
         </a>
         <a class="flex" aria-label="Link to GitHub" href="https://github.com/elrumo/icon-brew" target="blank">
-          <IconBrewIcon
-            :size="24"
-            iconName="github"
-          />
+          <Icon name="ib:github-24" size="24" />
         </a>
         <a class="flex" aria-label="Link to Figma" href="https://www.figma.com/community/file/1121752926262800605" target="blank">
-          <IconBrewIcon
-            :size="24"
-            iconName="figma"
-          />
+          <Icon name="ib:figma-24" size="24" />
         </a>
       </div>
 
@@ -51,13 +42,14 @@
             :label="homeData.secondaryButton"
           />
 
-          <UButton
+          <!-- <UButton
             variant="ghost"
             color="white"
             icon="i-heroicons-user-circle-solid"
             square
             class="font-sans"
-          />
+          /> -->
+
           <!-- <div v-for="item in homeData.navBarItems" :key="item.nameToDisplay">
             <NuxtLink
               v-if="!item.isExternalLink"
@@ -108,14 +100,12 @@
   import { useStore } from '~/stores/myStore'
 
   import IconBrewLogo from '../components/IconBrewLogo.vue'
-  import IconBrewIcon from '../components/IconBrewIcon.vue'
 
   export default {
     name: 'TopNavBar',
 
     components:{
-      IconBrewLogo,
-      IconBrewIcon
+      IconBrewLogo
     },
 
     props:{

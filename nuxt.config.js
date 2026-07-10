@@ -1,3 +1,7 @@
+// import iconSet from '~/assets/ib-icons.json'
+
+// console.log("iconSet: ", iconSet)
+
 export default defineNuxtConfig({
   name: 'IconBrew',
 
@@ -34,50 +38,74 @@ export default defineNuxtConfig({
     }
   },
 
-  css: [
-    // 'primevue/resources/themes/saga-blue/theme.css',
-    // 'assets/style/theme.css',
-    'assets/style/utilities.scss',
-    'assets/style/iconBrewIcons.scss',
-    'assets/style/style.scss',
-    'vue-virtual-scroller/dist/vue-virtual-scroller.css',
-
-    // 'primevue/resources/primevue.css',
-    // 'primeicons/primeicons.css',
-    // 'primeflex/primeflex.css',
-  ],
-
-  modules: [
-    '@nuxt/ui',
-    '@pinia/nuxt',
-    '@nuxtjs/plausible',
-  ],
-
-  plugins: [
-    '~/plugins/vue-virtual-scroller.client.js'
-  ],
-
-  plausible: {
-    apiHost: 'https://plausible.macosicons.com',
-    autoOutboundTracking: true,
-    // proxy: true
+  vercel: {
+    functions: {
+      maxDuration: 60,
+    },
   },
 
-  // build: {
-  //   transpile: ['primevue']
+  nitro: {
+    preset: 'node-server'
+  },
+
+  // icon: {
+  //   provider: 'none',
+  //   customCollections: [iconSet]
   // },
 
-  // ssr: false
-  runtimeConfig: {
-    public: {
-      PARSE_APP_ID: process.env.PARSE_APP_ID,
-      PARSE_KEY: process.env.PARSE_KEY,
-      PARSE_SERVER_URL: process.env.PARSE_SERVER_URL,
-      ALGOLIA_INDEX: process.env.ALGOLIA_INDEX,
-      ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
-      ALGOLIA_SEARCH_KEY: process.env.ALGOLIA_SEARCH_KEY,
+  css: [
+    '~/styles/main.scss',
+    'vue-virtual-scroller/dist/vue-virtual-scroller.css',
+  ],
+
+  modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxtjs/plausible', '@nuxtjs/tailwindcss', 'nuxt-clarity-analytics', '@nuxtjs/device'],
+
+  plausible: {
+    apiHost: 'https://stats.eliasruiz.com',
+    autoOutboundTracking: true,
+  },
+
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => ['dynamic-scroller'].includes(tag)
     }
   },
 
-  compatibilityDate: '2025-02-11'
+  // ssr: false
+
+  compatibilityDate: '2025-02-11',
+  
+
+  webpack: {
+    loaders: {
+      sass: {
+        sassOptions: {
+          quietDeps: true
+        }
+      }
+    }
+  },
+
+  build: {
+    transpile: [
+    ],
+    loaders: {
+      scss: {
+        sassOptions: {
+            silenceDeprecations: true,
+            quietDeps: true
+        }
+      }
+    }
+  },
+
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          quietDeps: true
+        }
+      }
+    }
+  },
 })
