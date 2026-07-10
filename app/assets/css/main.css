@@ -2,35 +2,35 @@
 @import "@nuxt/ui";
 
 /* ------------------------------------------------------------------ *
- * Brand accent — Lucide-style coral/orange, registered as `brand`
- * so it can be referenced as the NuxtUI primary color alias.
+ * Brand accent — light blue matching the IconBrew logo, registered as
+ * `brand` so it can be referenced as the NuxtUI primary color alias.
  * ------------------------------------------------------------------ */
 @theme static {
-  --color-brand-50: #fff3f0;
-  --color-brand-100: #ffe4dc;
-  --color-brand-200: #ffcabb;
-  --color-brand-300: #ffa48c;
-  --color-brand-400: #fb7a5c;
-  --color-brand-500: #f56342;
-  --color-brand-600: #e14828;
-  --color-brand-700: #bd371c;
-  --color-brand-800: #9c301b;
-  --color-brand-900: #802d1d;
-  --color-brand-950: #45130a;
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c1fd;
+  --color-brand-400: #61a0fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2f74ec;
+  --color-brand-700: #245fd8;
+  --color-brand-800: #244faf;
+  --color-brand-900: #23458a;
+  --color-brand-950: #1a2c54;
 }
 
 /* ------------------------------------------------------------------ *
- * Design tokens — light, Lucide-inspired surface palette
+ * Design tokens — off-white surface palette with a faint blue hint
  * ------------------------------------------------------------------ */
 :root {
-  --primary-text: #18181b;
-  --muted-text: #71717a;
+  --primary-text: #1e293b;
+  --muted-text: #5f7891;
   --surface: #ffffff;
-  --surface-subtle: #fafafa;
-  --surface-hover: #f4f4f5;
-  --border-color: #e4e4e7;
-  --border-color-strong: #d4d4d8;
-  --accent: #f56342;
+  --surface-subtle: #f9fbfd;
+  --surface-hover: #eef3f9;
+  --border-color: #e6ebf1;
+  --border-color-strong: #d3dbe4;
+  --accent: #3b82f6;
 
   --main-border-radius: 10px;
   --secondary-border-radius: 8px;
@@ -51,7 +51,8 @@ html {
 }
 
 body {
-  @apply bg-white text-zinc-900;
+  @apply text-slate-900;
+  background: var(--surface-subtle);
   margin: 0;
   font-family: var(--font-family-sans);
   -webkit-font-smoothing: antialiased;
@@ -149,7 +150,7 @@ svg {
 }
 
 .top-nav-bar-container {
-  @apply border-b border-zinc-200/80;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .top-nav-bar {
@@ -179,11 +180,12 @@ svg {
 }
 
 .nav-bar-links-wrapper a {
-  @apply flex items-center justify-center h-9 w-9 rounded-lg text-zinc-500 transition-colors;
+  @apply flex items-center justify-center h-9 w-9 rounded-lg text-slate-500 transition-colors;
 }
 
 .nav-bar-links-wrapper a:hover {
-  @apply bg-zinc-100 text-zinc-900;
+  @apply text-slate-900;
+  background: var(--surface-hover);
 }
 
 .nuxt-link {
@@ -236,13 +238,15 @@ svg {
  * Icon cards
  * ------------------------------------------------------------------ */
 .icon-card-wrapper {
-  @apply flex items-center justify-center aspect-square rounded-xl border border-transparent text-zinc-700 transition-all duration-150;
+  @apply flex items-center justify-center aspect-square rounded-xl border border-transparent text-slate-700 transition-all duration-150;
   position: relative;
   cursor: pointer;
 }
 
 .icon-card-wrapper:hover {
-  @apply bg-zinc-100 border-zinc-200/80 text-zinc-900;
+  @apply text-slate-900;
+  background: var(--surface-hover);
+  border-color: var(--border-color);
 }
 
 .icon-card-wrapper:active {
@@ -255,7 +259,7 @@ svg {
   transform: translateX(-50%);
   background: var(--accent);
   color: #fff;
-  box-shadow: 0 4px 12px -2px rgba(245, 99, 66, 0.4);
+  box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.4);
 }
 
 .icon-card-wrapper:hover p {
@@ -345,7 +349,12 @@ svg {
 }
 
 .color-picker {
-  @apply rounded-lg w-9 h-9 cursor-pointer p-0 bg-white border border-zinc-200 hover:border-zinc-300 transition-colors;
+  @apply rounded-lg w-9 h-9 cursor-pointer p-0 bg-white transition-colors;
+  border: 1px solid var(--border-color);
+}
+
+.color-picker:hover {
+  border-color: var(--border-color-strong);
 }
 
 .color-picker::-webkit-color-swatch-wrapper {
@@ -407,7 +416,7 @@ svg {
 }
 
 .sidebar-heading {
-  @apply px-3 pt-4 pb-2 text-[13px] font-semibold text-zinc-900;
+  @apply px-3 pt-4 pb-2 text-[13px] font-semibold text-slate-900;
 }
 
 .sidebar-heading:first-child {

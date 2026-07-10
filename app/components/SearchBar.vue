@@ -20,8 +20,8 @@
           :placeholder="'Search ' + numberOfIcons + ' icons…'"
           class="w-full"
           :ui="{
-            base: 'bg-zinc-50 hover:bg-white ring-zinc-200 focus:ring-2 focus:ring-brand-400 rounded-xl transition',
-            leadingIcon: 'text-zinc-400'
+            base: 'bg-white hover:bg-white ring-[var(--border-color-strong)] focus:ring-2 focus:ring-brand-400 rounded-xl transition',
+            leadingIcon: 'text-slate-400'
           }"
           size="xl"
         >

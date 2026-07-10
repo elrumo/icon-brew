@@ -1,8 +1,8 @@
 <template>
-	<div class="min-h-screen bg-white">
-		<div id="topArea" class="sticky w-full z-20 top-0 bg-white/85 backdrop-blur-md border-b border-zinc-200/70">
+	<div class="min-h-screen" style="background: var(--surface-subtle)">
+		<div id="topArea" class="sticky w-full z-20 top-0 backdrop-blur-md" style="background: color-mix(in srgb, var(--surface-subtle) 80%, transparent); border-bottom: 1px solid var(--border-color)">
 			<TopNavBar/>
-			<div class="border-t border-zinc-100">
+			<div style="border-top: 1px solid var(--border-color)">
 				<SearchBar/>
 			</div>
 		</div>
