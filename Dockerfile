@@ -13,6 +13,11 @@ COPY . .
 RUN bun run build
 
 FROM base AS runtime
+# Identifies which build is running (e.g. via /api/version). Pass
+# --build-arg BUILD_ID=<value> to set it explicitly (e.g. a git SHA in CI);
+# otherwise it defaults to the image's build timestamp.
+ARG BUILD_ID
+RUN echo "${BUILD_ID:-$(date -u +%Y%m%dT%H%M%SZ)}" > /app/.build-id
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
