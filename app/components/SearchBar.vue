@@ -19,17 +19,7 @@
           v-model="searchValue"
           :placeholder="'Search ' + numberOfIcons + ' icons'"
           class="w-full shadow-lg"
-          :ui="{
-            rounded:'rounded-lg', 
-            icon: { 
-              trailing: { pointer: '' } 
-            },
-            color: {
-              white: { 
-                outline: 'bg-gray-200 dark:bg-gray-800/50',
-              }
-            }
-          }"
+          :ui="{ base: 'bg-gray-200 dark:bg-gray-800/50 rounded-lg' }"
           size="lg"
         >
           <template #trailing>
@@ -50,19 +40,18 @@
 
             <UButton
               v-show="searchValue !== ''"
-              color="gray"
+              color="neutral"
               variant="link"
               icon="i-heroicons-x-mark-20-solid"
               size="lg"
-              class="z-10"
-              :padded="false"
+              class="z-10 p-0"
               @click="searchValue = ''; getFromAlgolia()"
             />
           </template>
         </UInput>
       </span>
 
-      <UDivider class="desktop-only h-8" orientation="vertical" />
+      <USeparator class="desktop-only h-8" orientation="vertical" />
 
       <!-- Desktop Options wrapper -->
       <div class="options-wrapper desktop-only">
@@ -88,15 +77,14 @@
 
         <!-- Size -->
         <USelectMenu
-          :options="sizes"
+          :items="sizes"
           v-model="size"
           size="lg"
-          @change="setIconSize()"
         />
 
         <!-- Download as -->
         <USelectMenu
-          :options="downloadOptions"
+          :items="downloadOptions"
           v-model="downloadAs"
           size="lg"
         />
@@ -111,14 +99,15 @@
       <!-- Mobile Options Popover -->
       <div class="mobile-only">
         <UPopover>
-          <UButton 
-            color="white" 
-            label="Options" 
+          <UButton
+            color="neutral"
+            variant="outline"
+            label="Options"
             trailing-icon="i-heroicons-chevron-down-20-solid"
             size="lg"
           />
 
-          <template #panel>
+          <template #content>
             <div class="p-4 space-y-4 w-64">
               <!-- Color picker -->
               <div class="space-y-2">
@@ -151,10 +140,9 @@
               <div class="space-y-2">
                 <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Size</label>
                 <USelectMenu
-                  :options="sizes"
+                  :items="sizes"
                   v-model="size"
                   size="lg"
-                  @change="setIconSize()"
                   class="w-full"
                 />
               </div>
@@ -163,7 +151,7 @@
               <div class="space-y-2">
                 <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Download Format</label>
                 <USelectMenu
-                  :options="downloadOptions"
+                  :items="downloadOptions"
                   v-model="downloadAs"
                   size="lg"
                   class="w-full"
@@ -259,6 +247,10 @@ watch(iconColour, debounce(() => {
 watch(bgColour, debounce(() => {
   setBgColour()
 }, 20))
+
+watch(size, () => {
+  setIconSize()
+})
 
 // Methods
 const scroll = () => {
@@ -360,7 +352,7 @@ const handleIntersection = (payload) => {
 
 // Lifecycle hooks
 onMounted(async () => {
-  if (process.client) {
+  if (import.meta.client) {
     keyboardEvent()
   }
 })

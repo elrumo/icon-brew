@@ -1,20 +1,22 @@
 <template>
   <div>
-    <!-- Trigger Button -->
-    <UButton
-      @click="isOpen = true" 
-      icon="i-heroicons-arrow-up-tray" 
-      size="lg" 
-      square 
-      color="gray"
-      variant="solid"
-      :class="{ 'w-full': showLabel }"
-      :label="showLabel ? 'Create iconifyJSON' : ''"
-    />
-
     <!-- Modal -->
-    <UModal class="dark" v-model="isOpen" :ui="{ width: 'w-full !max-w-[90vw] md:!max-w-[80vw]' }">
-      <UCard class="w-[90vw] md:w-[80vw] max-h-[97vh] md:max-h-[98vh] overflow-auto">
+    <UModal
+      class="dark"
+      v-model:open="isOpen"
+      :ui="{ content: 'w-full !max-w-[90vw] md:!max-w-[80vw] max-h-[97vh] md:max-h-[98vh]' }"
+    >
+      <!-- Trigger Button -->
+      <UButton
+        icon="i-heroicons-arrow-up-tray"
+        size="lg"
+        square
+        color="neutral"
+        variant="solid"
+        :class="{ 'w-full': showLabel }"
+        :label="showLabel ? 'Create iconifyJSON' : ''"
+      />
+
         <template #header>
           <div class="flex items-start justify-between">
             <div class="flex flex-col gap-2 w-full">
@@ -25,10 +27,11 @@
                 Use this tool to upload SVG files and generate an IconifyJSON file for your icon library. Visit <a class="underline hover:text-blue-300" href="https://iconify.design/"> Iconify</a> to learn more.
               </p>
             </div>
-            <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isOpen = false" />
+            <UButton color="neutral" variant="ghost" icon="i-heroicons-x-mark-20-solid" @click="isOpen = false" />
           </div>
         </template>
 
+        <template #body>
         <!-- Main Card Body -->
         <div class="flex flex-col md:!flex-row gap-6 max-h-[77vh] md:max-h-[77vh] overflow-auto pb-14">
           
@@ -49,7 +52,7 @@
                   variant="outline" 
                   size="sm"
                   icon="i-heroicons-document-arrow-up"
-                  :color="existingIconifyJSON ? 'green' : 'blue'"
+                  :color="existingIconifyJSON ? 'success' : 'info'"
                 >
                   {{ existingIconifyJSON ? 'JSON Loaded' : 'Upload JSON' }}
                 </UButton>
@@ -62,7 +65,7 @@
                     @click="clearExistingJSON" 
                     variant="ghost" 
                     size="xs" 
-                    color="red"
+                    color="error"
                     icon="i-heroicons-x-mark"
                   />
                 </div>
@@ -140,7 +143,7 @@
                   </label>
                   <USelect 
                     v-model="selectedLicense" 
-                    :options="licenseOptions" 
+                    :items="licenseOptions" 
                     placeholder="Select a license"
                     :ui="{ base: 'text-sm' }"
                     :disabled="!!existingIconifyJSON"
@@ -167,7 +170,7 @@
                       Add detailed processing information to the JSON output
                     </p>
                   </div>
-                  <UToggle v-model="includeMetadata" />
+                  <USwitch v-model="includeMetadata" />
                 </div>
               </div>
             </div>
@@ -216,10 +219,10 @@
               class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 w-full"
             >
               <div class="flex flex-row gap-3">
-                <UPopover mode="hover" :popper="{ placement: 'right-start' }">
+                <UPopover mode="hover" :content="{ side: 'right', align: 'start' }">
                   <UIcon name="i-heroicons-information-circle" class="h-5 w-5 text-blue-400 mt-0.5 cursor-help" />
 
-                  <template #panel>
+                  <template #content>
                     <div class="flex flex-col gap-2 p-4 max-w-sm">
                       <h4 class="text-sm font-medium text-blue-800 dark:text-blue-200">
                         What does this mean?
@@ -318,7 +321,7 @@
                     </span>
                   </p>
                 </div>
-                <UButton @click="clearFiles" variant="ghost" size="xs" color="red">
+                <UButton @click="clearFiles" variant="ghost" size="xs" color="error">
                   Clear All
                 </UButton>
               </div>
@@ -357,7 +360,7 @@
                             </p>
                           </div>
                         </div>
-                        <UButton @click="removeFile(item.index)" variant="ghost" size="xs" color="red" icon="i-heroicons-trash" />
+                        <UButton @click="removeFile(item.index)" variant="ghost" size="xs" color="error" icon="i-heroicons-trash" />
                       </div>
                     </div>
                   </div>
@@ -366,22 +369,24 @@
             </div>
           </div>
         </div>
+        </template>
 
         <!-- Footer -->
-        <div class="backdrop-blur-md rounded-b-xl bg-neutral-900/20 absolute bottom-0 left-0 p-4 flex justify-between w-full">
-          <UButton @click="isOpen = false" variant="ghost" color="gray">
+        <template #footer>
+        <div class="flex justify-between w-full">
+          <UButton @click="isOpen = false" variant="ghost" color="neutral">
             Cancel
           </UButton>
 
           <UButton
             @click="generateIconifyJSON()"
-            :loading="isGenerating" 
+            :loading="isGenerating"
             :disabled="uploadedFiles.length === 0 || iconSetName.length === 0 || iconSetPrefix.length === 0 || authorName.length === 0 && !isGenerating"
             color="primary" icon="i-heroicons-arrow-down-tray">
             {{ existingIconifyJSON ? 'Update IconifyJSON' : 'Generate IconifyJSON' }}
           </UButton>
         </div>
-      </UCard>
+        </template>
     </UModal>
   </div>
 </template>
@@ -505,7 +510,7 @@ const processFiles = (files) => {
       toast.add({
         title: 'Duplicate file',
         description: `${file.name} already exists in the upload list`,
-        color: 'yellow'
+        color: 'warning'
       })
       return false
     }
@@ -517,7 +522,7 @@ const processFiles = (files) => {
       toast.add({
         title: 'Invalid file type',
         description: `${file.name} is not an SVG file`,
-        color: 'red'
+        color: 'error'
       })
       return false
     }
@@ -528,7 +533,7 @@ const processFiles = (files) => {
       toast.add({
         title: 'Invalid file name format',
         description: `${file.name} should end with -18px.svg or -24px.svg`,
-        color: 'red'
+        color: 'error'
       })
       return false
     }
@@ -543,7 +548,7 @@ const processFiles = (files) => {
     toast.add({
       title: 'Files added',
       description: `${svgFiles.length} SVG file(s) ready for upload`,
-      color: 'green'
+      color: 'success'
     })
   }
 }
@@ -623,7 +628,7 @@ const generateIconifyJSON = async () => {
     toast.add({
       title: 'Missing prefix',
       description: 'Please enter a prefix for your icon set',
-      color: 'red'
+      color: 'error'
     })
     return
   }
@@ -677,7 +682,7 @@ const generateIconifyJSON = async () => {
     toast.add({
       title: 'Success!',
       description: `IconifyJSON "${name}" with ${totalIcons} icons has been downloaded`,
-      color: 'green'
+      color: 'success'
     })
 
     // Clear files and close modal after successful generation
@@ -690,7 +695,7 @@ const generateIconifyJSON = async () => {
     toast.add({
       title: 'Generation failed',
       description: error.message || 'Failed to generate IconifyJSON',
-      color: 'red'
+      color: 'error'
     })
   } finally {
     isGenerating.value = false
@@ -711,7 +716,7 @@ const handleJSONFileSelect = async (event) => {
       toast.add({
         title: 'Invalid IconifyJSON',
         description: 'The uploaded file is not a valid IconifyJSON format',
-        color: 'red'
+        color: 'error'
       })
       return
     }
@@ -737,7 +742,7 @@ const handleJSONFileSelect = async (event) => {
     toast.add({
       title: 'IconifyJSON loaded',
       description: `Loaded ${Object.keys(jsonData.icons).length} existing icons from ${jsonData.prefix}`,
-      color: 'green'
+      color: 'success'
     })
     
   } catch (error) {
@@ -745,7 +750,7 @@ const handleJSONFileSelect = async (event) => {
     toast.add({
       title: 'Invalid JSON file',
       description: 'Could not parse the uploaded JSON file',
-      color: 'red'
+      color: 'error'
     })
   }
   
@@ -761,7 +766,7 @@ const clearExistingJSON = () => {
   toast.add({
     title: 'JSON cleared',
     description: 'Existing IconifyJSON has been removed',
-    color: 'blue'
+    color: 'info'
   })
 }
 </script>

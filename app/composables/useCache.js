@@ -8,7 +8,7 @@ export const useCache = () => {
   const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
   
   const setCache = (key, data, customDuration = CACHE_DURATION) => {
-    if (process.client) {
+    if (import.meta.client) {
       try {
         localStorage.setItem(key, JSON.stringify(data))
         localStorage.setItem(`${key}_expiry`, (Date.now() + customDuration).toString())
@@ -19,7 +19,7 @@ export const useCache = () => {
   }
   
   const getCache = (key) => {
-    if (!process.client) return null
+    if (!import.meta.client) return null
     
     try {
       const cached = localStorage.getItem(key)
@@ -40,14 +40,14 @@ export const useCache = () => {
   }
   
   const clearCache = (key) => {
-    if (process.client) {
+    if (import.meta.client) {
       localStorage.removeItem(key)
       localStorage.removeItem(`${key}_expiry`)
     }
   }
   
   const clearAllCache = () => {
-    if (process.client) {
+    if (import.meta.client) {
       Object.values(CACHE_KEYS).forEach(key => {
         localStorage.removeItem(key)
         localStorage.removeItem(`${key}_expiry`)

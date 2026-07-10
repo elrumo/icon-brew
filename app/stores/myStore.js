@@ -7,8 +7,7 @@ const VITE_ALGOLIA_APP_ID = import.meta.env.VITE_ALGOLIA_APP_ID;
 const VITE_ALGOLIA_SEARCH_KEY = import.meta.env.VITE_ALGOLIA_SEARCH_KEY;
 const VITE_ALGOLIA_INDEX = import.meta.env.VITE_ALGOLIA_INDEX;
 
-export const useStore = defineStore({
-  id: 'store',
+export const useStore = defineStore('store', {
   state: () => ({
     icons: [],
     iconCategories: [],

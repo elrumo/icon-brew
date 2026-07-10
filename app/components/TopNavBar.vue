@@ -118,7 +118,7 @@
     },
 
     async mounted() {
-      if (process.client) {
+      if (import.meta.client) {
         try {
           await this.fetchHomeData();
           this.showDialog = this.homeData.showDialog;

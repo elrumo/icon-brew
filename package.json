@@ -9,31 +9,26 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
-    "@nuxtjs/device": "3.2.4",
+    "@nuxtjs/device": "^4.0.0",
     "@nuxtjs/plausible": "^1.2.0",
     "@types/node": "^22.13.1",
-    "nuxt": "^3.17.4",
+    "nuxt": "^4.4.8",
     "nuxt-clarity-analytics": "0.0.9",
     "sass": "^1.84.0",
-    "sass-loader": "^13.3.3",
     "typescript": "^5.7.3"
   },
   "dependencies": {
     "@iconify/tools": "^4.1.2",
+    "@iconify/utils": "^2.2.1",
     "@iconify/vue": "^5.0.0",
-    "@nuxt/ui": "2.21.0",
-    "@pinia/nuxt": "^0.4.11",
+    "@nuxt/ui": "^4.9.0",
+    "@pinia/nuxt": "^0.11.3",
     "@vueuse/core": "^13.3.0",
     "algoliasearch": "^5.25.0",
     "axios": "^1.7.9",
-    "module": "^1.2.5",
-    "nuxi": "^3.21.1",
     "parse": "^4.3.1",
-    "pinia": "^2.2.5",
-    "ui": "^0.2.4",
+    "pinia": "^3.0.4",
+    "tailwindcss": "^4.0.0",
     "vue-virtual-scroller": "^2.0.0-beta.8"
-  },
-  "overrides": {
-    "vue": "latest"
   }
 }

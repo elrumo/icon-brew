@@ -10,14 +10,14 @@
         v-if="icon != undefined"
         :label="label"
         :variant="isOutline ? 'ghost' : 'solid'"
-        color="white"
+        color="neutral"
         class="font-sans"
       />
 
       <UButton
         v-else
         :label="label"
-        :color="isOutline ? 'white' :   'primary'"
+        :color="isOutline ? 'neutral' : 'primary'"
         :variant="isOutline ? 'ghost' : 'solid'"
         class="font-sans"
       />
@@ -31,14 +31,14 @@
       <UButton
         v-if="icon != undefined"
         :label="label"
-        color="white"
+        color="neutral"
         :variant="isOutline ? 'ghost' : 'solid'"
         class="font-sans"
       />
       <UButton
         v-else
         :label="label"
-        color="white"
+        color="neutral"
         :icon="icon"
         :variant="isOutline ? 'ghost' : 'solid'"
         class="font-sans"

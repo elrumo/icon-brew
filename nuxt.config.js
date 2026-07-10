@@ -1,7 +1,3 @@
-// import iconSet from '~/assets/ib-icons.json'
-
-// console.log("iconSet: ", iconSet)
-
 export default defineNuxtConfig({
   name: 'IconBrew',
 
@@ -11,16 +7,14 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { hid: 'description', name: 'description', content: 'Hundreds of open source icons for everyone, new ones being added regularly' },
         { name: 'description', content: 'Hundreds of open source icons for everyone, new ones being added regularly' },
 
         // <!--Facebook Meta Tags-->
-        { name: 'og:url', content: 'https://iconbrew.com/' },
-        { name: 'og:type', content: 'website' },
-        { name: 'og:type', content: 'website' },
-        { name: 'og:title', content: 'IconBrew - Open source icons for everyone' },
-        { name: 'og:description', content: 'Hundreds of open source icons for everyone, new ones being added regularly' },
-        { name: 'og:image', content: 'https://i.imgur.com/SnjxPrN.jpg' },
+        { property: 'og:url', content: 'https://iconbrew.com/' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:title', content: 'IconBrew - Open source icons for everyone' },
+        { property: 'og:description', content: 'Hundreds of open source icons for everyone, new ones being added regularly' },
+        { property: 'og:image', content: 'https://i.imgur.com/SnjxPrN.jpg' },
 
         // <!--Twitter Meta Tags-->
         { name: 'twitter:card', content: 'summary_large_image' },
@@ -48,17 +42,12 @@ export default defineNuxtConfig({
     preset: 'node-server'
   },
 
-  // icon: {
-  //   provider: 'none',
-  //   customCollections: [iconSet]
-  // },
-
   css: [
-    '~/styles/main.scss',
+    '~/assets/css/main.css',
     'vue-virtual-scroller/dist/vue-virtual-scroller.css',
   ],
 
-  modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxtjs/plausible', '@nuxtjs/tailwindcss', 'nuxt-clarity-analytics', '@nuxtjs/device'],
+  modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxtjs/plausible', 'nuxt-clarity-analytics', '@nuxtjs/device'],
 
   plausible: {
     apiHost: 'https://stats.eliasruiz.com',
@@ -71,41 +60,5 @@ export default defineNuxtConfig({
     }
   },
 
-  // ssr: false
-
   compatibilityDate: '2025-02-11',
-  
-
-  webpack: {
-    loaders: {
-      sass: {
-        sassOptions: {
-          quietDeps: true
-        }
-      }
-    }
-  },
-
-  build: {
-    transpile: [
-    ],
-    loaders: {
-      scss: {
-        sassOptions: {
-            silenceDeprecations: true,
-            quietDeps: true
-        }
-      }
-    }
-  },
-
-  vite: {
-    css: {
-      preprocessorOptions: {
-        scss: {
-          quietDeps: true
-        }
-      }
-    }
-  },
 })

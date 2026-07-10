@@ -2,7 +2,7 @@
 <template>
      <div>
         <UButton
-          color="gray"
+          color="neutral"
           variant="ghost"
           tabindex="0"
           @click="setCategoryAction(category.categoryName)"
@@ -27,7 +27,7 @@
             {{ icons }}
           </p>
           <div class="w-1rem" v-else>
-            <USkeleton class="h-4 w-4" :ui="{ rounded: 'rounded-full' }" />
+            <USkeleton class="h-4 w-4 rounded-full" />
           </div>
 
         </UButton>

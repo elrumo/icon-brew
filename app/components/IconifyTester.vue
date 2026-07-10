@@ -1,20 +1,22 @@
 <template>
     <div class="dark">
-        <!-- Trigger Button -->
-        <UButton
-            @click="isOpen = true" 
-            icon="i-heroicons-beaker" 
-            size="lg" 
-            square 
-            color="gray"
-            variant="solid"
-            :class="{ 'w-full': showLabel }"
-            :label="showLabel ? 'Test iconifyJSON' : ''"
-        />
+        <UModal
+            class="dark"
+            v-model:open="isOpen"
+            :ui="{ content: 'w-full !max-w-[80vw] max-h-[90vh]' }"
+        >
+            <!-- Trigger Button -->
+            <UButton
+                icon="i-heroicons-beaker"
+                size="lg"
+                square
+                color="neutral"
+                variant="solid"
+                :class="{ 'w-full': showLabel }"
+                :label="showLabel ? 'Test iconifyJSON' : ''"
+            />
 
-        <UModal class="dark" v-model="isOpen" :ui="{ width: 'w-full !max-w-[80vw]' }">
-            <UCard class="max-w-[90vw] w-full max-h-[90vh]">
-                <template #header>
+            <template #header>
                     <div class="flex flex-row gap-2 justify-between">
                         <div class="flex flex-col gap-2">
                             <h3 class="text-lg font-semibold">
@@ -35,6 +37,7 @@
                     </div>
                 </template>
 
+                <template #body>
                 <!-- Upload JSON File -->
                 <div class="space-y-4 overflow-auto">
                     <div class="space-y-2">
@@ -142,15 +145,15 @@
                         </div>
                     </div>
                 </div>
+                </template>
 
                 <template #footer>
-                    <div class="flex justify-end">
-                        <UButton @click="isOpen = false" variant="solid" color="gray" size="sm">
+                    <div class="flex justify-end w-full">
+                        <UButton @click="isOpen = false" variant="solid" color="neutral" size="sm">
                             Close
                         </UButton>
                     </div>
                 </template>
-            </UCard>
         </UModal>
     </div>
 </template>
@@ -213,7 +216,7 @@ const processFile = async (file) => {
         toast.add({
             title: 'Invalid file type',
             description: 'Please upload a JSON file',
-            color: 'red'
+            color: 'error'
         })
         return
     }
@@ -231,13 +234,13 @@ const processFile = async (file) => {
             toast.add({
                 title: 'Validation successful',
                 description: `Valid IconifyJSON with ${results.info.iconCount} icons`,
-                color: 'green'
+                color: 'success'
             })
         } else {
             toast.add({
                 title: 'Validation failed',
                 description: `Found ${results.errors.length} errors`,
-                color: 'red'
+                color: 'error'
             })
         }
 
@@ -254,7 +257,7 @@ const processFile = async (file) => {
         toast.add({
             title: 'File error',
             description: 'Invalid JSON file',
-            color: 'red'
+            color: 'error'
         })
     }
 }

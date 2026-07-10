@@ -1,43 +1,42 @@
 <template>
-  <!-- Trigger Button -->
-  <UButton 
-    @click="isModalOpen = true" 
-    icon="i-heroicons-cloud-arrow-up"
-    square
-    size="lg"
-    color="gray"
-  />
-
   <!-- Upload Modal -->
-  <UModal v-model="isModalOpen" class="dark">
-    <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-800' }">
+  <UModal v-model:open="isModalOpen" class="dark">
+    <!-- Trigger Button -->
+    <UButton
+      icon="i-heroicons-cloud-arrow-up"
+      square
+      size="lg"
+      color="neutral"
+    />
+
       <template #header>
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between w-full">
           <h3 class="text-base font-semibold leading-6 text-white">
             Upload Icon Files
           </h3>
-          <UButton 
-            color="gray" 
-            variant="ghost" 
-            icon="i-heroicons-x-mark-20-solid" 
-            class="-my-1" 
-            @click="isModalOpen = false" 
+          <UButton
+            color="neutral"
+            variant="ghost"
+            icon="i-heroicons-x-mark-20-solid"
+            class="-my-1"
+            @click="isModalOpen = false"
           />
         </div>
       </template>
 
+      <template #body>
       <div class="space-y-4">
         <div class="flex flex-row gap-4">
-          <UFormGroup label="Data to Upload" description="Optional metadata for the upload" class="w-full">
-            <UInput 
-              v-model="dataToUpload" 
+          <UFormField label="Data to Upload" description="Optional metadata for the upload" class="w-full">
+            <UInput
+              v-model="dataToUpload"
               placeholder="Enter data to upload"
             />
-          </UFormGroup>
+          </UFormField>
 
           <div class="flex flex-col gap-2">
             <p class="text-sm opacity-90">Update if Duplicate</p>
-            <UToggle v-model="updateIfDuplicate" />
+            <USwitch v-model="updateIfDuplicate" />
           </div>
         </div>
 
@@ -73,7 +72,7 @@
                   {{ completeIcons.length }} complete • {{ incompleteIcons.length }} incomplete
                 </p>
               </div>
-              <UButton @click="clearFiles" variant="ghost" size="xs" color="red">
+              <UButton @click="clearFiles" variant="ghost" size="xs" color="error">
                 Clear All
               </UButton>
             </div>
@@ -121,7 +120,7 @@
                         
                         <!-- Status badge -->
                         <UBadge 
-                          :color="iconGroup.isComplete ? 'green' : 'yellow'" 
+                          :color="iconGroup.isComplete ? 'success' : 'warning'" 
                           variant="soft" 
                           size="xs"
                         >
@@ -134,7 +133,7 @@
                         @click="removeIconGroup(iconName)" 
                         variant="ghost" 
                         size="xs" 
-                        color="red" 
+                        color="error" 
                         icon="i-heroicons-trash"
                       />
                     </div>
@@ -156,7 +155,7 @@
                               </p> -->
                               <div class="flex items-center space-x-2">
                                 <UBadge 
-                                  color="gray"
+                                  color="neutral"
                                   size="sm"
                                 >
                                   {{ getFileSizeLabel(file.name) }}
@@ -177,7 +176,7 @@
                           @click="removeFileFromIcon(iconName, fileIndex)" 
                           variant="ghost" 
                           size="xs" 
-                          color="red" 
+                          color="error" 
                           icon="i-heroicons-x-mark"
                         />
                       </div>
@@ -198,18 +197,19 @@
           </div>
         </div>
       </div>
+      </template>
 
       <template #footer>
-        <div class="flex justify-between gap-3">
-          <UButton 
-            color="gray" 
-            variant="ghost" 
+        <div class="flex justify-between gap-3 w-full">
+          <UButton
+            color="neutral"
+            variant="ghost"
             @click="isModalOpen = false"
           >
             Cancel
           </UButton>
-          <UButton 
-            @click="handleUpload" 
+          <UButton
+            @click="handleUpload"
             :disabled="uploadedFiles.length === 0"
             :loading="isUploading"
           >
@@ -217,7 +217,6 @@
           </UButton>
         </div>
       </template>
-    </UCard>
   </UModal>
 </template>
 
@@ -681,7 +680,7 @@ const handleDrop = (event) => {
     toast.add({
       title: 'Files Added',
       description: `Added ${svgFiles.length} SVG file${svgFiles.length > 1 ? 's' : ''}`,
-      color: 'green',
+      color: 'success',
       icon: 'i-heroicons-check-circle'
     })
   }
@@ -690,7 +689,7 @@ const handleDrop = (event) => {
     toast.add({
       title: 'Invalid Files Skipped',
       description: `${nonSvgFiles.length} non-SVG file${nonSvgFiles.length > 1 ? 's were' : ' was'} skipped. Only SVG files are supported.`,
-      color: 'orange',
+      color: 'warning',
       icon: 'i-heroicons-exclamation-triangle'
     })
   }
@@ -699,7 +698,7 @@ const handleDrop = (event) => {
     toast.add({
       title: 'No Valid Files',
       description: 'Please drop SVG files only.',
-      color: 'red',
+      color: 'error',
       icon: 'i-heroicons-x-circle'
     })
   }
@@ -717,7 +716,7 @@ const handleFileSelect = (event) => {
     toast.add({
       title: 'Files Selected',
       description: `Selected ${svgFiles.length} SVG file${svgFiles.length > 1 ? 's' : ''}`,
-      color: 'green',
+      color: 'success',
       icon: 'i-heroicons-check-circle'
     })
   }
@@ -726,7 +725,7 @@ const handleFileSelect = (event) => {
     toast.add({
       title: 'Invalid Files Ignored',
       description: `${nonSvgFiles.length} non-SVG file${nonSvgFiles.length > 1 ? 's were' : ' was'} ignored. Only SVG files are supported.`,
-      color: 'orange',
+      color: 'warning',
       icon: 'i-heroicons-exclamation-triangle'
     })
   }
@@ -746,7 +745,7 @@ const removeFileFromIcon = (iconName, fileIndex) => {
     toast.add({
       title: 'File Removed',
       description: `Removed ${fileToRemove.name}`,
-      color: 'gray',
+      color: 'neutral',
       icon: 'i-heroicons-trash'
     })
   }
@@ -767,7 +766,7 @@ const removeIconGroup = (iconName) => {
   toast.add({
     title: 'Icon Removed',
     description: `Removed "${iconName}" and ${fileCount} associated file${fileCount > 1 ? 's' : ''}`,
-    color: 'gray',
+    color: 'neutral',
     icon: 'i-heroicons-trash'
   })
 }
@@ -780,7 +779,7 @@ const clearFiles = () => {
   toast.add({
     title: 'All Files Cleared',
     description: `Removed ${fileCount} file${fileCount > 1 ? 's' : ''}`,
-    color: 'gray',
+    color: 'neutral',
     icon: 'i-heroicons-trash'
   })
 }
@@ -793,7 +792,7 @@ const handleUpload = async () => {
   toast.add({
     title: 'Upload Started',
     description: `Uploading ${Object.keys(groupedIcons.value).length} icon${Object.keys(groupedIcons.value).length > 1 ? 's' : ''} (${uploadedFiles.value.length} files)`,
-    color: 'blue',
+    color: 'info',
     icon: 'i-heroicons-cloud-arrow-up'
   })
   
@@ -808,7 +807,7 @@ const handleUpload = async () => {
     toast.add({
       title: 'Upload Successful',
       description: summaryText.length > 0 ? summaryText.join(', ') : `Successfully processed ${Object.keys(groupedIcons.value).length} icons`,
-      color: 'green',
+      color: 'success',
       icon: 'i-heroicons-check-circle'
     })
     
@@ -823,7 +822,7 @@ const handleUpload = async () => {
     toast.add({
       title: 'Upload Failed',
       description: error.message || 'An error occurred during upload. Please try again.',
-      color: 'red',
+      color: 'error',
       icon: 'i-heroicons-x-circle'
     })
     console.error('Upload error:', error)

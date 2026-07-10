@@ -27,8 +27,7 @@
         <div v-if="iconCategories.length == 0" class="category-side-bar-wrapper">
             <USkeleton
               v-for="n in 17" :key="n+'-placeholder-sidebar'"
-              class="h-8 mb-1 w-full"
-              :ui="{ rounded: 'rounded-lg' }"
+              class="h-8 mb-1 w-full rounded-lg"
             />
         </div>
 
@@ -51,8 +50,7 @@
       <div v-if="iconsToShow.length === 0 && searchValue === ''" class="content-area" style="min-height: 100%">
         <USkeleton
             v-for="n in 50" :key="n+'-placeholder'"
-            class="h-32 w-32 mb-1"
-            :ui="{ rounded: 'rounded-lg' }"
+            class="h-32 w-32 mb-1 rounded-lg"
           />
       </div>
       
@@ -81,8 +79,7 @@
             <USkeleton
               v-for="n in 10" 
               :key="n+'-loading'"
-              class="h-32 w-32 mb-1"
-              :ui="{ rounded: 'rounded-lg' }"
+              class="h-32 w-32 mb-1 rounded-lg"
             />
           </div>
           <div v-else class="load-more-sentinel">
@@ -99,8 +96,7 @@
         <USkeleton
           v-for="n in 16" 
           :key="n+'-search-loading'"
-          class="h-32 w-32"
-          :ui="{ rounded: 'rounded-lg' }"
+          class="h-32 w-32 rounded-lg"
         />
       </div>
       
@@ -184,7 +180,7 @@ const shouldShowLoadMoreTrigger = computed(() => {
 
 // Setup intersection observer
 const setupIntersectionObserver = () => {
-  if (!process.client || !loadMoreTrigger.value) return
+  if (!import.meta.client || !loadMoreTrigger.value) return
   
   // Clean up existing observer
   if (observer.value) {
@@ -313,7 +309,7 @@ watch(selectedCategory, async (newCategory, oldCategory) => {
 
 // Setup intersection observer when the trigger element is available
 watch(loadMoreTrigger, (newTrigger) => {
-  if (newTrigger && process.client) {
+  if (newTrigger && import.meta.client) {
     nextTick(() => {
       setupIntersectionObserver()
     })
