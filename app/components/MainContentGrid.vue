@@ -8,26 +8,28 @@
     <!-- Sidebar -->
     <div class="sticky-side-bar">
       <div
-        class="category-side-bar-wrapper-container gap-md"
+        class="category-side-bar-wrapper-container"
         :style="{
           height: $device.isMobile ? '' : heightSideBar,
         }"
       >
-      
-      <CategoryButton
+        <p class="sidebar-heading desktop-only">View</p>
+
+        <CategoryButton
           v-for="category in categories"
           :key="category.categoryName"
           :category="category"
           :icons="numberOfIcons"
+          :active="selectedCategory == 'All Icons'"
           :isStatic="true"
         />
 
-        <div class="divider-horizontal w-80 m-all-a opacity-30 desktop-only">‎</div>
+        <p class="sidebar-heading desktop-only">Categories</p>
 
         <div v-if="iconCategories.length == 0" class="category-side-bar-wrapper">
             <USkeleton
               v-for="n in 17" :key="n+'-placeholder-sidebar'"
-              class="h-8 mb-1 w-full rounded-lg"
+              class="h-7 w-full rounded-md"
             />
         </div>
 
@@ -47,10 +49,10 @@
     <div id="mainContentGrid" class="main-content-wrapper">
 
       <!-- Loading skeleton for initial load -->
-      <div v-if="iconsToShow.length === 0 && searchValue === ''" class="content-area" style="min-height: 100%">
+      <div v-if="iconsToShow.length === 0 && searchValue === ''" class="content-area icons-grid" style="min-height: 100%">
         <USkeleton
-            v-for="n in 50" :key="n+'-placeholder'"
-            class="h-32 w-32 mb-1 rounded-lg"
+            v-for="n in 120" :key="n+'-placeholder'"
+            class="aspect-square w-full rounded-xl"
           />
       </div>
       
@@ -77,9 +79,9 @@
         >
           <div v-if="isLoadingMore" class="loading-more-container">
             <USkeleton
-              v-for="n in 10" 
+              v-for="n in 24"
               :key="n+'-loading'"
-              class="h-32 w-32 mb-1 rounded-lg"
+              class="aspect-square w-full rounded-xl"
             />
           </div>
           <div v-else class="load-more-sentinel">
@@ -89,14 +91,14 @@
       </div>
       
       <!-- Skeleton loading during search -->
-      <div 
+      <div
         v-if="searchValue.length > 0 && isFetchingData && icons.length === 0"
-        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-4 p-4"
+        class="content-area icons-grid"
       >
         <USkeleton
-          v-for="n in 16" 
+          v-for="n in 48"
           :key="n+'-search-loading'"
-          class="h-32 w-32 rounded-lg"
+          class="aspect-square w-full rounded-xl"
         />
       </div>
       
@@ -362,21 +364,20 @@ const iconsToShow = computed(() => {
 <style scoped>
 .icons-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 4px;
   width: 100%;
 }
 
 .load-more-trigger {
   width: 100%;
-  padding: 2rem 0;
+  padding: 1.5rem 0;
 }
 
 .loading-more-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 4px;
   width: 100%;
 }
 

@@ -1,13 +1,13 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      primary: 'blue',
-      neutral: 'slate'
+      primary: 'brand',
+      neutral: 'neutral'
     },
 
     button: {
       slots: {
-        base: 'flex-shrink-0'
+        base: 'flex-shrink-0 font-medium'
       },
       defaultVariants: {
         color: 'primary'

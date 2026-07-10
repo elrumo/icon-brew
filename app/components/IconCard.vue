@@ -2,19 +2,12 @@
 <template>
   <div
     class="icon-card-wrapper"
+    :title="replaceAllChar(icon.name, '-', ' ')"
     @click="downloadImage({url: {iconImage18px: icon.iconImage18px, iconImage24px: icon.iconImage24px}, name: icon.name, id: icon.objectID, target: $event})"
   >
     <div class="icon-card-container">
-      <div>
-        <Icon :name="`ib:${icon.name}-${getSizeNumber}`" size="24" />
-
-      </div>
-
-      <div>
-        <p>
-          {{replaceAllChar(icon.name, '-', ' ')}}
-        </p>
-      </div>
+      <Icon :name="`ib:${icon.name}-${getSizeNumber}`" size="24" />
+      <p>{{ replaceAllChar(icon.name, '-', ' ') }}</p>
     </div>
   </div>
 </template>

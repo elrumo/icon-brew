@@ -1,8 +1,10 @@
 <template>
-	<div class="h-100 dark">
-		<div id="topArea" class="sticky w-full z-10 top-0 bg-gray-900/50 backdrop-blur-md">
+	<div class="min-h-screen bg-white">
+		<div id="topArea" class="sticky w-full z-20 top-0 bg-white/85 backdrop-blur-md border-b border-zinc-200/70">
 			<TopNavBar/>
-			<SearchBar/>
+			<div class="border-t border-zinc-100">
+				<SearchBar/>
+			</div>
 		</div>
 
 		<MainContentGrid class="page-wrapper"/>

@@ -9,6 +9,7 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
+    "@iconify-json/lucide": "^1.2.116",
     "@nuxtjs/device": "^4.0.0",
     "@nuxtjs/plausible": "^1.2.0",
     "@types/node": "^22.13.1",

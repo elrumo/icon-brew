@@ -1,37 +1,25 @@
-<!-- Please remove this file from your project -->
 <template>
-     <div>
-        <UButton
-          color="neutral"
-          variant="ghost"
-          tabindex="0"
-          @click="setCategoryAction(category.categoryName)"
-          :id="category.categoryName"
-          class="opacity-70 hover:opacity-100 hover:!bg-gray-900/60"
-          :class="{
-            'category-item-wrapper': true,
-            'category-item-selected': selectedCategory == category.categoryName,
-          }"
-        >
-          <div
-            class="category-item-title font-size-0-9"
-          >
-              <Icon :name="'ib:'+category.icon+'-24'" :ssr="true" />
-            <p>
+  <button
+    type="button"
+    tabindex="0"
+    @click="setCategoryAction(category.categoryName)"
+    :id="category.categoryName"
+    class="category-item-wrapper"
+    :class="{
+      'category-item-selected': active,
+    }"
+  >
+    <span class="category-item-title">
+      {{ getCategoryName }}
+    </span>
 
-              {{ getCategoryName }}
-            </p>
-          </div>
-
-          <p v-if="!isStatic || (isStatic && icons != 0)" class="category-item-number font-size-0-8">
-            {{ icons }}
-          </p>
-          <div class="w-1rem" v-else>
-            <USkeleton class="h-4 w-4 rounded-full" />
-          </div>
-
-        </UButton>
-      </div>
+    <span v-if="!isStatic || (isStatic && icons != 0)" class="category-item-number">
+      {{ icons }}
+    </span>
+    <span class="w-4" v-else>
+      <USkeleton class="h-4 w-6 rounded-md" />
+    </span>
+  </button>
 </template>
 
 <script>
@@ -52,6 +40,10 @@
         required: false,
       },
       isStatic: {
+        type: Boolean,
+        default: false,
+      },
+      active: {
         type: Boolean,
         default: false,
       },

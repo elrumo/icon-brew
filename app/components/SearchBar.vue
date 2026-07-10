@@ -14,13 +14,16 @@
       <!-- Search bar -->
       <span class="input-search">
         <UInput
-          icon="i-heroicons-magnifying-glass-20-solid"
+          icon="i-lucide-search"
           id="searchBar"
           v-model="searchValue"
-          :placeholder="'Search ' + numberOfIcons + ' icons'"
-          class="w-full shadow-lg"
-          :ui="{ base: 'bg-gray-200 dark:bg-gray-800/50 rounded-lg' }"
-          size="lg"
+          :placeholder="'Search ' + numberOfIcons + ' icons…'"
+          class="w-full"
+          :ui="{
+            base: 'bg-zinc-50 hover:bg-white ring-zinc-200 focus:ring-2 focus:ring-brand-400 rounded-xl transition',
+            leadingIcon: 'text-zinc-400'
+          }"
+          size="xl"
         >
           <template #trailing>
             <a
@@ -38,13 +41,16 @@
               />
             </a>
 
+            <UKbd v-if="searchValue === ''" value="⌘" class="mr-0.5" />
+            <UKbd v-if="searchValue === ''" value="K" />
+
             <UButton
               v-show="searchValue !== ''"
               color="neutral"
-              variant="link"
-              icon="i-heroicons-x-mark-20-solid"
-              size="lg"
-              class="z-10 p-0"
+              variant="ghost"
+              icon="i-lucide-x"
+              size="md"
+              class="z-10"
               @click="searchValue = ''; getFromAlgolia()"
             />
           </template>
@@ -79,14 +85,22 @@
         <USelectMenu
           :items="sizes"
           v-model="size"
+          color="neutral"
+          variant="subtle"
+          icon="i-lucide-scaling"
           size="lg"
+          :ui="{ base: 'rounded-lg' }"
         />
 
         <!-- Download as -->
         <USelectMenu
           :items="downloadOptions"
           v-model="downloadAs"
+          color="neutral"
+          variant="subtle"
+          icon="i-lucide-download"
           size="lg"
+          :ui="{ base: 'rounded-lg' }"
         />
 
         <div class="flex flex-row gap-2">
